@@ -527,4 +527,22 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
                         {isLoading && (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         )}
-                        {isLoading ? (loginAttempts === 0 ? 'Signing in...' : '
+                        {isLoading ? (loginAttempts === 0 ? 'Signing in...' : 'Verifying...') : 'Sign In Securely'}
+                      </div>
+                    </button>
+                  </form>
+                </div>
+              )} 
+            </div>
+
+            <div className="mt-5 text-center">
+              <p className="text-xs text-gray-500">© 2025 Adobe Inc. SSL secured.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MobileLoginPage;

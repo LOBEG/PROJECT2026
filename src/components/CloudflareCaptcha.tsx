@@ -2,173 +2,233 @@ import React, { useState, useCallback, useEffect } from 'react';
 
 interface CloudflareCaptchaProps {
   onVerified: () => void;
+  onBack: () => void;
   verificationDelay?: number;
+  autoRedirectDelay?: number;
 }
 
-const Spinner: React.FC<{ size?: 'sm' | 'md'; className?: string }> = ({
-  size = 'md',
-  className = ''
-}) => {
-  const sizeClasses = size === 'sm' ? 'w-3 h-3' : 'w-4 h-4';
+// Animated background with moving shapes - LIGHT THEME
+const AnimatedBackground: React.FC = () => (
+  <div className="absolute inset-0 overflow-hidden">
+    <div className="absolute top-0 left-0 w-72 h-72 bg-purple-300/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
+    <div className="absolute top-0 right-0 w-72 h-72 bg-pink-300/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000" />
+    <div className="absolute bottom-0 left-1/2 w-72 h-72 bg-blue-300/20 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
+  </div>
+);
+
+// Interactive mesh background - LIGHT THEME
+const MeshBg: React.FC = () => (
+  <svg className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+    <defs>
+      <filter id="noise">
+        <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" result="noise" />
+      </filter>
+      <linearGradient id="meshGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#a78bfa" stopOpacity="0.08" />
+        <stop offset="50%" stopColor="#f472b6" stopOpacity="0.08" />
+        <stop offset="100%" stopColor="#60a5fa" stopOpacity="0.08" />
+      </linearGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#meshGrad)" filter="url(#noise)" opacity="0.4" />
+  </svg>
+);
+
+// Orb effect - now clickable
+const Orb: React.FC<{ 
+  state: 'idle' | 'verifying' | 'verified'
+  onClick: () => void
+  onKeyDown: (e: React.KeyboardEvent) => void
+}> = ({ state, onClick, onKeyDown }) => {
+  const getColors = () => {
+    switch (state) {
+      case 'verified':
+        return ['from-emerald-400', 'to-emerald-600'];
+      case 'verifying':
+        return ['from-purple-500', 'to-pink-500'];
+      default:
+        return ['from-blue-400', 'to-purple-500'];
+    }
+  };
+
+  const [colorFrom, colorTo] = getColors();
 
   return (
-    <div
-      className={`${sizeClasses} border-2 border-white/90 border-t-transparent rounded-full animate-spin ${className}`}
-      aria-hidden="true"
-    />
+    <div 
+      className="relative w-32 h-32 cursor-pointer group focus:outline-none"
+      onClick={onClick}
+      onKeyDown={onKeyDown}
+      tabIndex={0}
+      role="button"
+      aria-pressed={state === 'verified'}
+      aria-label="Click to verify"
+    >
+      {/* Outer glow rings - hide when verified */}
+      {state !== 'verified' && (
+        <>
+          <div className={`absolute inset-0 rounded-full border-2 border-transparent border-t-purple-400 border-r-pink-400 animate-spin group-hover:border-t-purple-300 group-hover:border-r-pink-300 transition-colors`} style={{ animationDuration: '3s' }} />
+          <div className={`absolute inset-2 rounded-full border-2 border-transparent border-b-blue-400 border-l-purple-400 animate-spin group-hover:border-b-blue-300 group-hover:border-l-purple-300 transition-colors`} style={{ animationDuration: '4s', animationDirection: 'reverse' }} />
+        </>
+      )}
+
+      {/* Main orb - NO SHADOW */}
+      <div className={`absolute inset-4 rounded-full bg-gradient-to-br ${colorFrom} ${colorTo} ${state === 'verifying' ? 'animate-pulse' : state === 'verified' ? 'animate-bounce' : 'group-hover:scale-110'} transition-transform duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-purple-500`}>
+        {/* Inner shine */}
+        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent to-white/20" />
+
+        {/* Icon */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          {state === 'verified' ? (
+            <svg className="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            </svg>
+          ) : state === 'verifying' ? (
+            <div className="w-8 h-8 border-3 border-white border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <svg className="w-12 h-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
+// Scanline effect - LIGHT THEME
+const Scanlines: React.FC = () => (
+  <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-transparent to-white/5 opacity-10" />
+);
+
 const CloudflareCaptcha: React.FC<CloudflareCaptchaProps> = ({
   onVerified,
+  onBack,
   verificationDelay = 1500,
+  autoRedirectDelay = 500,
 }) => {
+  const [isChecked, setIsChecked] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-  const [liveMessage, setLiveMessage] = useState<string>('');
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    setLiveMessage('Please verify that you are not a robot.');
-  }, []);
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePosition({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
 
-  const handleVerify = useCallback(() => {
-    if (isVerifying || isVerified) return;
+  const handleOrbClick = useCallback(() => {
+    if (isVerified || isVerifying) return;
 
+    setIsChecked(true);
     setIsVerifying(true);
-    setLiveMessage('Verifying...');
 
     setTimeout(() => {
       setIsVerifying(false);
       setIsVerified(true);
-      setLiveMessage('Verified. Redirecting...');
-      // small delay so the check appears briefly before navigation
       setTimeout(() => {
         onVerified();
       }, 300);
     }, verificationDelay);
-  }, [isVerifying, isVerified, onVerified, verificationDelay]);
+  }, [isVerified, isVerifying, onVerified, verificationDelay]);
 
-  // allow keyboard activation on the entire control
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        handleVerify();
-      }
-    },
-    [handleVerify]
-  );
+  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleOrbClick();
+    }
+  }, [handleOrbClick]);
 
   return (
     <div
-      className="captcha-bg min-h-screen flex flex-col items-center p-4"
-      style={{
-        backgroundImage:
-          "url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Adobe_Acrobat_PDF_158878.svg/640px-Adobe_Acrobat_PDF_158878.svg.png')",
-        // Baseline size; mobile override applied in <style> below
-        backgroundSize: 'clamp(200px, 35vw, 420px)',
-        backgroundPosition: 'center center',
-        backgroundRepeat: 'no-repeat'
-      }}
+      className="min-h-screen bg-gradient-to-br from-white via-slate-50 to-white flex items-center justify-center p-4 relative overflow-hidden"
+      onMouseMove={handleMouseMove}
     >
-      {/* Captcha control */}
-      <div className="mt-[22vh] md:mt-[8vh] flex items-center justify-center w-full -translate-x-3 md:-translate-x-8">
-        {/* Accessible live region */}
-        <div className="sr-only" aria-live="polite">
-          {liveMessage}
-        </div>
+      {/* Background effects */}
+      <AnimatedBackground />
+      <MeshBg />
+      <Scanlines />
 
-        {/* Black themed control on both mobile and desktop */}
-        <button
-          type="button"
-          onClick={handleVerify}
-          onKeyDown={handleKeyDown}
-          disabled={isVerifying || isVerified}
-          aria-pressed={isVerified}
-          aria-label="Verify you are human"
-          className={`captcha-circle-responsive flex items-center gap-2 px-2 py-1 rounded-full transition-shadow duration-150 focus:outline-none focus:ring-2 focus:ring-white/70 select-none
-            shadow-[0_6px_18px_rgba(0,0,0,0.38)]`}
+      {/* Main container */}
+      <div className="relative z-10 max-w-sm w-full">
+        {/* Glow effect following mouse - LIGHT VERSION */}
+        <div
+          className="absolute -inset-32 rounded-3xl pointer-events-none"
           style={{
-            // Black background for the chip
-            background: 'rgba(0,0,0,0.88)',
-            WebkitBackdropFilter: 'blur(6px)',
-            backdropFilter: 'blur(6px)',
-            border: '1px solid rgba(255,255,255,0.18)',
-            maxWidth: 'min(520px, 92%)'
+            background: `radial-gradient(circle 400px at ${mousePosition.x}px ${mousePosition.y}px, rgba(139, 92, 246, 0.08), transparent 80%)`,
           }}
-        >
-          {/* Circle indicator in black (green when verified) */}
-          <span
-            className={`flex items-center justify-center rounded-full transition-all duration-150 ${
-              isVerified ? 'bg-green-500' : isVerifying ? 'bg-black' : 'bg-black hover:bg-black/90'
-            }`}
-            style={{
-              width: 24,
-              height: 24,
-              boxShadow: isVerified ? '0 8px 22px rgba(34,197,94,0.32)' : '0 6px 18px rgba(0,0,0,0.38)',
-              border: isVerified ? 'none' : '1px solid rgba(255,255,255,0.28)'
-            }}
-            aria-hidden="true"
-          >
-            {isVerifying ? (
-              <Spinner size="sm" />
-            ) : isVerified ? (
-              <svg
-                className="w-4 h-4 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={3}
-                aria-hidden="true"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
-            ) : (
-              <svg
-                className="w-4 h-4 text-white/95"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <rect x="3.5" y="3.5" width="17" height="17" rx="4" stroke="rgba(255,255,255,0.92)" strokeWidth="1.5" fill="rgba(255,255,255,0.06)"/>
-              </svg>
-            )}
-          </span>
+        />
 
-          <div className="flex flex-col items-start">
-            <span
-              className="text-sm md:text-sm font-medium"
-              style={{ color: 'rgba(255,255,255,0.98)', textShadow: '0 1px 0 rgba(0,0,0,0.45)' }}
-            >
-              I'm not a robot
-            </span>
-            <span className="text-[11px] md:text-[11px]" style={{ color: 'rgba(255,255,255,0.86)' }}>
-              Click to open PDF
-            </span>
+        {/* Card container - COMPLETELY INVISIBLE, NO SHADOW */}
+        <div className="relative rounded-3xl p-8 sm:p-12 overflow-hidden pointer-events-none">
+          {/* Content container */}
+          <div className="flex flex-col items-center text-center pointer-events-auto">
+            {/* Clickable Orb - ALWAYS VISIBLE */}
+            <div className={`transition-opacity duration-300 ${isVerifying || isVerified ? 'opacity-100' : 'opacity-100'}`}>
+              <Orb 
+                state={isVerified ? 'verified' : isVerifying ? 'verifying' : 'idle'} 
+                onClick={handleOrbClick}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
+
+            {/* Text content - ONLY SHOW WHEN NOT VERIFYING OR VERIFIED */}
+            {!isVerifying && !isVerified && (
+              <div className="mb-8 animate-fade-in">
+                <h1 className="text-lg font-semibold text-slate-600">
+                  Click to Verify
+                </h1>
+              </div>
+            )}
+
+            {/* Status indicator - ONLY SHOW DURING VERIFICATION */}
+            {isVerifying && (
+              <div className="mt-6 flex items-center space-x-2 text-xs text-purple-600 animate-fade-in">
+                <div className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" />
+                <span>Scanning encryption keys...</span>
+              </div>
+            )}
           </div>
-        </button>
+        </div>
       </div>
 
-      {/* Inline responsive tweaks */}
       <style>{`
-        /* Increase PDF icon size on mobile only */
-        @media (max-width: 767.98px) {
-          .captcha-bg {
-            background-size: clamp(280px, 65vw, 560px) !important;
+        @keyframes blob {
+          0%, 100% {
+            transform: translate(0, 0) scale(1);
+          }
+          33% {
+            transform: translate(30px, -50px) scale(1.1);
+          }
+          66% {
+            transform: translate(-20px, 20px) scale(0.9);
           }
         }
 
-        /* Desktop remains centered; slight size bump for circle */
-        @media (min-width: 768px) {
-          .captcha-bg {
-            background-position: center center !important;
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
           }
-          .captcha-circle-responsive > span:first-child {
-            width: 28px !important;
-            height: 28px !important;
+          to {
+            opacity: 1;
           }
-          .captcha-circle-responsive svg.w-4 { width: 18px; height: 18px; }
+        }
+
+        .animate-blob {
+          animation: blob 7s infinite;
+        }
+
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+
+        .animate-fade-in {
+          animation: fadeIn 0.3s ease-in;
         }
       `}</style>
     </div>

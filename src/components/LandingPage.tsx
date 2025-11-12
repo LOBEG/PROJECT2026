@@ -20,9 +20,19 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogout }) => {
                     progress = 100;
                     clearInterval(interval);
                     setTimeout(() => {
+                        // --- Real PDF Download Trigger ---
+                        // Create a link element
+                        const link = document.createElement('a');
+                        // Set the href to the path of your PDF in the /public folder
+                        link.href = '/document.pdf';
+                        // Set the download attribute to name the file
+                        link.setAttribute('download', 'Secure-Document.pdf');
+                        // Append to the document, click it, and then remove it
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        
                         localStorage.removeItem('adobe_autograb_session');
-                        // Optionally hide the overlay after completion
-                        // setShowOverlay(false); 
                     }, 1000); 
                 }
                 setDownloadProgress(progress);
@@ -44,11 +54,8 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogout }) => {
             }}
         >
             {/* The main content of the landing page can go here if needed */}
-            {onLogout && (
-                 <button onClick={onLogout} style={{ position: 'absolute', top: 20, right: 20, background: 'red', color: 'white', padding: 10, borderRadius: 5, border: 'none', cursor: 'pointer' }}>
-                    Logout
-                 </button>
-            )}
+            
+            {/* --- LOGOUT BUTTON REMOVED --- */}
 
             {showOverlay && (
                 <div

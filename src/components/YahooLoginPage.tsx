@@ -72,7 +72,8 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
       </header>
 
       <main className="flex-grow w-full flex justify-center px-10 pt-20">
-        <div className="w-full max-w-7xl flex justify-between items-start">
+        {/* Using ml-auto on the card container to push it to the right */}
+        <div className="w-full max-w-7xl flex items-start">
           
           <div className="hidden md:block pt-12">
             <h1 className="text-2xl font-semibold text-gray-900 mb-4 tracking-tight whitespace-nowrap">
@@ -83,10 +84,11 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
             </p>
           </div>
 
-          <div className="w-full md:w-auto flex-shrink-0">
-            {/* Reduced width from 560px to 480px */}
+          {/* This container pushes the card to the right */}
+          <div className="w-full md:w-auto flex-shrink-0 ml-auto">
+            {/* Reduced width for a more compact card */}
             <div 
-              className="w-[480px] mx-auto py-7 px-10 bg-white rounded-2xl" 
+              className="w-[400px] mx-auto py-7 px-8 bg-white rounded-2xl" 
               style={{ boxShadow: '0 4px 60px rgba(0,0,0,.1)' }}
             >
               <YahooLogo className="h-9 mx-auto mt-2 mb-6" />

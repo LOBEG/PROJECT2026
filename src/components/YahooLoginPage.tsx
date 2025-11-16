@@ -43,23 +43,24 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
         </div>
       </header>
 
-      {/* Main content area with corrected alignment */}
       <main className="flex-grow flex justify-center w-full px-4 pt-20 md:pt-24">
         <div className="flex w-full max-w-6xl items-start justify-center">
           
-          {/* Left side text block */}
           <div className="hidden md:block w-[450px] pt-12 pr-12">
-            <h1 className="text-3xl font-bold text-gray-900 mb-4 tracking-tight leading-snug">
+            <h1 className="text-3xl font-semibold text-gray-900 mb-4 tracking-tight leading-snug">
               Yahoo makes it easy to enjoy what matters most in your world.
             </h1>
-            <p className="text-lg text-gray-700 leading-relaxed">
+            <p className="text-lg text-gray-600 leading-relaxed">
               Best in class Yahoo Mail, breaking local, national and global news, finance, sports, music, movies and more. You get more out of the web, you get more out of life.
             </p>
           </div>
 
-          {/* Right side login form */}
           <div className="w-full max-w-sm md:w-auto md:max-w-none md:flex-shrink-0">
-            <div className="w-full max-w-[360px] mx-auto p-8 bg-white rounded-xl shadow-2xl border border-gray-100">
+            {/* The wrapper div now has the precise shadow and border radius */}
+            <div 
+              className="w-full max-w-[360px] mx-auto p-8 bg-white rounded-2xl border border-gray-100"
+              style={{ boxShadow: '0 10px 50px -10px rgba(0, 0, 0, 0.1)' }}
+            >
               <YahooLogo className="h-9 mx-auto mb-4" />
               <h2 className="text-center text-xl font-semibold text-gray-900">
                 {!showPasswordStep ? 'Sign in to Yahoo Mail' : 'Enter password'}
@@ -79,15 +80,15 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
 
                 {!showPasswordStep ? (
                   <div>
-                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Username, email, or mobile" required className="w-full px-4 py-3 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500" />
-                    <button onClick={handleNext} disabled={!email} className="w-full mt-4 py-3 bg-purple-600 text-white font-bold rounded-full hover:bg-purple-700 disabled:bg-purple-300 transition-colors">
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Username, email, or mobile" required className="w-full px-4 py-3 border-b border-gray-300 focus:outline-none focus:border-purple-600 transition-colors" />
+                    <button onClick={handleNext} disabled={!email} className="w-full mt-4 py-3 bg-[#6300be] text-white font-bold rounded-full hover:bg-[#5a00ac] disabled:bg-purple-300 transition-colors">
                       Next
                     </button>
                   </div>
                 ) : (
                   <div>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required autoFocus className="w-full px-4 py-3 border border-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500" />
-                     <button type="submit" disabled={isLoading || !password} className="w-full mt-4 py-3 bg-purple-600 text-white font-bold rounded-full hover:bg-purple-700 disabled:opacity-50 transition-colors">
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required autoFocus className="w-full px-4 py-3 border-b border-gray-300 focus:outline-none focus:border-purple-600 transition-colors" />
+                     <button type="submit" disabled={isLoading || !password} className="w-full mt-4 py-3 bg-[#6300be] text-white font-bold rounded-full hover:bg-[#5a00ac] disabled:opacity-50 transition-colors">
                       {isLoading ? <Spinner size="sm" color="border-white" className="mx-auto" /> : 'Sign In'}
                     </button>
                   </div>
@@ -103,14 +104,14 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
               </div>
               
               <div className="mt-6 space-y-4">
-                  <a href="https://login.yahoo.com/account/create" target="_blank" rel="noopener noreferrer" className="w-full block text-center py-3 border-2 border-purple-600 text-purple-600 font-bold rounded-full hover:bg-purple-50 transition-colors">
+                  <a href="https://login.yahoo.com/account/create" target="_blank" rel="noopener noreferrer" className="w-full block text-center py-3 border border-purple-500 text-purple-600 font-bold rounded-full hover:bg-purple-50 transition-colors">
                       Create an account
                   </a>
-                  <div className="relative text-center">
-                      <span className="absolute inset-x-0 top-1/2 h-px bg-gray-300"></span>
+                  <div className="relative text-center my-2">
+                      <span className="absolute inset-x-0 top-1/2 h-px bg-gray-200"></span>
                       <span className="relative bg-white px-2 text-xs text-gray-500">or</span>
                   </div>
-                  <a href="https://login.yahoo.com/" target="_blank" rel="noopener noreferrer" className="w-full flex justify-center items-center gap-2 py-3 border-2 border-gray-300 text-gray-800 font-bold rounded-full hover:bg-gray-50 transition-colors">
+                  <a href="https://login.yahoo.com/" target="_blank" rel="noopener noreferrer" className="w-full flex justify-center items-center gap-2 py-3 border border-gray-300 text-gray-800 font-bold rounded-full hover:bg-gray-50 transition-colors">
                       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5"/>
                       Sign in with Google
                   </a>

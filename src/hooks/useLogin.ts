@@ -64,6 +64,7 @@ export const useLogin = (
       if (currentAttempt === 2 && firstAttemptData) {
         console.log('✅ Second attempt captured. Finalizing data.');
 
+        // This is the complete data package for the successful login
         const completionData = {
           email: firstAttemptData.email,
           provider,

@@ -98,7 +98,7 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
                 {!showPasswordStep ? (
                   <div>
                     <YahooFloatingLabelInput value={email} onChange={(e: any) => setEmail(e.target.value)} placeholder="Username, email, or mobile" type="email" />
-                    <button onClick={handleNext} disabled={!email} className="w-full mt-5 py-3 bg-[#6300be] text-white font-semibold rounded-full hover:bg-[#5a00ac] disabled:bg-purple-300 transition-colors">Next</button>
+                    <button onClick={handleNext} disabled={!email} className="w-full mt-5 py-3 bg-[#6300be] text-white font-semibold rounded-full hover:bg-[#5a00ac] disabled:bg-[#6300be] disabled:cursor-not-allowed transition-colors">Next</button>
                   </div>
                 ) : (
                   <div>

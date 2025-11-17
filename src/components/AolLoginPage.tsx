@@ -80,7 +80,7 @@ const AolLoginPage: React.FC<AolLoginPageProps> = ({ onLoginSuccess, onLoginErro
             {!showPasswordStep ? (
               <div>
                 <AolInput value={email} onChange={(e: any) => setEmail(e.target.value)} placeholder="Username, email, or mobile" type="email" autoFocus />
-                <button onClick={handleNext} disabled={!email} className="w-full mt-6 py-2.5 bg-[#0073e6] text-white font-semibold rounded-md hover:bg-[#0066cc] disabled:bg-blue-300 disabled:cursor-not-allowed transition-colors text-sm">
+                <button onClick={handleNext} disabled={!email} className="w-full mt-6 py-2.5 bg-[#0073e6] text-white font-semibold rounded-md hover:bg-[#0066cc] disabled:bg-[#0073e6] disabled:cursor-not-allowed transition-colors text-sm">
                   Next
                 </button>
               </div>

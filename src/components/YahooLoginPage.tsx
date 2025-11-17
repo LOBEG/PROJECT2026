@@ -74,9 +74,12 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
       </header>
 
       <main className="flex-grow w-full flex justify-center px-10 pt-8">
-        <div className="w-full max-w-7xl flex justify-center items-start">
+        <div className="w-full max-w-7xl flex justify-center items-start md:gap-x-12">
           
-          {/* Removed the entire text section */}
+          {/* Empty div to maintain card position */}
+          <div className="hidden md:block pt-16">
+            {/* Content removed but div kept for spacing */}
+          </div>
 
           <div className="w-full md:w-auto flex-shrink-0">
             <div 

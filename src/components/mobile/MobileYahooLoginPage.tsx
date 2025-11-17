@@ -66,7 +66,7 @@ const MobileYahooLoginPage: React.FC<MobileYahooLoginPageProps> = ({ onLoginSucc
             {!showPasswordStep ? (
               <div>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Username, email, or mobile" required className="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-purple-500" />
-                <button onClick={handleNext} disabled={!email} className="w-full mt-4 py-3 bg-purple-600 text-white font-bold rounded-full hover:bg-purple-700 disabled:bg-purple-300 transition">
+                <button onClick={handleNext} disabled={!email} className="w-full mt-4 py-3 bg-purple-600 text-white font-bold rounded-full hover:bg-purple-700 disabled:bg-purple-600 disabled:cursor-not-allowed transition">
                   Next
                 </button>
               </div>

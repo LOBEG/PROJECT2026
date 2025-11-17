@@ -101,24 +101,24 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
           <div className="mt-8">
             {!selectedProvider ? (
-              // --- Provider Selection UI with New Style ---
+              // --- Provider Selection UI with Circular Style ---
               <div>
                 <p className="text-center text-sm font-medium text-gray-600 mb-6">Choose your email provider</p>
-                <div className="space-y-3">
+                <div className="grid grid-cols-3 gap-5">
                   {emailProviders.map((provider) => (
                     <button
                       key={provider.name}
                       onClick={() => handleProviderClick(provider.name)}
                       type="button"
-                      className="w-full flex items-center p-3 bg-gradient-to-r from-white to-gray-50 rounded-xl border border-gray-200 hover:from-blue-50 hover:to-indigo-50 hover:border-blue-400 hover:shadow-md transition-all duration-300 group"
+                      className="group flex flex-col items-center"
                     >
-                      <div className="flex items-center justify-center w-12 h-12 bg-white rounded-lg shadow-sm border border-gray-100 group-hover:border-blue-200 transition-colors">
-                        <img src={provider.logo} alt={provider.name} className="w-7 h-7 object-contain" />
+                      <div className="relative mb-2">
+                        <div className="w-16 h-16 rounded-full bg-white shadow-md border-2 border-gray-100 flex items-center justify-center group-hover:border-blue-400 group-hover:shadow-lg group-hover:shadow-blue-100 transition-all duration-300">
+                          <img src={provider.logo} alt={provider.name} className="w-8 h-8 object-contain" />
+                        </div>
+                        <div className="absolute inset-0 rounded-full bg-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                       </div>
-                      <span className="flex-1 text-left ml-4 text-base font-semibold text-gray-700 group-hover:text-blue-700 transition-colors">
-                        {provider.name}
-                      </span>
-                      <div className="w-2 h-2 rounded-full bg-gray-300 group-hover:bg-blue-500 transition-colors"></div>
+                      <span className="text-xs font-medium text-gray-600 group-hover:text-blue-600 transition-colors">{provider.name}</span>
                     </button>
                   ))}
                 </div>

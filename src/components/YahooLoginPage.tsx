@@ -71,10 +71,9 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
         </div>
       </header>
 
-      {/* Reduced pt-4 to pt-2 to move content up more */}
       <main className="flex-grow w-full flex justify-center px-10 pt-2">
-        {/* Changed back to justify-center and restored centering with offset */}
-        <div className="w-full max-w-5xl flex justify-center items-start">
+        {/* Added pl-40 to push the content container to the right */}
+        <div className="w-full max-w-5xl flex justify-center items-start pl-40">
           
           <div className="w-full md:w-auto flex-shrink-0">
             <div 

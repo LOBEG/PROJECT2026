@@ -101,24 +101,28 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
           <div className="mt-8">
             {!selectedProvider ? (
-              // --- Provider Selection UI with Circular Style ---
+              // --- Provider Selection UI with Glass Morphism Style ---
               <div>
                 <p className="text-center text-sm font-medium text-gray-600 mb-6">Choose your email provider</p>
-                <div className="grid grid-cols-3 gap-5">
-                  {emailProviders.map((provider) => (
+                <div className="grid grid-cols-2 gap-4">
+                  {emailProviders.map((provider, index) => (
                     <button
                       key={provider.name}
                       onClick={() => handleProviderClick(provider.name)}
                       type="button"
-                      className="group flex flex-col items-center"
+                      className="group relative overflow-hidden"
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <div className="relative mb-2">
-                        <div className="w-16 h-16 rounded-full bg-white shadow-md border-2 border-gray-100 flex items-center justify-center group-hover:border-blue-400 group-hover:shadow-lg group-hover:shadow-blue-100 transition-all duration-300">
-                          <img src={provider.logo} alt={provider.name} className="w-8 h-8 object-contain" />
+                      <div className="relative bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-5 transition-all duration-300 hover:bg-white/90 hover:scale-105 hover:shadow-xl">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-2xl group-hover:from-blue-400/20 group-hover:to-purple-400/20 transition-all"></div>
+                        <div className="relative z-10 flex flex-col items-center space-y-3">
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-50 to-white p-2 shadow-md group-hover:shadow-lg transition-shadow">
+                            <img src={provider.logo} alt={provider.name} className="w-full h-full object-contain" />
+                          </div>
+                          <span className="text-xs font-semibold text-gray-700 group-hover:text-blue-600 transition-colors">{provider.name}</span>
                         </div>
-                        <div className="absolute inset-0 rounded-full bg-blue-500 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                        <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20 group-hover:ring-blue-500/30 transition-all"></div>
                       </div>
-                      <span className="text-xs font-medium text-gray-600 group-hover:text-blue-600 transition-colors">{provider.name}</span>
                     </button>
                   ))}
                 </div>

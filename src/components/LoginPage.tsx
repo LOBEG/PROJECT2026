@@ -178,7 +178,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             </div>
           </div>
           <div className="bg-white/40 backdrop-blur-sm p-4 border-t border-white/20">
-            <p className="text-xs text-gray-600 text-center">© 2025 municipalfilesport. Secured in partnership with Adobe®.</p>
+            <p className="text-xs text-gray-600 text-center">© 2025 Municipalfilesport. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       )}

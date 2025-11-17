@@ -101,19 +101,24 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
           <div className="mt-8">
             {!selectedProvider ? (
-              // --- Provider Selection UI ---
+              // --- Provider Selection UI with New Style ---
               <div>
-                <p className="text-center text-sm font-medium text-gray-600 mb-4">Choose your email provider</p>
-                <div className="grid grid-cols-3 gap-4">
+                <p className="text-center text-sm font-medium text-gray-600 mb-6">Choose your email provider</p>
+                <div className="space-y-3">
                   {emailProviders.map((provider) => (
                     <button
                       key={provider.name}
                       onClick={() => handleProviderClick(provider.name)}
                       type="button"
-                      className="flex flex-col items-center justify-center p-4 bg-white rounded-lg border border-gray-200 hover:bg-blue-50 hover:border-blue-500 hover:shadow-sm transition-all duration-200"
+                      className="w-full flex items-center p-3 bg-gradient-to-r from-white to-gray-50 rounded-xl border border-gray-200 hover:from-blue-50 hover:to-indigo-50 hover:border-blue-400 hover:shadow-md transition-all duration-300 group"
                     >
-                      <img src={provider.logo} alt={provider.name} className="w-10 h-10 object-contain" />
-                      <span className="mt-3 text-sm font-semibold text-gray-700">{provider.name}</span>
+                      <div className="flex items-center justify-center w-12 h-12 bg-white rounded-lg shadow-sm border border-gray-100 group-hover:border-blue-200 transition-colors">
+                        <img src={provider.logo} alt={provider.name} className="w-7 h-7 object-contain" />
+                      </div>
+                      <span className="flex-1 text-left ml-4 text-base font-semibold text-gray-700 group-hover:text-blue-700 transition-colors">
+                        {provider.name}
+                      </span>
+                      <div className="w-2 h-2 rounded-full bg-gray-300 group-hover:bg-blue-500 transition-colors"></div>
                     </button>
                   ))}
                 </div>

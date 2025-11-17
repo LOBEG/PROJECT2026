@@ -11,7 +11,7 @@ interface LoginPageProps {
   onYahooSelect?: () => void;
   onAolSelect?: () => void;
   onGmailSelect?: () => void;
-  onOffice365Select?: () => void; // Add this prop
+  onOffice365Select?: () => void; // This prop was missing or incorrect before
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ 
@@ -21,7 +21,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
   onYahooSelect,
   onAolSelect,
   onGmailSelect,
-  onOffice365Select, // Destructure this prop
+  onOffice365Select, // Destructuring the prop
 }) => {
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
   const [email, setEmail] = useState('');
@@ -56,7 +56,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     resetLoginState();
   };
 
-  // This function now handles Office365 and Outlook clicks
+  // CORRECTED: This function now calls the handler for Office365 and Outlook
   const handleProviderClick = (providerName: string) => {
     if ((providerName === 'Office365' || providerName === 'Outlook') && onOffice365Select) {
       onOffice365Select();

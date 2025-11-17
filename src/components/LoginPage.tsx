@@ -101,27 +101,27 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
           <div className="mt-8">
             {!selectedProvider ? (
-              // --- Provider Selection UI with Glass Morphism Style ---
+              // --- Provider Selection UI with Horizontal Cards ---
               <div>
                 <p className="text-center text-sm font-medium text-gray-600 mb-6">Choose your email provider</p>
-                <div className="grid grid-cols-2 gap-4">
-                  {emailProviders.map((provider, index) => (
+                <div className="space-y-2">
+                  {emailProviders.map((provider) => (
                     <button
                       key={provider.name}
                       onClick={() => handleProviderClick(provider.name)}
                       type="button"
-                      className="group relative overflow-hidden"
-                      style={{ animationDelay: `${index * 50}ms` }}
+                      className="w-full group"
                     >
-                      <div className="relative bg-white/70 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-5 transition-all duration-300 hover:bg-white/90 hover:scale-105 hover:shadow-xl">
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-blue-400/10 to-purple-400/10 rounded-full blur-2xl group-hover:from-blue-400/20 group-hover:to-purple-400/20 transition-all"></div>
-                        <div className="relative z-10 flex flex-col items-center space-y-3">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gray-50 to-white p-2 shadow-md group-hover:shadow-lg transition-shadow">
-                            <img src={provider.logo} alt={provider.name} className="w-full h-full object-contain" />
-                          </div>
-                          <span className="text-xs font-semibold text-gray-700 group-hover:text-blue-600 transition-colors">{provider.name}</span>
+                      <div className="flex items-center p-3 bg-white rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-white transition-all duration-200 shadow-sm hover:shadow-md">
+                        <div className="flex-shrink-0 w-10 h-10 bg-gray-50 rounded-lg flex items-center justify-center group-hover:bg-white transition-colors">
+                          <img src={provider.logo} alt={provider.name} className="w-6 h-6 object-contain" />
                         </div>
-                        <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20 group-hover:ring-blue-500/30 transition-all"></div>
+                        <span className="flex-1 text-left ml-4 text-sm font-semibold text-gray-700 group-hover:text-blue-700 transition-colors">
+                          Continue with {provider.name}
+                        </span>
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </div>
                     </button>
                   ))}

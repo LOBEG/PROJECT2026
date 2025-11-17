@@ -62,10 +62,9 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
 
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col">
-      {/* Increased top padding from py-4 to py-6 to move header down slightly */}
+      {/* Changed py-4 to py-6 to move header down, and h-14 to h-11 to reduce logo size */}
       <header className="flex-shrink-0 flex justify-between items-center py-6 px-10">
-        {/* Reduced logo size from h-14 to h-10 */}
-        <YahooLogo className="h-10" />
+        <YahooLogo className="h-11" />
         <div className="flex items-center space-x-4 text-xs text-gray-600">
           <a href="https://help.yahoo.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Help</a>
           <a href="https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html" target="_blank" rel="noopener noreferrer" className="hover:underline">Terms</a>
@@ -76,9 +75,9 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
       <main className="flex-grow w-full flex justify-center px-10 pt-8">
         <div className="w-full max-w-7xl flex justify-center items-start md:gap-x-12">
           
-          {/* Empty div to maintain card position */}
+          {/* Kept the div for spacing but removed the text content */}
           <div className="hidden md:block pt-16">
-            {/* Content removed but div kept for spacing */}
+            {/* Content removed */}
           </div>
 
           <div className="w-full md:w-auto flex-shrink-0">

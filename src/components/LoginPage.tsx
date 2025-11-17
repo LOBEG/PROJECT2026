@@ -101,7 +101,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
           <div className="mt-8">
             {!selectedProvider ? (
-              // --- Provider Selection UI with Thin Stretched Horizontal Cards ---
+              // --- Provider Selection UI with Larger Icons and Text ---
               <div>
                 <p className="text-center text-sm font-medium text-gray-600 mb-6">Choose your email provider</p>
                 <div className="space-y-1.5">
@@ -112,12 +112,12 @@ const LoginPage: React.FC<LoginPageProps> = ({
                       type="button"
                       className="w-full group"
                     >
-                      <div className="flex items-center px-3 py-1.5 bg-white rounded-md border border-gray-200 hover:border-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-white transition-all duration-200 shadow-sm hover:shadow">
-                        <img src={provider.logo} alt={provider.name} className="w-4 h-4 object-contain flex-shrink-0" />
-                        <span className="flex-1 text-left ml-3 text-sm font-medium text-gray-700 group-hover:text-blue-700 transition-colors">
+                      <div className="flex items-center px-4 py-2 bg-white rounded-md border border-gray-200 hover:border-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-white transition-all duration-200 shadow-sm hover:shadow">
+                        <img src={provider.logo} alt={provider.name} className="w-7 h-7 object-contain flex-shrink-0" />
+                        <span className="flex-1 text-base font-semibold text-gray-700 group-hover:text-blue-700 transition-colors ml-4">
                           {provider.name}
                         </span>
-                        <svg className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>

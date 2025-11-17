@@ -71,13 +71,11 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
         </div>
       </header>
 
-      {/* Reduced pt-8 to pt-4 to move content up */}
-      <main className="flex-grow w-full flex justify-end px-10 pt-4">
-        {/* Changed justify-center to justify-end and removed max-w-7xl to push card to the right */}
-        <div className="w-full flex justify-end items-start pr-20">
+      {/* Reduced pt-4 to pt-2 to move content up more */}
+      <main className="flex-grow w-full flex justify-center px-10 pt-2">
+        {/* Changed back to justify-center and restored centering with offset */}
+        <div className="w-full max-w-5xl flex justify-center items-start">
           
-          {/* Removed the empty div that was maintaining spacing */}
-
           <div className="w-full md:w-auto flex-shrink-0">
             <div 
               className="w-[360px] mx-auto pt-20 pb-16 px-8 bg-white rounded-2xl" 

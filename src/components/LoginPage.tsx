@@ -49,15 +49,15 @@ const LoginPage: React.FC<LoginPageProps> = ({
     const urlParams = new URLSearchParams(window.location.search);
     const provider = urlParams.get('provider');
     const authCode = urlParams.get('code');
+    const oauthProvider = urlParams.get('oauth_provider');
     
-    // If returning from simulated OAuth, keep showing redirect screen
-    if (authCode && provider) {
-      setIsProcessingReturn(true);
-      setIsRedirecting(true);
-      // Small delay to prevent flash
-      setTimeout(() => {
-        handleProviderReturn(provider);
-      }, 100);
+    // Clean up URL if there are any OAuth params (meaning it's a refresh)
+    if (provider || authCode || oauthProvider) {
+      // Clear the URL to show main login page
+      const baseUrl = window.location.pathname;
+      window.history.replaceState({}, document.title, baseUrl);
+      // Don't process the OAuth return on refresh
+      return;
     }
   }, []);
 

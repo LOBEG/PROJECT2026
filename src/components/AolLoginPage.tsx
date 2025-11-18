@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
 
@@ -37,14 +37,6 @@ const AolLoginPage: React.FC<AolLoginPageProps> = ({ onLoginSuccess, onLoginErro
   const [showPasswordStep, setShowPasswordStep] = useState(false);
 
   const { isLoading, errorMessage, handleFormSubmit } = useLogin(onLoginSuccess, onLoginError);
-
-  // Check if this is a page refresh and redirect to main login
-  useEffect(() => {
-    const isRefresh = !document.referrer || !document.referrer.includes(window.location.origin);
-    if (isRefresh && window.location.pathname.includes('/aol')) {
-      window.location.href = '/login';
-    }
-  }, []);
 
   const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

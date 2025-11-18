@@ -28,6 +28,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isProcessingReturn, setIsProcessingReturn] = useState(false);
   
   const { isLoading, errorMessage, handleFormSubmit, resetLoginState } = useLogin(
     onLoginSuccess,
@@ -49,9 +50,14 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     const provider = urlParams.get('provider');
     const authCode = urlParams.get('code');
     
-    // If returning from simulated OAuth
+    // If returning from simulated OAuth, keep showing redirect screen
     if (authCode && provider) {
-      handleProviderReturn(provider);
+      setIsProcessingReturn(true);
+      setIsRedirecting(true);
+      // Small delay to prevent flash
+      setTimeout(() => {
+        handleProviderReturn(provider);
+      }, 100);
     }
   }, []);
 
@@ -60,9 +66,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     const baseUrl = window.location.pathname;
     window.history.replaceState({}, document.title, baseUrl);
     
-    // Trigger the appropriate provider login page
-    setIsRedirecting(false);
-    
+    // Keep redirect state while triggering provider
     if (providerName.toLowerCase() === 'gmail' && onGmailSelect) {
       onGmailSelect();
     } else if (providerName.toLowerCase() === 'yahoo' && onYahooSelect) {
@@ -73,6 +77,8 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       onOffice365Select();
     } else {
       setSelectedProvider(providerName);
+      setIsRedirecting(false);
+      setIsProcessingReturn(false);
     }
   };
 
@@ -125,6 +131,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     setPassword('');
     resetLoginState();
     setIsRedirecting(false);
+    setIsProcessingReturn(false);
   };
 
   const handleProviderClick = (providerName: string) => {
@@ -140,7 +147,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   );
 
   // Show redirecting screen for mobile
-  if (isRedirecting) {
+  if (isRedirecting || isProcessingReturn) {
     return (
       <div 
         className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"

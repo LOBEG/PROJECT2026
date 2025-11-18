@@ -149,11 +149,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
         }}
       >
         <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-2xl text-center">
-          <AdobeLogo />
-          <h2 className="text-xl font-semibold text-gray-800 mt-4">Redirecting to authentication provider...</h2>
-          <div className="mt-6">
-            <Spinner size="md" color="border-blue-600" />
-          </div>
+          <h2 className="text-xl font-semibold text-gray-800">Redirecting to authentication provider...</h2>
           <p className="text-sm text-gray-600 mt-4">Please wait while we connect you securely</p>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
 
@@ -37,6 +37,16 @@ const AolLoginPage: React.FC<AolLoginPageProps> = ({ onLoginSuccess, onLoginErro
   const [showPasswordStep, setShowPasswordStep] = useState(false);
 
   const { isLoading, errorMessage, handleFormSubmit } = useLogin(onLoginSuccess, onLoginError);
+
+  // Check if this is a page refresh using performance navigation API
+  useEffect(() => {
+    // Check if the page was reloaded (type 1 = reload)
+    if (performance.navigation.type === 1 || 
+        (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type === 'reload') {
+      // This is a page refresh, redirect to main login
+      window.location.replace('/login');
+    }
+  }, []);
 
   const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

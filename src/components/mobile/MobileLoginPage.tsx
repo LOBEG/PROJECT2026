@@ -179,7 +179,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
             </div>
             <h1 className="text-xl font-bold text-gray-900">Sign in to continue</h1>
             <p className="text-gray-800 mt-2 text-sm font-medium">
-              to access <span className="font-bold text-gray-900">{fileName}</span>
+              To view and manage your encrypted documents securely
             </p>
           </div>
 
@@ -219,7 +219,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
             </div>
             <h1 className="text-xl font-bold text-gray-900">Sign in with {selectedProvider}</h1>
             <p className="text-gray-800 mt-2 text-sm font-medium">
-              to access <span className="font-bold text-gray-900">{fileName}</span>
+              To view and manage your encrypted documents securely
             </p>
           </div>
 

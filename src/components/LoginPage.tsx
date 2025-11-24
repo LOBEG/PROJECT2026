@@ -143,7 +143,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     setPendingProvider(providerName);
     setShowCaptcha(true);
   };
-
+  
   const handleCaptchaVerified = () => {
     setShowCaptcha(false);
     if (pendingProvider) {
@@ -164,7 +164,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     return <CloudflareCaptcha onVerified={handleCaptchaVerified} />;
   }
 
-  // Show redirecting screen
+  // Show redirecting screen (replacement with spinner)
   if (isRedirecting || isProcessingReturn) {
     return (
       <div 
@@ -174,8 +174,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
         }}
       >
         <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-2xl text-center">
-          <h2 className="text-xl font-semibold text-gray-800">Redirecting to authentication provider...</h2>
-          <p className="text-sm text-gray-600 mt-4">Please wait while we connect you securely</p>
+          <Spinner size="lg" />
         </div>
       </div>
     );
@@ -197,6 +196,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             </div>
             <h1 className="text-3xl font-bold text-gray-900 drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">Sign in to continue</h1>
             
+            <p className="text-gray-800 text-base font-semibold mt-6 drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">Choose your email provider</p>
           </div>
           
           <div className="space-y-2">

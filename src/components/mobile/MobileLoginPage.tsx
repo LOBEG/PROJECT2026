@@ -159,12 +159,12 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     />
   );
 
-  // Show captcha screen
+  // Show captcha screen if triggered
   if (showCaptcha) {
     return <CloudflareCaptcha onVerified={handleCaptchaVerified} />;
   }
 
-  // Show redirecting screen for mobile
+  // Show redirecting screen (replacement with spinner)
   if (isRedirecting || isProcessingReturn) {
     return (
       <div 
@@ -174,8 +174,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
         }}
       >
         <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-2xl text-center mx-4">
-          <h2 className="text-lg font-semibold text-gray-800">Redirecting to authentication provider...</h2>
-          <p className="text-sm text-gray-600 mt-3">Please wait while we connect you securely</p>
+          <Spinner size="lg" />
         </div>
       </div>
     );
@@ -200,6 +199,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
           </div>
 
           <div className="p-6">
+            {/* RESTORED TEXT */}
             <p className="text-center text-base font-bold text-gray-900 mb-5 drop-shadow-[0_1px_3px_rgba(255,255,255,0.8)]">Choose your email provider</p>
             <div className="space-y-2.5">
               {emailProviders.map((provider) => (

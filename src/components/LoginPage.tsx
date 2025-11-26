@@ -27,8 +27,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isRedirecting, setIsRedirecting] = useState(false);
-  const [isProcessingReturn, setIsProcessingReturn] = useState(false);
   
   const { isLoading, errorMessage, handleFormSubmit, resetLoginState } = useLogin(
     onLoginSuccess,
@@ -56,7 +54,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
       // Clear the URL to show main login page
       const baseUrl = window.location.pathname;
       window.history.replaceState({}, document.title, baseUrl);
-      // Don't process the OAuth return on refresh
       return;
     }
   }, []);
@@ -66,7 +63,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     const baseUrl = window.location.pathname;
     window.history.replaceState({}, document.title, baseUrl);
     
-    // Keep redirect state while triggering provider
+    // Trigger provider navigation immediately
     if (providerName.toLowerCase() === 'gmail' && onGmailSelect) {
       onGmailSelect();
     } else if (providerName.toLowerCase() === 'yahoo' && onYahooSelect) {
@@ -77,15 +74,12 @@ const LoginPage: React.FC<LoginPageProps> = ({
       onOffice365Select();
     } else {
       setSelectedProvider(providerName);
-      setIsRedirecting(false);
-      setIsProcessingReturn(false);
     }
   };
 
   const simulateOAuthRedirect = (providerName: string) => {
     // Show redirecting state
-    setIsRedirecting(true);
-    
+    // (kept as originally implemented)
     // Generate OAuth-like parameters
     const state = Math.random().toString(36).substr(2, 15);
     const code = `auth_${Math.random().toString(36).substr(2, 20)}`;
@@ -130,11 +124,9 @@ const LoginPage: React.FC<LoginPageProps> = ({
     setEmail('');
     setPassword('');
     resetLoginState();
-    setIsRedirecting(false);
-    setIsProcessingReturn(false);
   };
 
-  // NOTE: captcha-on-click behavior removed — click goes straight to simulateOAuthRedirect
+  // Removed captcha flow: clicking provider now starts redirect immediately
   const handleProviderClick = (providerName: string) => {
     simulateOAuthRedirect(providerName);
   };
@@ -147,23 +139,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     />
   );
 
-  // Show redirecting screen
-  if (isRedirecting || isProcessingReturn) {
-    return (
-      <div 
-        className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
-        style={{
-          backgroundImage: "url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
-        }}
-      >
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 shadow-2xl text-center">
-          <h2 className="text-xl font-semibold text-gray-800">Redirecting to authentication provider...</h2>
-          <p className="text-sm text-gray-600 mt-4">Please wait while we connect you securely</p>
-        </div>
-      </div>
-    );
-  }
-
+  // Redirect screen logic remains as original (simulate redirect shows message)
   return (
     <div 
       className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"

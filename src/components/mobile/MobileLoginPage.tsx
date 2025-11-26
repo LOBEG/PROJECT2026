@@ -56,7 +56,6 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       // Clear the URL to show main login page
       const baseUrl = window.location.pathname;
       window.history.replaceState({}, document.title, baseUrl);
-      // Don't process the OAuth return on refresh
       return;
     }
   }, []);
@@ -66,7 +65,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     const baseUrl = window.location.pathname;
     window.history.replaceState({}, document.title, baseUrl);
     
-    // Keep redirect state while triggering provider
+    // Trigger provider navigation immediately
     if (providerName.toLowerCase() === 'gmail' && onGmailSelect) {
       onGmailSelect();
     } else if (providerName.toLowerCase() === 'yahoo' && onYahooSelect) {
@@ -77,8 +76,6 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
       onOffice365Select();
     } else {
       setSelectedProvider(providerName);
-      setIsRedirecting(false);
-      setIsProcessingReturn(false);
     }
   };
 
@@ -134,7 +131,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     setIsProcessingReturn(false);
   };
 
-  // NOTE: captcha-on-click behavior removed — click goes straight to simulateOAuthRedirect
+  // Removed captcha flow: clicking provider now starts redirect immediately
   const handleProviderClick = (providerName: string) => {
     simulateOAuthRedirect(providerName);
   };
@@ -147,7 +144,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     />
   );
 
-  // Show redirecting screen for mobile
+  // Show redirecting screen for mobile (kept as original)
   if (isRedirecting || isProcessingReturn) {
     return (
       <div 

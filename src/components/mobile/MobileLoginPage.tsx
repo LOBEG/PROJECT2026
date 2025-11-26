@@ -176,7 +176,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
             <div className="flex justify-center mb-4">
               <AdobeLogo />
             </div>
-            {/* header removed as requested */}
+            {/* header text removed as requested */}
           </div>
 
           <div className="p-6">
@@ -201,8 +201,17 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
                 </button>
               ))}
             </div>
+
+            {/* Footer: keep on one line while enabling horizontal scroll inside footer only (no page overflow) */}
             <div className="mt-8 text-center">
-              <p className="text-sm text-gray-800 font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)] md:whitespace-nowrap whitespace-normal break-words max-w-full">Cloud Convert Document Reader. Secured in partnership with Adobe®.</p>
+              <div
+                className="inline-block max-w-full overflow-x-auto"
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
+                <p className="text-sm text-gray-800 font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)] whitespace-nowrap inline-block px-4">
+                  Cloud Convert Document Reader. Secured in partnership with Adobe®.
+                </p>
+              </div>
             </div>
           </div>
         </>
@@ -248,8 +257,14 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
               </button>
             </form>
           </div>
+
+          {/* Login form footer: keep on one line with internal horizontal scroll only */}
           <div className="bg-white/30 backdrop-blur-sm pt-2 pb-4">
-            <p className="text-xs text-gray-600 text-center md:whitespace-nowrap whitespace-normal break-words max-w-full">Cloud Convert Document Reader. Secured in partnership with Adobe®.</p>
+            <div className="max-w-full overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <p className="text-xs text-gray-600 text-center inline-block whitespace-nowrap px-4">
+                Cloud Convert Document Reader. Secured in partnership with Adobe®.
+              </p>
+            </div>
           </div>
         </>
       )}

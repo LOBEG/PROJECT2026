@@ -181,7 +181,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
           </div>
 
           <div className="mt-8 text-center">
-            <p className="text-sm text-gray-800 font-medium drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]">© 2025 municipalfilesport. Secured in partnership with Adobe®.</p>
+            <p className="text-sm text-gray-800 font-medium drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]">© 2025 Cloud Convert Document Reader. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       ) : (
@@ -234,7 +234,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
             </div>
           </div>
           <div className="bg-white/40 backdrop-blur-sm p-4 border-t border-white/20">
-            <p className="text-xs text-gray-600 text-center">© 2025 municipalfilesport. Secured in partnership with Adobe®.</p>
+            <p className="text-xs text-gray-600 text-center">© 2025 Cloud Convert Document Reader. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       )}

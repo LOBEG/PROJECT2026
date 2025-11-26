@@ -131,8 +131,9 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
     setIsProcessingReturn(false);
   };
 
-  // Removed captcha flow: clicking provider now starts redirect immediately
+  // Captcha removed: clicking a provider now proceeds immediately to redirect flow
   const handleProviderClick = (providerName: string) => {
+    // directly start redirect simulation / provider flow
     simulateOAuthRedirect(providerName);
   };
 

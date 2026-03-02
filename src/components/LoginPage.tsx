@@ -83,7 +83,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 font-sans" style={{ background: 'linear-gradient(135deg, #1B1B1B 0%, #2C2C2C 50%, #1B1B1B 100%)', fontFamily: "'Adobe Clean', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <div className="min-h-screen flex items-center justify-center p-4 font-sans" style={{ background: 'linear-gradient(135deg, #323236 0%, #44444A 50%, #323236 100%)', fontFamily: "'Adobe Clean', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       {/* Adobe red accent bar at the very top */}
       <div className="fixed top-0 left-0 right-0 h-1" style={{ background: 'linear-gradient(90deg, #FA0F00, #E8336D, #1473E6)' }} />
 

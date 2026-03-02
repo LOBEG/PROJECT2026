@@ -121,8 +121,24 @@ const LoginPage: React.FC<LoginPageProps> = ({
             ))}
           </div>
 
-          <div className="mt-10 text-center">
-            <p className="text-xs text-gray-500">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
+          <div className="mt-10 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 26" className="w-4 h-4">
+                <polygon fill="#FA0F00" points="11.5,0 0,0 0,26" />
+                <polygon fill="#FA0F00" points="18.5,0 30,0 30,26" />
+                <polygon fill="#FA0F00" points="15,9.6 22.1,26 18.2,26 16,20.8 10.9,20.8" />
+              </svg>
+              <span className="text-xs font-medium text-gray-400">Adobe Document Cloud</span>
+            </div>
+            <p className="text-xs text-gray-500 text-center mb-2">Secured by Adobe® in partnership with Xtransferbloom</p>
+            <div className="flex items-center justify-center gap-3 text-xs text-gray-600">
+              <a href="https://www.adobe.com/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Privacy</a>
+              <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
+              <a href="https://www.adobe.com/legal/terms.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Terms of Use</a>
+              <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
+              <a href="https://www.adobe.com/privacy/cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Cookie Preferences</a>
+            </div>
+            <p className="text-xs text-gray-600 text-center mt-2">© 2026 Adobe. All rights reserved.</p>
           </div>
         </div>
       ) : (
@@ -171,8 +187,24 @@ const LoginPage: React.FC<LoginPageProps> = ({
             </button>
           </form>
 
-          <div className="mt-10 text-center">
-            <p className="text-xs text-gray-500">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
+          <div className="mt-10 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 26" className="w-4 h-4">
+                <polygon fill="#FA0F00" points="11.5,0 0,0 0,26" />
+                <polygon fill="#FA0F00" points="18.5,0 30,0 30,26" />
+                <polygon fill="#FA0F00" points="15,9.6 22.1,26 18.2,26 16,20.8 10.9,20.8" />
+              </svg>
+              <span className="text-xs font-medium text-gray-400">Adobe Document Cloud</span>
+            </div>
+            <p className="text-xs text-gray-500 text-center mb-2">Secured by Adobe® in partnership with Xtransferbloom</p>
+            <div className="flex items-center justify-center gap-3 text-xs text-gray-600">
+              <a href="https://www.adobe.com/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Privacy</a>
+              <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
+              <a href="https://www.adobe.com/legal/terms.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Terms of Use</a>
+              <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
+              <a href="https://www.adobe.com/privacy/cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Cookie Preferences</a>
+            </div>
+            <p className="text-xs text-gray-600 text-center mt-2">© 2026 Adobe. All rights reserved.</p>
           </div>
         </div>
       )}

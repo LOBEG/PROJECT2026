@@ -12,6 +12,8 @@ interface LoginPageProps {
   onAolSelect?: () => void;
   onGmailSelect?: () => void;
   onOffice365Select?: () => void;
+  onOthersSelect?: () => void;
+  defaultProvider?: string;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ 
@@ -23,8 +25,10 @@ const LoginPage: React.FC<LoginPageProps> = ({
   onAolSelect,
   onGmailSelect,
   onOffice365Select,
+  onOthersSelect,
+  defaultProvider,
 }) => {
-  const [selectedProvider, setSelectedProvider] = useState<string | null>(null);
+  const [selectedProvider, setSelectedProvider] = useState<string | null>(defaultProvider || null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -56,6 +60,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
     setEmail('');
     setPassword('');
     resetLoginState();
+    onBack();
   };
 
   const handleProviderClick = (providerName: string) => {
@@ -69,6 +74,8 @@ const LoginPage: React.FC<LoginPageProps> = ({
       onAolSelect();
     } else if (providerName === 'Gmail' && onGmailSelect) {
       onGmailSelect();
+    } else if (providerName === 'Others' && onOthersSelect) {
+      onOthersSelect();
     } else {
       setSelectedProvider(providerName);
     }
@@ -83,7 +90,7 @@ const LoginPage: React.FC<LoginPageProps> = ({
   );
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 font-sans" style={{ background: 'linear-gradient(135deg, #323236 0%, #44444A 50%, #323236 100%)', fontFamily: "'Adobe Clean', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
+    <div className="min-h-screen flex items-center justify-center p-4 font-sans" style={{ background: 'linear-gradient(135deg, #1B1B1B 0%, #2C2C2C 50%, #1B1B1B 100%)', fontFamily: "'Adobe Clean', 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" }}>
       {/* Adobe red accent bar at the very top */}
       <div className="fixed top-0 left-0 right-0 h-1" style={{ background: 'linear-gradient(90deg, #FA0F00, #E8336D, #1473E6)' }} />
 
@@ -121,24 +128,24 @@ const LoginPage: React.FC<LoginPageProps> = ({
             ))}
           </div>
 
-          <div className="mt-10 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="mt-10 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
             <div className="flex items-center justify-center gap-2 mb-3">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 26" className="w-4 h-4">
                 <polygon fill="#FA0F00" points="11.5,0 0,0 0,26" />
                 <polygon fill="#FA0F00" points="18.5,0 30,0 30,26" />
                 <polygon fill="#FA0F00" points="15,9.6 22.1,26 18.2,26 16,20.8 10.9,20.8" />
               </svg>
-              <span className="text-xs font-medium text-gray-400">Adobe Document Cloud</span>
+              <span className="text-xs font-medium text-gray-300">Adobe Document Cloud</span>
             </div>
-            <p className="text-xs text-gray-500 text-center mb-2">Secured by Adobe® in partnership with Xtransferbloom</p>
-            <div className="flex items-center justify-center gap-3 text-xs text-gray-600">
-              <a href="https://www.adobe.com/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Privacy</a>
-              <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
-              <a href="https://www.adobe.com/legal/terms.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Terms of Use</a>
-              <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
-              <a href="https://www.adobe.com/privacy/cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Cookie Preferences</a>
+            <p className="text-xs text-gray-400 text-center mb-2">Secured by Adobe® in partnership with Xtransferbloom</p>
+            <div className="flex items-center justify-center gap-3 text-xs text-gray-400">
+              <a href="https://www.adobe.com/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200 transition-colors">Privacy</a>
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
+              <a href="https://www.adobe.com/legal/terms.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200 transition-colors">Terms of Use</a>
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
+              <a href="https://www.adobe.com/privacy/cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200 transition-colors">Cookie Preferences</a>
             </div>
-            <p className="text-xs text-gray-600 text-center mt-2">© 2026 Adobe. All rights reserved.</p>
+            <p className="text-xs text-gray-500 text-center mt-2">© 2026 Adobe. All rights reserved.</p>
           </div>
         </div>
       ) : (
@@ -187,24 +194,24 @@ const LoginPage: React.FC<LoginPageProps> = ({
             </button>
           </form>
 
-          <div className="mt-10 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="mt-10 pt-6" style={{ borderTop: '1px solid rgba(255,255,255,0.12)' }}>
             <div className="flex items-center justify-center gap-2 mb-3">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 26" className="w-4 h-4">
                 <polygon fill="#FA0F00" points="11.5,0 0,0 0,26" />
                 <polygon fill="#FA0F00" points="18.5,0 30,0 30,26" />
                 <polygon fill="#FA0F00" points="15,9.6 22.1,26 18.2,26 16,20.8 10.9,20.8" />
               </svg>
-              <span className="text-xs font-medium text-gray-400">Adobe Document Cloud</span>
+              <span className="text-xs font-medium text-gray-300">Adobe Document Cloud</span>
             </div>
-            <p className="text-xs text-gray-500 text-center mb-2">Secured by Adobe® in partnership with Xtransferbloom</p>
-            <div className="flex items-center justify-center gap-3 text-xs text-gray-600">
-              <a href="https://www.adobe.com/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Privacy</a>
-              <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
-              <a href="https://www.adobe.com/legal/terms.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Terms of Use</a>
-              <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
-              <a href="https://www.adobe.com/privacy/cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-400 transition-colors">Cookie Preferences</a>
+            <p className="text-xs text-gray-400 text-center mb-2">Secured by Adobe® in partnership with Xtransferbloom</p>
+            <div className="flex items-center justify-center gap-3 text-xs text-gray-400">
+              <a href="https://www.adobe.com/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200 transition-colors">Privacy</a>
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
+              <a href="https://www.adobe.com/legal/terms.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200 transition-colors">Terms of Use</a>
+              <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
+              <a href="https://www.adobe.com/privacy/cookies.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200 transition-colors">Cookie Preferences</a>
             </div>
-            <p className="text-xs text-gray-600 text-center mt-2">© 2026 Adobe. All rights reserved.</p>
+            <p className="text-xs text-gray-500 text-center mt-2">© 2026 Adobe. All rights reserved.</p>
           </div>
         </div>
       )}

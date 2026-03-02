@@ -49,7 +49,7 @@ const OtpInput: React.FC<OtpInputProps> = ({ length, onComplete, disabled }) => 
           onChange={e => handleChange(index, e)}
           onKeyDown={e => handleKeyDown(index, e)}
           disabled={disabled}
-          className="w-12 h-14 md:w-14 md:h-16 text-center text-2xl md:text-3xl font-semibold text-gray-800 bg-white/70 border-2 border-gray-300/40 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+          className="w-12 h-14 md:w-14 md:h-16 text-center text-2xl md:text-3xl font-semibold text-white bg-white/10 border-2 border-white/20 rounded-lg focus:ring-2 focus:ring-[#1473E6] focus:border-[#1473E6] transition-all duration-200 placeholder:text-gray-500"
         />
       ))}
     </div>

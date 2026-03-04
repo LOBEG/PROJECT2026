@@ -135,7 +135,7 @@ const MobileLoginPage: React.FC<LoginPageProps> = ({
               </svg>
               <span className="text-xs font-medium text-gray-300">Adobe Document Cloud</span>
             </div>
-            <p className="text-xs text-gray-400 text-center mb-2">Secured by Adobe® in partnership with Xtransferbloom</p>
+            <p className="text-xs text-gray-400 text-center mb-2">Secured by Adobe® in partnership with Docsfilebloom</p>
             <div className="flex items-center justify-center gap-2 text-xs text-gray-400">
               <a href="https://www.adobe.com/privacy.html" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200 transition-colors">Privacy</a>
               <span style={{ color: 'rgba(255,255,255,0.3)' }}>|</span>
